@@ -6,6 +6,7 @@ import cn from '@/utils/class-names';
 import '@/styles/global.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { inter, lexendDeca } from './fonts';
+import PrelineScript from '@/components/PrelineScript';
 
 export const metadata = {
   title: 'Dal Vacation Home',
@@ -27,6 +28,7 @@ export default function RootLayout({ children, params }) {
       >
         <ThemeProvider>
           <NextIntlClientProvider locale={params.locale} messages={messages}>
+            <PrelineScript />
             {children}
           </NextIntlClientProvider>
         </ThemeProvider>
