@@ -4,5 +4,5 @@ import { AppConfig } from '@/utils/AppConfig';
 
 export const { usePathname, useRouter } = createSharedPathnamesNavigation({
   locales: AppConfig.locales,
-  localePrefix: AppConfig.localePrefix as any,
+  localePrefix: AppConfig.localePrefix,
 });
