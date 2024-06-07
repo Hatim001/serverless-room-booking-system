@@ -31,10 +31,10 @@ const PublicLayout = ({ children, params }) => {
   };
 
   return (
-    <main className="w-3/4 mx-auto">
+    <div className="w-3/4 m-auto flex flex-col min-h-screen">
       <Header routes={routes} />
-      {children}
-    </main>
+      <main className="flex-grow min-h-full min-w-full">{children}</main>
+    </div>
   );
 };
 

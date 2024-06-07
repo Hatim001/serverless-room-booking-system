@@ -8,7 +8,6 @@ import CaesarCipher from './components/CaesarCipher';
 
 const Register = () => {
   const { mfaType, user } = useRegisterForm();
-  console.log('mfaType', mfaType);
 
   const renderForm = () => {
     switch (mfaType) {

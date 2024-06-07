@@ -1,9 +1,8 @@
 import cn from '@/utils/class-names';
 import '@/styles/global.css';
 import { ThemeProvider } from '@/components/theme-provider';
-import PrelineScript from '@/components/PrelineScript';
 import { AuthProvider } from '@/hooks/use-auth';
-import { inter, lexendDeca } from './fonts';
+import { inter } from './fonts';
 
 export const metadata = {
   title: 'Dal Vacation Home',
@@ -15,10 +14,12 @@ export default function RootLayout({ children, params }) {
     <html suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={cn(inter.variable, lexendDeca.variable, 'font-inter')}
+        className={cn(
+          'min-h-screen bg-background font-sans antialiased',
+          inter.variable,
+        )}
       >
         <ThemeProvider>
-          <PrelineScript />
           <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </body>
