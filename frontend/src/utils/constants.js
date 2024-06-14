@@ -35,4 +35,43 @@ const AGENT_ROUTES = [
   },
 ];
 
-export { GUEST_ROUTES, USER_ROUTES, AGENT_ROUTES };
+const SECURITY_QUESTIONS = [
+  {
+    value: 'What is your favorite color?',
+    label: 'What is your favorite color?',
+  },
+  {
+    value: "What is your mother's maiden name?",
+    label: "What is your mother's maiden name?",
+  },
+  {
+    value: 'What was the name of your first pet?',
+    label: 'What was the name of your first pet?',
+  },
+  {
+    value: 'In what city were you born?',
+    label: 'In what city were you born?',
+  },
+  {
+    value: 'What was the name of your first school?',
+    label: 'What was the name of your first school?',
+  },
+  {
+    value: 'What is the name of your best friend from childhood?',
+    label: 'What is the name of your best friend from childhood?',
+  },
+  {
+    value: 'What is the name of your favorite teacher?',
+    label: 'What is the name of your favorite teacher?',
+  },
+  {
+    value: 'What is your favorite movie?',
+    label: 'What is your favorite movie?',
+  },
+  {
+    value: 'What is your favorite book?',
+    label: 'What is your favorite book?',
+  },
+];
+
+export { GUEST_ROUTES, USER_ROUTES, AGENT_ROUTES, SECURITY_QUESTIONS };
