@@ -100,6 +100,17 @@ def lambda_handler(event, context):
                     "record": record,
                 }
             ),
+            "headers": {
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Origin": "*",
+            },
         }
     except Exception as e:
-        return {"statusCode": 500, "body": json.dumps({"message": str(e)})}
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"message": str(e)}),
+            "headers": {
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Origin": "*",
+            },
+        }

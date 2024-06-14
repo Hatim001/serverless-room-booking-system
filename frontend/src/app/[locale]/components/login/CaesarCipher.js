@@ -1,11 +1,14 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { words } from '@/utils/caeser-words';
-import { TbRefresh } from 'react-icons/tb';
 import React from 'react';
+import { RefreshCw } from 'lucide-react';
+
+import { words } from '@/utils/caeser-words';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 const CaesarCipher = () => {
-  const [currentWord, setCurrentWord] = React.useState(words[0]);
+  const [currentWord, setCurrentWord] = React.useState(
+    words[Math.floor(Math.random() * words.length)],
+  );
   const [answer, setAnswer] = React.useState('');
 
   return (
@@ -23,7 +26,12 @@ const CaesarCipher = () => {
               <div className="grid gap-y-6">
                 <div>
                   <div className="mt-2 flex gap-2">
-                    <Input type="text" disabled placeholder={currentWord.toUpperCase()} className="flex-1 placeholder:text-black placeholder:font-semibold" />
+                    <Input
+                      type="text"
+                      disabled
+                      placeholder={currentWord.toUpperCase()}
+                      className="flex-1 placeholder:text-black placeholder:font-semibold"
+                    />
                     <Button
                       type="button"
                       onClick={() => {
@@ -32,7 +40,7 @@ const CaesarCipher = () => {
                         );
                       }}
                     >
-                      <TbRefresh size={20} />
+                      <RefreshCw />
                     </Button>
                   </div>
                 </div>
