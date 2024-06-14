@@ -12,14 +12,6 @@ export const getBaseUrl = () => {
   return 'http://localhost:3000';
 };
 
-export const getI18nPath = (url, locale) => {
-  if (locale === AppConfig.defaultLocale) {
-    return url;
-  }
-
-  return `/${locale}${url}`;
-};
-
 export const isEmpty = (value) => {
   if (value === null || value === undefined) {
     return true;

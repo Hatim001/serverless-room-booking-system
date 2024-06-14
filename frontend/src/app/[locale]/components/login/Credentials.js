@@ -1,17 +1,10 @@
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useLoginForm } from '@/hooks/use-login-form';
+import Link from 'next/link';
 
-const SecurityQuestion = () => {
+const Credentials = ({ role }) => {
   const { setMfaType } = useLoginForm();
   return (
     <div className="w-full max-w-md mx-auto p-6">
@@ -19,29 +12,36 @@ const SecurityQuestion = () => {
         <div className="p-4 sm:p-7">
           <div className="text-center">
             <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
-              Security Question
+              {role == 'user' ? 'User' : 'Agent'} Login
             </h1>
           </div>
-
           <div className="mt-5">
             <form>
-              <div className="grid gap-y-6">
+              <div className="grid gap-y-4">
                 <div>
-                  <div className="mt-2">
-                    <Input type="text" disabled placeholder={'What is your name of first pet?'} className="flex-1 placeholder:text-black placeholder:font-semibold" />
-                  </div>
+                  <Label>Email</Label>
+                  <Input className="mt-2" type="email" />
                 </div>
+
                 <div>
-                  <Input type="text" placeholder={'Security Answer'} />
+                  <Label>Password</Label>
+                  <Input className="mt-2" type="password" />
                 </div>
+
                 <Button
                   type="submit"
-                  onClick={() => setMfaType('caesarCipher')}
+                  onClick={() => setMfaType('securityQuestion')}
                 >
-                  Submit Answer
+                  Login
                 </Button>
               </div>
             </form>
+            <p className="mt-3 text-sm">
+              {`Don't have an account?`}{' '}
+              <Link className="underline" href={`/${role}/register`}>
+                Register
+              </Link>
+            </p>
           </div>
         </div>
       </div>
@@ -49,4 +49,4 @@ const SecurityQuestion = () => {
   );
 };
 
-export default SecurityQuestion;
+export default Credentials;

@@ -1,9 +1,17 @@
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useLoginForm } from '@/hooks/use-login-form';
 
-const Credentials = () => {
+const SecurityQuestion = () => {
   const { setMfaType } = useLoginForm();
   return (
     <div className="w-full max-w-md mx-auto p-6">
@@ -11,28 +19,31 @@ const Credentials = () => {
         <div className="p-4 sm:p-7">
           <div className="text-center">
             <h1 className="block text-2xl font-bold text-gray-800 dark:text-white">
-              Login
+              Security Question
             </h1>
           </div>
+
           <div className="mt-5">
             <form>
-              <div className="grid gap-y-4">
+              <div className="grid gap-y-6">
                 <div>
-                  <Label>Email</Label>
-                  <Input className="mt-2" type="email" />
+                  <div className="mt-2">
+                    <Input
+                      type="text"
+                      disabled
+                      placeholder={'What is your name of first pet?'}
+                      className="flex-1 placeholder:text-black placeholder:font-semibold"
+                    />
+                  </div>
                 </div>
-
                 <div>
-                  <Label>Password</Label>
-                  <Input className="mt-2" type="password" />
+                  <Input type="text" placeholder={'Security Answer'} />
                 </div>
-
                 <Button
                   type="submit"
-                  onClick={() => setMfaType('securityQuestion')}
+                  onClick={() => setMfaType('caesarCipher')}
                 >
-                  Login ▶️
-
+                  Submit Answer
                 </Button>
               </div>
             </form>
@@ -43,4 +54,4 @@ const Credentials = () => {
   );
 };
 
-export default Credentials;
+export default SecurityQuestion;

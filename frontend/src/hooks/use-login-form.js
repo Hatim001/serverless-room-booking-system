@@ -12,9 +12,7 @@ export const LoginFormProvider = ({ children }) => {
   });
 
   return (
-    <LoginFormContext.Provider
-      value={{ user, setUser, mfaType, setMfaType }}
-    >
+    <LoginFormContext.Provider value={{ user, setUser, mfaType, setMfaType }}>
       {children}
     </LoginFormContext.Provider>
   );

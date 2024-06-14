@@ -19,10 +19,17 @@ export default function middleware(
 ) {
   const token = request.cookies.get('auth-token');
 
-  const publicPaths = ['/login', '/register', '/api/auth/*', '/rooms'];
+  const publicPaths = [
+    '/user/login',
+    '/user/register',
+    '/agent/login',
+    '/agent/register',
+    '/api/auth/*',
+    '/rooms',
+  ];
 
   const isPublicPath =
-    publicPaths.some((path) => request.nextUrl.pathname.startsWith(path)) ||
+    publicPaths.some((path) => request?.nextUrl?.pathname?.startsWith(path)) ||
     request.nextUrl.pathname === '/';
 
   if (!isPublicPath && !token) {

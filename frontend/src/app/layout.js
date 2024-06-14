@@ -3,6 +3,7 @@ import '@/styles/global.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/hooks/use-auth';
 import { inter } from './fonts';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata = {
   title: 'Dal Vacation Home',
@@ -21,6 +22,7 @@ export default function RootLayout({ children, params }) {
       >
         <ThemeProvider>
           <AuthProvider>{children}</AuthProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

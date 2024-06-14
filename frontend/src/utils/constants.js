@@ -4,12 +4,12 @@ const GUEST_ROUTES = [
     path: '/rooms',
   },
   {
-    label: 'Login',
-    path: '/login',
+    label: 'Guest Login',
+    path: '/user/login',
   },
   {
-    label: 'Register',
-    path: '/register',
+    label: 'Agent Login',
+    path: '/agent/login',
   },
 ];
 
