@@ -40,6 +40,7 @@ const Credentials = ({ role }) => {
       email: '',
       password: '',
     },
+    mode: 'onChange',
   });
 
   const registerUser = async (values) => {
@@ -51,7 +52,10 @@ const Credentials = ({ role }) => {
     };
     POST('/auth/register/credentials', payload)
       ?.then((res) => {
-        console.log('res', res);
+        toast({
+          title: 'Success',
+          description: res?.data?.message,
+        });
         setMfaType('securityQuestion');
       })
       ?.catch((err) => {

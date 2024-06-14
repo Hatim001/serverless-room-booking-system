@@ -68,8 +68,8 @@ def prepare_user_schema(payload):
         "dob": "",
         "gender": "",
         "mfa_1": {
-            "security_question": "",
-            "security_answer": "",
+            "question": "",
+            "answer": "",
         },
         "mfa_2": {
             "cipher_decryption_key": "",
