@@ -2,9 +2,9 @@
 
 import { useRegisterForm } from '@/hooks/use-register-form';
 import React, { Fragment, useState } from 'react';
-import Credentials from './components/Credentials';
-import SecurityQuestion from './components/SecurityQuestion';
-import CaesarCipher from './components/CaesarCipher';
+import Credentials from '../../components/register/Credentials';
+import SecurityQuestion from '../../components/register/SecurityQuestion';
+import CaesarCipher from '../../components/register/CaesarCipher';
 
 const Register = () => {
   const { mfaType, user } = useRegisterForm();
@@ -12,13 +12,13 @@ const Register = () => {
   const renderForm = () => {
     switch (mfaType) {
       case 'credentials':
-        return <Credentials />;
+        return <Credentials role={'agent'} />;
 
       case 'securityQuestion':
-        return <SecurityQuestion />;
+        return <SecurityQuestion role={'agent'} />;
 
       case 'caesarCipher':
-        return <CaesarCipher />;
+        return <CaesarCipher role={'agent'} />;
 
       default:
         break;

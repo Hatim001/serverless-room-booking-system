@@ -9,10 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useRegisterForm } from '@/hooks/use-register-form';
+import { useLoginForm } from '@/hooks/use-login-form';
 
 const SecurityQuestion = () => {
-  const { setMfaType } = useRegisterForm();
+  const { setMfaType } = useLoginForm();
   return (
     <div className="w-full max-w-md mx-auto p-6">
       <div className="mt-7 border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
@@ -28,21 +28,12 @@ const SecurityQuestion = () => {
               <div className="grid gap-y-6">
                 <div>
                   <div className="mt-2">
-                    <Select className="w-full">
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a question" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Fruits</SelectLabel>
-                          <SelectItem value="apple">Apple</SelectItem>
-                          <SelectItem value="banana">Banana</SelectItem>
-                          <SelectItem value="blueberry">Blueberry</SelectItem>
-                          <SelectItem value="grapes">Grapes</SelectItem>
-                          <SelectItem value="pineapple">Pineapple</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      type="text"
+                      disabled
+                      placeholder={'What is your name of first pet?'}
+                      className="flex-1 placeholder:text-black placeholder:font-semibold"
+                    />
                   </div>
                 </div>
                 <div>
@@ -52,7 +43,7 @@ const SecurityQuestion = () => {
                   type="submit"
                   onClick={() => setMfaType('caesarCipher')}
                 >
-                  Save Answer
+                  Submit Answer
                 </Button>
               </div>
             </form>

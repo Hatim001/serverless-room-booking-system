@@ -18,13 +18,23 @@ export const AuthProvider = ({ children }) => {
     return setSession(defaultSession);
   };
 
-  const isAuthenticated = () => {
-    return !isEmpty(session);
+  const isAuthenticatedUser = () => {
+    return session?.user?.role === 'user';
+  };
+
+  const isAuthenticatedAgent = () => {
+    return session?.user?.role === 'agent';
   };
 
   return (
     <AuthContext.Provider
-      value={{ session, setSession, prepareSession, isAuthenticated }}
+      value={{
+        session,
+        setSession,
+        prepareSession,
+        isAuthenticatedUser,
+        isAuthenticatedAgent,
+      }}
     >
       {children}
     </AuthContext.Provider>
