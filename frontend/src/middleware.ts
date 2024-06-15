@@ -22,6 +22,7 @@ export default function middleware(
   const publicPaths = [
     '/user/login',
     '/user/register',
+    '/user/register/verify',
     '/agent/login',
     '/agent/register',
     '/api/auth/*',
