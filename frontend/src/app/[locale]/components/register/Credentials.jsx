@@ -29,11 +29,7 @@ const formSchema = z.object({
     .regex(/[\W_]/, 'Password must contain at least one special character'),
 });
 
-const Credentials = ({ role }) => {
-  const { toast } = useToast();
-  const { setMfaType } = useRegisterForm();
-  const [disableForm, setDisableForm] = useState(false);
-
+const Credentials = ({ role, disableForm, onSubmit }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,33 +38,6 @@ const Credentials = ({ role }) => {
     },
     mode: 'onChange',
   });
-
-  const registerUser = async (values) => {
-    setDisableForm(true);
-    const payload = {
-      email: values.email,
-      password: values.password,
-      role,
-    };
-    POST('/auth/register/credentials', payload)
-      ?.then((res) => {
-        toast({
-          title: 'Success',
-          description: res?.data?.message,
-        });
-        setMfaType('securityQuestion');
-      })
-      ?.catch((err) => {
-        toast({
-          title: 'Error',
-          description: err?.response?.data?.message,
-          variant: 'destructive',
-        });
-      })
-      ?.finally(() => {
-        setDisableForm(false);
-      });
-  };
 
   return (
     <div className="w-full max-w-md mx-auto p-6">
@@ -81,7 +50,7 @@ const Credentials = ({ role }) => {
           </div>
           <div className="mt-5">
             <Form {...form}>
-              <form onSubmit={form?.handleSubmit(registerUser)}>
+              <form onSubmit={form?.handleSubmit(onSubmit)}>
                 <div className="grid gap-y-4">
                   <FormField
                     control={form?.control}

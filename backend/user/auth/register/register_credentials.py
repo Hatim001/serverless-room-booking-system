@@ -1,3 +1,5 @@
+import os
+import traceback
 import re
 import json
 import uuid
@@ -6,8 +8,10 @@ import random
 from constants import adjectives, nouns
 
 dynamodb = boto3.resource("dynamodb")
-table_name = "dvh-user"
+table_name = os.getenv("DYNAMODB_TABLE_NAME")
 table = dynamodb.Table(table_name)
+cognito_client_id = os.getenv("COGNITO_CLIENT_ID")
+cognito_user_pool_id = os.getenv("COGNITO_USER_POOL_ID")
 
 
 def validate_event(payload):
@@ -63,6 +67,7 @@ def prepare_user_schema(payload):
         "email": payload.get("email"),
         "password": payload.get("password"),
         "role": payload.get("role"),
+        "cognito_user_id": payload.get("cognito_user_id"),
         "is_verified": False,
         "name": generate_random_name(),
         "dob": "",
@@ -84,6 +89,30 @@ def store_record_in_dynamodb(data):
     return record
 
 
+def prepare_response(status, message, **kwargs):
+    """prepares the response"""
+    response = {
+        "statusCode": status,
+        "body": json.dumps({"message": message, **kwargs}),
+        "headers": {
+            "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Origin": "*",
+        },
+    }
+    return response
+
+
+def register_user_to_cognito(payload):
+    """registers the user to cognito"""
+    client = boto3.client("cognito-idp")
+    response = client.sign_up(
+        ClientId=cognito_client_id,
+        Username=payload.get("email"),
+        Password=payload.get("password"),
+    )
+    return response
+
+
 def lambda_handler(event, context):
     payload = json.loads(event.get("body"))
     try:
@@ -91,26 +120,12 @@ def lambda_handler(event, context):
         email = payload.get("email")
         check_email_exists(email)
         user_payload = prepare_user_schema(payload)
+        cognito_response = register_user_to_cognito(payload)
+        user_payload.update({"cognito_user_id": cognito_response.get("UserSub")})
         record = store_record_in_dynamodb(user_payload)
-        return {
-            "statusCode": 200,
-            "body": json.dumps(
-                {
-                    "message": "User registered successfully",
-                    "record": record,
-                }
-            ),
-            "headers": {
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }
+        return prepare_response(
+            status=200, message="User registered successfully", record=record
+        )
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps({"message": str(e)}),
-            "headers": {
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Origin": "*",
-            },
-        }
+        traceback.print_exc()
+        return prepare_response(status=500, message=str(e))
