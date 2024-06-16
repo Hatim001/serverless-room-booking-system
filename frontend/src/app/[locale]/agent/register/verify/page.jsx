@@ -24,7 +24,7 @@ const Index = () => {
           title: 'Success',
           description: res?.data?.message,
         });
-        router.push('/user/login');
+        router.push('/agent/login');
       })
       .catch((err) => {
         toast({

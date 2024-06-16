@@ -6,23 +6,19 @@ import uuid
 import boto3
 import random
 from constants import adjectives, nouns
+from boto3.dynamodb.conditions import Attr
 
 dynamodb = boto3.resource("dynamodb")
 table_name = os.getenv("DYNAMODB_TABLE_NAME")
 table = dynamodb.Table(table_name)
 cognito_client_id = os.getenv("COGNITO_CLIENT_ID")
-cognito_user_pool_id = os.getenv("COGNITO_USER_POOL_ID")
+cognito_client = boto3.client("cognito-idp")
 
 
-def validate_event(payload):
-    """validates if the payload consist of the keys required by lambda"""
-    required_keys = ["email", "password", "role"]
-    for key in required_keys:
-        if key not in payload or not payload.get(key):
-            raise Exception(f"{key} not present in payload!!")
+class VerifyUserException(Exception):
+    """User not verified exception"""
 
-    validate_password(payload.get("password"))
-    validate_role(payload.get("role"))
+    pass
 
 
 def validate_role(role):
@@ -45,11 +41,29 @@ def validate_password(password):
         raise Exception("Password must have at least one special character")
 
 
-def check_email_exists(email):
+def validate_event(payload):
+    """validates if the payload consist of the keys required by lambda"""
+    required_keys = ["email", "password", "role"]
+    for key in required_keys:
+        if key not in payload or not payload.get(key):
+            raise Exception(f"{key} not present in payload!!")
+
+    validate_password(payload.get("password"))
+    validate_role(payload.get("role"))
+
+
+def check_user_exists(email, password):
     """validates if email already exists in system"""
-    response = table.get_item(Key={"email": email})
-    if "Item" in response:
-        raise Exception("Email already exists in system")
+    response = table.scan(
+        FilterExpression=Attr("email").eq(email) & Attr("password").eq(password)
+    )
+    if response.get("Count") > 0:
+        user = response.get("Items")[0]
+        is_verified = user.get("is_verified")
+        if is_verified:
+            raise Exception("User already exists!!")
+        else:
+            raise VerifyUserException("User exists but not verified!!")
 
 
 def generate_random_name():
@@ -82,11 +96,26 @@ def prepare_user_schema(payload):
     }
 
 
+def register_user_to_cognito(payload):
+    """registers the user to cognito"""
+    response = cognito_client.sign_up(
+        ClientId=cognito_client_id,
+        Username=payload.get("email"),
+        Password=payload.get("password"),
+    )
+    return response
+
+
 def store_record_in_dynamodb(data):
     """stores the user record in dynamodb"""
     _id = uuid.uuid4().hex
     record = table.put_item(Item={"id": _id, **data}, ReturnValues="ALL_OLD")
     return record
+
+
+def send_user_verification_code(email):
+    """sends the verification code"""
+    cognito_client.resend_confirmation_code(ClientId=cognito_client_id, Username=email)
 
 
 def prepare_response(status, message, **kwargs):
@@ -102,29 +131,26 @@ def prepare_response(status, message, **kwargs):
     return response
 
 
-def register_user_to_cognito(payload):
-    """registers the user to cognito"""
-    client = boto3.client("cognito-idp")
-    response = client.sign_up(
-        ClientId=cognito_client_id,
-        Username=payload.get("email"),
-        Password=payload.get("password"),
-    )
-    return response
-
-
 def lambda_handler(event, context):
     payload = json.loads(event.get("body"))
     try:
         validate_event(payload)
         email = payload.get("email")
-        check_email_exists(email)
+        password = payload.get("password")
+        check_user_exists(email, password)
         user_payload = prepare_user_schema(payload)
         cognito_response = register_user_to_cognito(payload)
         user_payload.update({"cognito_user_id": cognito_response.get("UserSub")})
         record = store_record_in_dynamodb(user_payload)
         return prepare_response(
             status=200, message="User registered successfully", record=record
+        )
+    except VerifyUserException:
+        send_user_verification_code(email)
+        return prepare_response(
+            status=200,
+            message="User Already Registered, please do the verification!!",
+            redirect_to_verification=True,
         )
     except Exception as e:
         traceback.print_exc()

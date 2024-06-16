@@ -5,6 +5,7 @@ const instance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
   timeout: 30000,
 });
 
@@ -26,12 +27,4 @@ instance.interceptors.response.use(
   },
 );
 
-const GET = (url, config) => instance.get(url, config);
-
-const POST = (url, data, config) => instance.post(url, data, config);
-
-const PUT = (url, data, config) => instance.put(url, data, config);
-
-const DELETE = (url, config) => instance.delete(url, config);
-
-export { instance as axios, GET, POST, PUT, DELETE };
+export { instance as axios };

@@ -120,7 +120,9 @@ def lambda_handler(event, context):
             )
 
         else:
-            return prepare_response(status=400, message="Third Factor Authentication Failed!!")
+            return prepare_response(
+                status=400, message="Third Factor Authentication Failed!!"
+            )
     except Exception as e:
         traceback.print_exc()
         return prepare_response(status=500, message=str(e))

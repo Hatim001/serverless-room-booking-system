@@ -7,20 +7,18 @@ import React, { useEffect, useState } from 'react';
 
 const PublicLayout = ({ children, params }) => {
   const [routes, setRoutes] = useState(GUEST_ROUTES);
-  const { session, prepareSession, isAuthenticated } = useAuth();
+  const { session, prepareSession } = useAuth();
 
   useEffect(() => {
-    if (!session) {
-      prepareSession();
-    }
-  }, [prepareSession, session]);
+    prepareSession();
+  }, []);
 
   useEffect(() => {
     prepareRoutes();
   }, [session]);
 
   const prepareRoutes = () => {
-    let role = session?.user?.role;
+    let role = session?.role;
     if (role === 'guest') {
       setRoutes(GUEST_ROUTES);
     } else if (role === 'user') {

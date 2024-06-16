@@ -41,7 +41,9 @@ def lambda_handler(event, context):
         validate_payload(payload)
         email = payload.get("email")
         resend_code(email)
-        return prepare_response(status=200, message="Verification code resent successfully!!")
+        return prepare_response(
+            status=200, message="Verification code resent successfully!!"
+        )
     except Exception as e:
         traceback.print_exc()
         return prepare_response(status=500, message=str(e))

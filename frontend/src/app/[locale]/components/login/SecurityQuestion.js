@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import { useLoginForm } from '@/hooks/use-login-form';
 
-const SecurityQuestion = () => {
+const SecurityQuestion = ({ onSubmit }) => {
   const { setMfaType } = useLoginForm();
   return (
     <div className="w-full max-w-md mx-auto p-6">
@@ -24,7 +24,7 @@ const SecurityQuestion = () => {
           </div>
 
           <div className="mt-5">
-            <form>
+            <form onSubmit={onSubmit}>
               <div className="grid gap-y-6">
                 <div>
                   <div className="mt-2">
@@ -39,12 +39,7 @@ const SecurityQuestion = () => {
                 <div>
                   <Input type="text" placeholder={'Security Answer'} />
                 </div>
-                <Button
-                  type="submit"
-                  onClick={() => setMfaType('caesarCipher')}
-                >
-                  Submit Answer
-                </Button>
+                <Button type="submit">Submit Answer</Button>
               </div>
             </form>
           </div>

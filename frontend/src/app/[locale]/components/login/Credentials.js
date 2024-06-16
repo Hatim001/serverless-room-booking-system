@@ -1,11 +1,41 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useLoginForm } from '@/hooks/use-login-form';
+import { z } from 'zod';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-const Credentials = ({ role }) => {
-  const { setMfaType } = useLoginForm();
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { PasswordInput } from '@/components/ui/password-input';
+
+const formSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters long')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[\W_]/, 'Password must contain at least one special character'),
+});
+
+const Credentials = ({ role, disableForm, onSubmit }) => {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+    mode: 'onChange',
+  });
+
   return (
     <div className="w-full max-w-md mx-auto p-6">
       <div className="mt-7 border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
@@ -16,26 +46,50 @@ const Credentials = ({ role }) => {
             </h1>
           </div>
           <div className="mt-5">
-            <form>
-              <div className="grid gap-y-4">
-                <div>
-                  <Label>Email</Label>
-                  <Input className="mt-2" type="email" />
-                </div>
+            <Form {...form}>
+              <form onSubmit={form?.handleSubmit(onSubmit)}>
+                <div className="grid gap-y-4">
+                  <FormField
+                    control={form?.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="mt-2"
+                            placeholder="Enter email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <div>
-                  <Label>Password</Label>
-                  <Input className="mt-2" type="password" />
+                  <FormField
+                    control={form?.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <PasswordInput
+                            className="mt-2"
+                            placeholder="Enter password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={disableForm}>
+                    Login
+                  </Button>
                 </div>
-
-                <Button
-                  type="submit"
-                  onClick={() => setMfaType('securityQuestion')}
-                >
-                  Login
-                </Button>
-              </div>
-            </form>
+              </form>
+            </Form>
             <p className="mt-3 text-sm">
               {`Don't have an account?`}{' '}
               <Link className="underline" href={`/${role}/register`}>

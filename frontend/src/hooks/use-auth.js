@@ -1,6 +1,6 @@
 'use client';
 
-import { isEmpty } from '@/utils/Helpers';
+import { GET } from '@/lib/axios';
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
@@ -8,22 +8,29 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
 
-  const prepareSession = () => {
-    console.log('session api called');
-    let defaultSession = {
-      user: {
+  const prepareSession = async () => {
+    try {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
+      return setSession(data);
+    } catch (err) {
+      return setSession({
+        user: {},
         role: 'guest',
-      },
-    };
-    return setSession(defaultSession);
+      });
+    }
+  };
+
+  const refreshSession = () => {
+    prepareSession();
   };
 
   const isAuthenticatedUser = () => {
-    return session?.user?.role === 'user';
+    return session?.role === 'user';
   };
 
   const isAuthenticatedAgent = () => {
-    return session?.user?.role === 'agent';
+    return session?.role === 'agent';
   };
 
   return (
@@ -32,6 +39,7 @@ export const AuthProvider = ({ children }) => {
         session,
         setSession,
         prepareSession,
+        refreshSession,
         isAuthenticatedUser,
         isAuthenticatedAgent,
       }}

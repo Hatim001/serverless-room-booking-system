@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/form';
 import { z } from 'zod';
 import { SECURITY_QUESTIONS } from '@/utils/constants';
+import { useAuth } from '@/hooks/use-auth';
 
 const formSchema = z.object({
   question: z.enum(
@@ -33,8 +34,7 @@ const formSchema = z.object({
   answer: z.string().min(2, 'Answer should be at least 2 characters long'),
 });
 
-const SecurityQuestion = () => {
-  const { setMfaType } = useRegisterForm();
+const SecurityQuestion = ({ onSubmit }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,10 +44,6 @@ const SecurityQuestion = () => {
     mode: 'onChange',
   });
 
-  const saveAnswer = (values) => {
-    console.log('Submitted values:', values);
-    setMfaType('caesarCipher');
-  };
   return (
     <div className="w-full max-w-md mx-auto p-6">
       <div className="mt-7 border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
@@ -60,7 +56,7 @@ const SecurityQuestion = () => {
 
           <div className="mt-5">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(saveAnswer)}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="grid gap-y-6">
                   <FormField
                     control={form.control}

@@ -2,7 +2,6 @@ import json
 import os
 import boto3
 from boto3.dynamodb.conditions import Key
-import time
 
 dynamodb = boto3.resource("dynamodb")
 user_table = dynamodb.Table("dvh-user")
@@ -19,9 +18,9 @@ def validate_event(payload):
             raise Exception(f"{key} not present in payload!!")
 
 
-def check_mfa_status(email):
-    """Validates if MFA1 and MFA2 are passed by the user or not"""
-    response = session_table.get_item(Key={"email": email})
+def check_email_exists(email):
+    """validates if email already exists in system"""
+    response = user_table.get_item(Key={"email": email})
     if "Item" not in response:
         raise Exception("Session does not exist")
     item = response["Item"]
@@ -34,6 +33,24 @@ def check_mfa_status(email):
             UpdateExpression="SET mfa_3 = :val",
             ExpressionAttributeValues={":val": True},
         )
+    return True
+
+
+def check_mfa_status(email):
+    """Validates if MFA1 and MFA2 are passed by the user or not"""
+    response = session_table.get_item(Key={"email": email})
+    if "Item" not in response:
+        raise Exception("Session does not exist")
+    item = response["Item"]
+    # if not (item.get("mfa_1") and item.get("mfa_2")):
+    #     return False
+    # else:
+    # Set mfa_3 as true
+    session_table.update_item(
+        Key={"email": email},
+        UpdateExpression="SET mfa_3 = :val",
+        ExpressionAttributeValues={":val": True},
+    )
     return True
 
 
@@ -105,7 +122,7 @@ def update_session_with_token(email, token, expiry_time):
         Key={"email": email},
         UpdateExpression="SET #tk = :token, expiry_time = :expiry_time",
         ExpressionAttributeNames={"#tk": "token"},
-        ExpressionAttributeValues={":token": token, ":expiry_time": int(time.time() + expiry_time)},
+        ExpressionAttributeValues={":token": token, ":expiry_time": expiry_time},
     )
 
 
