@@ -1,13 +1,11 @@
+import { handleSuccess } from '@/lib/response';
 import { getSession } from '@/lib/session';
-import { cookies } from 'next/headers';
 
-export const GET = async (req) => {
-  const session = await getSession();
-
-  return Response.json(session, {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+export const GET = async (request) => {
+  try {
+    const session = await getSession();
+    return handleSuccess({ session });
+  } catch (error) {
+    return handleError({ message: 'Error occurred in session' });
+  }
 };

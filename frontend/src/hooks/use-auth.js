@@ -1,6 +1,5 @@
 'use client';
 
-import { GET } from '@/lib/axios';
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
@@ -12,13 +11,20 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await fetch('/api/auth/session');
       const data = await res.json();
-      return setSession(data);
+      return setSession(data?.session);
     } catch (err) {
       return setSession({
         user: {},
         role: 'guest',
       });
     }
+  };
+
+  const logout = async () => {
+    await fetch('/api/auth/logout', {
+      method: 'DELETE',
+    });
+    await prepareSession();
   };
 
   const refreshSession = () => {
@@ -36,6 +42,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
+        logout,
         session,
         setSession,
         prepareSession,

@@ -6,51 +6,75 @@ import {
 
 import { getSession } from './lib/session';
 
-import createMiddleware from 'next-intl/middleware';
+const PUBLIC_PATHS = [
+  '/user/login',
+  '/user/register',
+  '/user/register/verify',
+  '/agent/login',
+  '/agent/register',
+  '/agent/register/verify',
+  '/rooms',
+  '/user/login/mfa-verify',
+  '/user/register/mfa-setup',
+  '/agent/login/mfa-verify',
+  '/agent/register/mfa-setup',
+];
 
-import { AppConfig } from '@/utils/AppConfig';
+const isPublicPath = (pathname: string) => {
+  return (
+    PUBLIC_PATHS.some((path) => pathname.startsWith(path)) || pathname === '/'
+  );
+};
 
-const intlMiddleware = createMiddleware({
-  locales: AppConfig.locales,
-  localePrefix: AppConfig.localePrefix as any,
-  defaultLocale: AppConfig.defaultLocale,
-});
+const redirectToRooms = (request: NextRequest) => {
+  const url = request.nextUrl.clone();
+  url.pathname = '/rooms';
+  return NextResponse.redirect(url);
+};
+
+const redirectToMfaSetup = (request: NextRequest, role: string, user: any) => {
+  const url = request.nextUrl.clone();
+  url.pathname = `/${role}/register/mfa-setup`;
+  url.searchParams.set('email', user.email);
+  return NextResponse.redirect(url);
+};
+
+const redirectToMfaVerify = (request: NextRequest, role: string) => {
+  const url = request.nextUrl.clone();
+  url.pathname = `/${role}/login/mfa-verify`;
+  return NextResponse.redirect(url);
+};
 
 export default async function middleware(
   request: NextRequest,
   event: NextFetchEvent,
 ) {
-  const { user, role, mfa1, mfa2 } = await getSession();
+  // const session: any = await getSession();
+  // const { user = {}, role = '', mfa_1 = {}, mfa_2 = {} } = session || {};
+  // const isAuthenticated = user && (role === 'agent' || role === 'user');
 
-  const publicPaths = [
-    '/user/login',
-    '/user/register',
-    '/user/register/verify',
-    '/agent/login',
-    '/agent/register',
-    '/agent/register/verify',
-    '/rooms',
-  ];
+  // // If the user is authenticated
+  // if (isAuthenticated) {
+  //   // Redirect to /rooms if accessing a public path
+  //   if (isPublicPath(request.nextUrl.pathname)) {
+  //     return redirectToRooms(request);
+  //   }
 
-  const isPublicPath =
-    publicPaths.some((path) => request.nextUrl.pathname.startsWith(path)) ||
-    request.nextUrl.pathname === '/';
+  //   // Handle MFA configuration and verification
+  //   if (!mfa_1.configured || !mfa_2.configured) {
+  //     return redirectToMfaSetup(request, role, user);
+  //   } else if (!mfa_1.verified || !mfa_2.verified) {
+  //     return redirectToMfaVerify(request, role);
+  //   }
+  // } else {
+  //   // If the user is not authenticated, check if accessing a public path
+  //   if (!isPublicPath(request.nextUrl.pathname)) {
+  //     return NextResponse.redirect('/');
+  //   }
+  // }
 
-  if (!isPublicPath) {
-    if (['user', 'agent'].includes(role)) {
-      const url = request.nextUrl.clone();
-      if (!mfa1.configured || !mfa2.configured) {
-        console.log('triggered');
-        url.pathname = `/${role}/register/mfa-setup?email=${user?.email}`;
-      } else if (!mfa1.verified || !mfa2.verified) {
-        url.pathname = `/${role}/login/mfa/verify`;
-      }
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.redirect('/');
-  }
-
-  return intlMiddleware(request);
+  // Let the request continue
+  return NextResponse.next();
 }
 
 export const config = {

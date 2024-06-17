@@ -73,37 +73,41 @@ def send_user_verification_code(email):
     cognito_client.resend_confirmation_code(ClientId=cognito_client_id, Username=email)
 
 
-def check_and_delete_existing_session(dynamodb_user):
+def check_and_delete_existing_session(user):
     """checks and deletes existing session"""
     table = dynamodb.Table("dvh-session")
-    response = table.scan(FilterExpression=Attr("user.id").eq(dynamodb_user.get("id")))
+    response = table.scan(FilterExpression=Attr("user.id").eq(user.get("id")))
     if response.get("Count") > 0:
         table.delete_item(Key={"id": response.get("Items")[0].get("id")})
 
 
-def create_session(dynamodb_user):
+def create_session(user):
     """creates a session"""
-    check_and_delete_existing_session(dynamodb_user)
-    is_verified_user = dynamodb_user.get("is_verified")
+    check_and_delete_existing_session(user)
+    is_verified_user = user.get("is_verified")
     if not is_verified_user:
         return {"user": {}, "role": "guest"}
     _id = uuid.uuid4().hex
     session_schema = {
         "id": _id,
         "user": {
-            "id": dynamodb_user.get("id"),
-            "name": dynamodb_user.get("name"),
-            "email": dynamodb_user.get("email"),
-            "is_verified": dynamodb_user.get("is_verified"),
-            "mfa_1": {
-                "question": dynamodb_user.get("mfa_1").get("question"),
-            },
+            "id": user.get("id"),
+            "name": user.get("name"),
+            "email": user.get("email"),
+            "is_verified": user.get("is_verified"),
         },
-        "role": dynamodb_user.get("role"),
+        "role": user.get("role"),
         "token": "",
-        "mfa_1": False,
-        "mfa_2": False,
-        "ttl": int(time.time()) + 600,
+        "mfa_1": {
+            "question": user.get("mfa_1").get("question"),
+            "configured": user.get("mfa_1").get("configured"),
+            "verified": False,
+        },
+        "mfa_2": {
+            "configured": user.get("mfa_2").get("configured"),
+            "verified": False,
+        },
+        "expiry_time": int(time.time()) + 600,
     }
     table = dynamodb.Table("dvh-session")
     table.put_item(Item=session_schema)

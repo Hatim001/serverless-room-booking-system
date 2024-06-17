@@ -15,14 +15,15 @@ export const POST = async (request) => {
     let session = data?.session;
     if (data?.redirect_to_verification) {
       session = defaultSession;
-      redirectUrl = `/${role}/register/verify?email=` + email``;
-    } else if (!data?.isMFAConfigured) {
+      redirectUrl = `/${role}/register/verify?email=${email}`;
+    } else if (!session?.mfa_1?.configured || !session?.mfa_2?.configured) {
+      session = defaultSession;
       redirectUrl = `/${role}/register/mfa-setup?email=${email}`;
     } else {
       redirectUrl = `/${role}/login/mfa-verify`;
     }
 
-    createSession(session);
+    await createSession(session);
     return new Response(
       JSON.stringify({
         message: data?.message,

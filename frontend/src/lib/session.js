@@ -25,21 +25,26 @@ const encryptSession = async (session) => {
 };
 
 const decryptSession = async (token) => {
-  const { session } = await jwtVerify(token, key, {
+  const { payload } = await jwtVerify(token, key, {
     algorithms: ['HS256'],
   });
-  return session;
+  return payload;
 };
 
 const createSession = async (session) => {
   const token = await encryptSession(session);
-  cookies().set({
+  const payload = {
     name: JWT_COOKIE_NAME,
     value: token,
     httpOnly: true,
-    // secure: true,
+    secure: true,
     sameSite: 'strict',
-  });
+  };
+  cookies().set(payload);
 };
 
-export { getSession, createSession };
+const removeSession = () => {
+  cookies().delete(JWT_COOKIE_NAME);
+};
+
+export { getSession, createSession, removeSession };
