@@ -1,6 +1,5 @@
 'use client';
 
-import { isEmpty } from '@/utils/Helpers';
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
@@ -8,30 +7,46 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(null);
 
-  const prepareSession = () => {
-    console.log('session api called');
-    let defaultSession = {
-      user: {
+  const prepareSession = async () => {
+    try {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
+      return setSession(data?.session);
+    } catch (err) {
+      return setSession({
+        user: {},
         role: 'guest',
-      },
-    };
-    return setSession(defaultSession);
+      });
+    }
+  };
+
+  const logout = async () => {
+    await fetch('/api/auth/logout', {
+      method: 'DELETE',
+    });
+    await prepareSession();
+  };
+
+  const refreshSession = () => {
+    prepareSession();
   };
 
   const isAuthenticatedUser = () => {
-    return session?.user?.role === 'user';
+    return session?.role === 'user';
   };
 
   const isAuthenticatedAgent = () => {
-    return session?.user?.role === 'agent';
+    return session?.role === 'agent';
   };
 
   return (
     <AuthContext.Provider
       value={{
+        logout,
         session,
         setSession,
         prepareSession,
+        refreshSession,
         isAuthenticatedUser,
         isAuthenticatedAgent,
       }}
