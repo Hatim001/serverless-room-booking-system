@@ -5,6 +5,7 @@ import {
 } from 'next/server';
 
 import { getSession } from './lib/session';
+import { isEmpty } from './utils/Helpers';
 
 const PUBLIC_PATHS = [
   '/user/login',
@@ -18,6 +19,13 @@ const PUBLIC_PATHS = [
   '/user/register/mfa-setup',
   '/agent/login/mfa-verify',
   '/agent/register/mfa-setup',
+];
+
+const LOGIN_SIGNUP_PATHS = [
+  '/user/login',
+  '/user/register',
+  '/agent/login',
+  '/agent/register',
 ];
 
 const isPublicPath = (pathname: string) => {
@@ -49,9 +57,17 @@ export default async function middleware(
   request: NextRequest,
   event: NextFetchEvent,
 ) {
-  // const session: any = await getSession();
-  // const { user = {}, role = '', mfa_1 = {}, mfa_2 = {} } = session || {};
-  // const isAuthenticated = user && (role === 'agent' || role === 'user');
+  const session: any = await getSession();
+  const { user = {}, role = '', mfa_1 = {}, mfa_2 = {} } = session || {};
+  const isAuthenticated =
+    !isEmpty(user) && (role === 'agent' || role === 'user');
+
+  if (
+    isAuthenticated &&
+    LOGIN_SIGNUP_PATHS.includes(request.nextUrl.pathname)
+  ) {
+    return redirectToRooms(request);
+  }
 
   // // If the user is authenticated
   // if (isAuthenticated) {

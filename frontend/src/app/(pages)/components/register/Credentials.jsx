@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { PasswordInput } from '@/components/ui/password-input';
-import { POST } from '@/lib/axios';
 import Link from 'next/link';
 
 const formSchema = z.object({

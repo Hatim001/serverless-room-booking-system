@@ -118,14 +118,16 @@ def send_user_verification_code(email):
     cognito_client.resend_confirmation_code(ClientId=cognito_client_id, Username=email)
 
 
-def prepare_response(status, message, **kwargs):
+def prepare_response(status, message, headers={}, **kwargs):
     """prepares the response"""
     response = {
         "statusCode": status,
         "body": json.dumps({"message": message, **kwargs}),
         "headers": {
+            "Access-Control-Allow-Credentials": "true",
             "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Origin": "http://localhost:3000",
+            **headers,
         },
     }
     return response
@@ -141,9 +143,11 @@ def lambda_handler(event, context):
         user_payload = prepare_user_schema(payload)
         cognito_response = register_user_to_cognito(payload)
         user_payload.update({"cognito_user_id": cognito_response.get("UserSub")})
-        record = store_record_in_dynamodb(user_payload)
+        store_record_in_dynamodb(user_payload)
         return prepare_response(
-            status=200, message="User registered successfully", record=record
+            status=200,
+            message="User registered successfully",
+            redirect_to_verification=True,
         )
     except VerifyUserException:
         send_user_verification_code(email)

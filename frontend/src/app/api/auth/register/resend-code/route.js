@@ -4,10 +4,7 @@ import { handleError, handleSuccess } from '@/lib/response';
 export const POST = async (request) => {
   try {
     const payload = await request.json();
-    const response = await axios.post(
-      '/auth/register/mfa/caesar-cipher',
-      payload,
-    );
+    const response = await axios.post('/auth/register/resend-code', payload);
     return handleSuccess({ ...response?.data });
   } catch (error) {
     return handleError({ ...error?.response?.data });

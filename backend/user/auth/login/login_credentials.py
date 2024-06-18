@@ -5,6 +5,7 @@ import uuid
 import boto3
 import traceback
 from boto3.dynamodb.conditions import Attr
+from datetime import datetime, timedelta
 
 dynamodb = boto3.resource("dynamodb")
 cognito_client_id = os.getenv("COGNITO_CLIENT_ID")
@@ -107,6 +108,9 @@ def create_session(user):
             "configured": user.get("mfa_2").get("configured"),
             "verified": False,
         },
+        "expiry_date": (datetime.now() + timedelta(minutes=60)).strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
         "expiry_time": int(time.time()) + 600,
     }
     table = dynamodb.Table("dvh-session")

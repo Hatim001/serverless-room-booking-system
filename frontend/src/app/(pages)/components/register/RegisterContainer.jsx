@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { POST } from '@/lib/axios';
+import { axios } from '@/lib/axios';
 import { useToast } from '@/components/ui/use-toast';
 import Credentials from './Credentials';
 
@@ -19,7 +19,8 @@ const RegisterContainer = ({ role }) => {
       password: values.password,
       role: role,
     };
-    POST('/auth/register', payload)
+    axios
+      .post('/auth/register', payload)
       ?.then((res) => {
         toast({
           title: 'Success',

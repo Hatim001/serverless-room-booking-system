@@ -48,13 +48,12 @@ const SecurityQuestion = ({ onSubmit, question, disableForm = false }) => {
 
   const handleFormSubmit = async (values) => {
     const res = await onSubmit(values);
-    const { message } = await res.json();
     if (res?.ok) {
       nextStep();
     } else {
+      const data = await res.json();
       form.setError('formError', {
-        type: 'manual',
-        message: message,
+        message: data?.message,
       });
     }
   };

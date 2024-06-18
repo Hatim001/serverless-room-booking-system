@@ -2,7 +2,6 @@
 
 import React from 'react';
 
-import { POST } from '@/lib/axios';
 import { useToast } from '@/components/ui/use-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
 import VerificationCode from '@/app/(pages)/components/verification-code';
@@ -15,23 +14,29 @@ const Index = () => {
 
   const verifyCode = (values) => {
     setDisableForm(true);
-    POST('/auth/register/verify', {
-      email: searchParams.get('email'),
-      code: values.code,
+    fetch('/api/auth/register/verify', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: searchParams.get('email'),
+        code: values.code,
+      }),
     })
       .then((res) => {
-        toast({
-          title: 'Success',
-          description: res?.data?.message,
-        });
-        router.push('/user/login');
-      })
-      .catch((err) => {
-        toast({
-          title: 'Error',
-          description: err?.response?.data?.message,
-          variant: 'destructive',
-        });
+        const data = res.json();
+        console.log('Res', res);
+        if (res?.ok) {
+          toast({
+            title: 'Success',
+            description: data?.message,
+          });
+          router.push('/user/login');
+        } else {
+          toast({
+            title: 'Error',
+            description: data?.message,
+            variant: 'destructive',
+          });
+        }
       })
       .finally(() => {
         setDisableForm(false);
@@ -40,21 +45,26 @@ const Index = () => {
 
   const resendCode = () => {
     setDisableForm(true);
-    POST('/auth/register/resend-code', {
-      email: searchParams.get('email'),
+    fetch('/api/auth/register/resend-code', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: searchParams.get('email'),
+      }),
     })
       .then((res) => {
-        toast({
-          title: 'Success',
-          description: res?.data?.message,
-        });
-      })
-      .catch((err) => {
-        toast({
-          title: 'Error',
-          description: err?.response?.data?.message,
-          variant: 'destructive',
-        });
+        const data = res.json();
+        if (res?.ok) {
+          toast({
+            title: 'Success',
+            description: data?.message,
+          });
+        } else {
+          toast({
+            title: 'Error',
+            description: err?.message,
+            variant: 'destructive',
+          });
+        }
       })
       .finally(() => {
         setDisableForm(false);

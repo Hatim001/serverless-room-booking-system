@@ -24,9 +24,9 @@ def validate_payload(payload):
 def validate_cipher_key(cipher_key):
     """Validates the cipher key value"""
     cipher_key_int = int(cipher_key)
-    if cipher_key_int <= 1:
+    if cipher_key_int < 1:
         raise Exception("Please enter cipher key value greater than 1")
-    if cipher_key_int >= 25:
+    if cipher_key_int > 25:
         raise Exception("Please enter cipher key value less than 25")
 
 

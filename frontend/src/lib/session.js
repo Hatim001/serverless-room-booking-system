@@ -39,6 +39,7 @@ const createSession = async (session) => {
     httpOnly: true,
     secure: true,
     sameSite: 'strict',
+    maxAge: 3580,
   };
   cookies().set(payload);
 };

@@ -17,23 +17,23 @@ import {
 import { words } from '@/utils/caeser-words';
 
 const formSchema = z.object({
-  word: z.string(),
-  encryptedWord: z.string(),
+  plainText: z.string(),
+  cipherText: z.string(),
 });
 
 const CaesarCipher = ({ onSubmit, disableForm = false }) => {
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      word: generateRandomWord(),
-      encryptedWord: '',
-    },
-    mode: 'onChange',
-  });
-
   const generateRandomWord = () => {
     return words[Math.floor(Math.random() * words.length)];
   };
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      plainText: generateRandomWord(),
+      cipherText: '',
+    },
+    mode: 'onChange',
+  });
 
   return (
     <div className="w-full max-w-md mx-auto p-6">
@@ -51,10 +51,10 @@ const CaesarCipher = ({ onSubmit, disableForm = false }) => {
                 <div className="grid gap-y-6">
                   <FormField
                     control={form.control}
-                    name="word"
+                    name="plainText"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Word</FormLabel>
+                        <FormLabel>Plain Text</FormLabel>
                         <FormControl>
                           <Input
                             className="mt-2"
@@ -69,10 +69,10 @@ const CaesarCipher = ({ onSubmit, disableForm = false }) => {
                   />
                   <FormField
                     control={form.control}
-                    name="encryptedWord"
+                    name="cipherText"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Encrypted Text</FormLabel>
+                        <FormLabel>Cipher Text</FormLabel>
                         <FormControl>
                           <Input
                             className="mt-2"

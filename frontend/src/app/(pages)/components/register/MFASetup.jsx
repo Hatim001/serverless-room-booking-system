@@ -8,10 +8,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import CaesarCipher from '@/app/(pages)/components/register/CaesarCipher';
 import SecurityQuestion from '@/app/(pages)/components/register/SecurityQuestion';
 import { Loading } from '@/components/ui/loading';
+import { useToast } from '@/components/ui/use-toast';
 
 const MFASetup = ({ role }) => {
   const searchParams = useSearchParams();
-  const { session } = useAuth();
+  const { toast } = useToast();
   const router = useRouter();
   const [initialStep, setInitialStep] = useState(null);
   const [disableForm, setDisableForm] = useState(false);
@@ -66,10 +67,16 @@ const MFASetup = ({ role }) => {
       body: JSON.stringify(payload),
     })
       .then((res) => {
-        router.push(`/${role}/login`);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
+        const data = res.json();
+        if (res.ok) {
+          router.push(`/${role}/login`);
+        } else {
+          toast({
+            title: 'Error',
+            description: data?.message,
+            variant: 'destructive',
+          });
+        }
       })
       .finally(() => {
         setDisableForm(false);
