@@ -1,10 +1,11 @@
 import { axios } from '@/lib/axios';
+import { handleError, handleSuccess } from '@/lib/response';
 import { createSession } from '@/lib/session';
 
 export const POST = async (request) => {
   try {
     const payload = await request.json();
-    const { email, password, role } = payload;
+    const { email, role } = payload;
     const res = await axios.post('/auth/login', payload);
     const data = res?.data;
     let defaultSession = {
@@ -24,29 +25,8 @@ export const POST = async (request) => {
     }
 
     await createSession(session);
-    return new Response(
-      JSON.stringify({
-        message: data?.message,
-        redirectUrl,
-      }),
-      {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    return handleSuccess({ ...data, redirectUrl });
   } catch (err) {
-    return new Response(
-      JSON.stringify({
-        message: err?.response?.data?.message || 'Internal Server Error',
-      }),
-      {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+    return handleError({ ...err?.response?.data });
   }
 };

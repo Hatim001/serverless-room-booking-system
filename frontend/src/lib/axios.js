@@ -1,4 +1,7 @@
+'use server';
+
 import axios from 'axios';
+import { getSession } from './session';
 
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
@@ -10,7 +13,18 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const session = await getSession();
+    console.log('session', session);
+    const authToken = session?.token;
+    const session_id = session?.id;
+    console.log('session_id', session_id);
+    if (authToken) {
+      config.headers['Authorization'] = `${authToken}`;
+    }
+    if (session_id) {
+      config.headers['session_id'] = session_id;
+    }
     return config;
   },
   (error) => {

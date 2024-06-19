@@ -44,7 +44,7 @@ const createSession = async (session) => {
   cookies().set(payload);
 };
 
-const removeSession = () => {
+const removeSession = async () => {
   cookies().delete(JWT_COOKIE_NAME);
 };
 
