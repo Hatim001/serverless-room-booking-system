@@ -1,7 +1,7 @@
-import { RegisterFormProvider } from '@/hooks/use-register-form';
+import { Fragment } from 'react';
 
 const RegisterFormLayout = ({ children }) => {
-  return <RegisterFormProvider>{children}</RegisterFormProvider>;
+  return <Fragment>{children}</Fragment>;
 };
 
 export default RegisterFormLayout;

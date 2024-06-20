@@ -39,7 +39,7 @@ def prepare_response(status, message, **kwargs):
 def lambda_handler(event, context):
     headers = event.get("headers")
     session_id = headers.get("session-id")
-    token = headers.get("Authorization")
+    token = headers.get("auth-token")
     try:
         remove_session_from_dynamodb(session_id)
         sign_out_user_from_cognito(token)
