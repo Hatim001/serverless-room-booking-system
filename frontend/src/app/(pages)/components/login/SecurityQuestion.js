@@ -1,5 +1,19 @@
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useStepper } from '@/components/stepper';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { SECURITY_QUESTIONS } from '@/utils/constants';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
@@ -9,21 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useRegisterForm } from '@/hooks/use-register-form';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { z } from 'zod';
-import { SECURITY_QUESTIONS } from '@/utils/constants';
-import { useAuth } from '@/hooks/use-auth';
-import { useStepper } from '@/components/stepper';
 
 const formSchema = z.object({
   question: z.enum(

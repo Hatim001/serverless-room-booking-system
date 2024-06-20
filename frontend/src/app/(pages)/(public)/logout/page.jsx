@@ -7,9 +7,14 @@ import { redirect } from 'next/navigation';
 const Index = () => {
   const { logout } = useAuth();
   useEffect(() => {
-    logout();
-    redirect('/');
+    logoutUser();
   }, []);
+
+  const logoutUser = async () => {
+    await logout();
+    redirect('/');
+  };
+
   return <div>Logging out....</div>;
 };
 

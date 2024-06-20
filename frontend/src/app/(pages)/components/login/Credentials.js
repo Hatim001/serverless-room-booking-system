@@ -1,3 +1,5 @@
+'use client';
+
 import { z } from 'zod';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -14,6 +16,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { PasswordInput } from '@/components/ui/password-input';
+import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/hooks/use-auth';
+import { useState } from 'react';
 
 const formSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -26,7 +32,11 @@ const formSchema = z.object({
     .regex(/[\W_]/, 'Password must contain at least one special character'),
 });
 
-const Credentials = ({ role, disableForm, onSubmit }) => {
+const Credentials = ({ role }) => {
+  const { toast } = useToast();
+  const router = useRouter();
+  const { refreshSession } = useAuth();
+  const [disableForm, setDisableForm] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,6 +45,38 @@ const Credentials = ({ role, disableForm, onSubmit }) => {
     },
     mode: 'onChange',
   });
+
+  const loginUser = async (values) => {
+    setDisableForm(true);
+    const payload = {
+      email: values.email,
+      password: values.password,
+      role: role,
+    };
+    fetch(`/api/auth/login`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+      ?.then(async (res) => {
+        const data = await res?.json();
+        console.log('data', data, res);
+        if (res.ok) {
+          toast({
+            title: 'Success',
+            description: data?.message,
+          });
+          refreshSession();
+          router.push(data.redirectUrl);
+        } else {
+          form.setError('formError', {
+            message: data?.message,
+          });
+        }
+      })
+      ?.finally(() => {
+        setDisableForm(false);
+      });
+  };
 
   return (
     <div className="w-full max-w-md mx-auto p-6">
@@ -47,7 +89,12 @@ const Credentials = ({ role, disableForm, onSubmit }) => {
           </div>
           <div className="mt-5">
             <Form {...form}>
-              <form onSubmit={form?.handleSubmit(onSubmit)}>
+              <form onSubmit={form?.handleSubmit(loginUser)}>
+                {form?.formState?.errors?.formError && (
+                  <div className="mb-4 text-sm font-medium text-red-600">
+                    {form.formState.errors.formError.message}
+                  </div>
+                )}
                 <div className="grid gap-y-4">
                   <FormField
                     control={form?.control}

@@ -1,11 +1,17 @@
+'use client';
+
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useRegisterForm } from '@/hooks/use-register-form';
-import { useToast } from '@/components/ui/use-toast';
+
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { PasswordInput } from '@/components/ui/password-input';
 import {
   Form,
   FormControl,
@@ -14,8 +20,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { PasswordInput } from '@/components/ui/password-input';
-import Link from 'next/link';
 
 const formSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -28,7 +32,10 @@ const formSchema = z.object({
     .regex(/[\W_]/, 'Password must contain at least one special character'),
 });
 
-const Credentials = ({ role, disableForm, onSubmit }) => {
+const Credentials = ({ role }) => {
+  const { toast } = useToast();
+  const router = useRouter();
+  const [disableForm, setDisableForm] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,6 +44,40 @@ const Credentials = ({ role, disableForm, onSubmit }) => {
     },
     mode: 'onChange',
   });
+
+  const registerUser = (values) => {
+    setDisableForm(true);
+    const payload = {
+      email: values.email,
+      password: values.password,
+      role: role,
+    };
+    fetch(`/api/auth/register`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    })
+      ?.then(async (res) => {
+        const data = await res.json();
+        if (res?.ok) {
+          toast({
+            title: 'Success',
+            description: res?.data?.message,
+          });
+          if (data?.redirect_to_verification) {
+            router.push(`/${role}/register/verify?email=` + values.email);
+          } else {
+            router.push(`/`);
+          }
+        } else {
+          form.setError('formError', {
+            message: data?.message,
+          });
+        }
+      })
+      ?.finally(() => {
+        setDisableForm(false);
+      });
+  };
 
   return (
     <div className="w-full max-w-md mx-auto p-6">
@@ -49,7 +90,12 @@ const Credentials = ({ role, disableForm, onSubmit }) => {
           </div>
           <div className="mt-5">
             <Form {...form}>
-              <form onSubmit={form?.handleSubmit(onSubmit)}>
+              <form onSubmit={form?.handleSubmit(registerUser)}>
+                {form?.formState?.errors?.formError && (
+                  <div className="mb-4 text-sm font-medium text-red-600">
+                    {form.formState.errors.formError.message}
+                  </div>
+                )}
                 <div className="grid gap-y-4">
                   <FormField
                     control={form?.control}
