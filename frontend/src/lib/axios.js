@@ -15,15 +15,13 @@ const instance = axios.create({
 instance.interceptors.request.use(
   async (config) => {
     const session = await getSession();
-    console.log('session', session);
     const authToken = session?.token;
     const session_id = session?.id;
-    console.log('session_id', session_id);
     if (authToken) {
-      config.headers['Authorization'] = `${authToken}`;
+      config.headers['auth-token'] = `${authToken}`;
     }
     if (session_id) {
-      config.headers['session_id'] = session_id;
+      config.headers['session-id'] = session_id;
     }
     return config;
   },

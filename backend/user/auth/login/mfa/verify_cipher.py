@@ -1,5 +1,6 @@
-import json
 import os
+import json
+import time
 import boto3
 import traceback
 from decimal import Decimal
@@ -96,8 +97,12 @@ def update_session_with_token(session_id, token, expiry_time):
     session_table = dynamodb.Table("dvh-session")
     response = session_table.update_item(
         Key={"id": session_id},
-        UpdateExpression="SET #tk = :token, expiry_time = :expiry_time",
-        ExpressionAttributeValues={":token": token, ":expiry_time": expiry_time},
+        UpdateExpression="SET #tk = :token, expiry_time = :expiry_time, mfa_2.verified = :verified",
+        ExpressionAttributeValues={
+            ":token": token,
+            ":expiry_time": int(time.time() + expiry_time),
+            ":verified": True,
+        },
         ExpressionAttributeNames={"#tk": "token"},
         ReturnValues="ALL_NEW",
     )

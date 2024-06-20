@@ -1,7 +1,7 @@
-import { LoginFormProvider } from '@/hooks/use-login-form';
+import { Fragment } from 'react';
 
 const LoginFormLayout = ({ children }) => {
-  return <LoginFormProvider>{children}</LoginFormProvider>;
+  return <Fragment>{children}</Fragment>;
 };
 
 export default LoginFormLayout;

@@ -12,14 +12,19 @@ Before you begin, make sure you have the following:
 ## Installation
 
 1. Clone the repository to your local machine:
+
 - SSH
+
 ```
 git clone git@git.cs.dal.ca:patrawala/csci5410-s24-sdp-32.git
 ```
+
 - HTTP
+
 ```
 git clone https://git.cs.dal.ca/patrawala/csci5410-s24-sdp-32.git
 ```
+
 2. Navigate to the project directory:
 
 ```

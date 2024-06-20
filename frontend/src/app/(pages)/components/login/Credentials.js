@@ -59,7 +59,6 @@ const Credentials = ({ role }) => {
     })
       ?.then(async (res) => {
         const data = await res?.json();
-        console.log('data', data, res);
         if (res.ok) {
           toast({
             title: 'Success',

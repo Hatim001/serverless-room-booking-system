@@ -23,7 +23,6 @@ const Index = () => {
     })
       .then((res) => {
         const data = res.json();
-        console.log('Res', res);
         if (res?.ok) {
           toast({
             title: 'Success',
