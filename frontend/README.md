@@ -47,17 +47,11 @@ npm install
 
 To integrate environment variables in your application, follow these steps:
 
-1. Create a new file named `.env.local` in the root directory of your project.
+1. Create a new file named `.env` in the frontend directory of your project.
 
-2. Open the `.env.local` file and define your environment variables in the following format (copy the environment variables I forwarded in the group to run your application):
+2. Open the `.env` file and define your environment variables.
 
-```
-VARIABLE_NAME=value
-```
-
-Replace `VARIABLE_NAME` with the name of your variable and `value` with the desired value.
-
-3. Save the `.env.local` file.
+3. Save the `.env` file.
 
 ## Running the Application
 
