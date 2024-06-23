@@ -1,45 +1,74 @@
-"use client";
-
-import axios from 'axios'; 
+'use client';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Grid, Button, Modal, Box, TextField, CircularProgress } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Grid, Button, Modal, Box, TextField, CircularProgress, Snackbar, Alert } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const DisplayRoom = () => {
   const [rooms, setRooms] = useState([]);
   const [open, setOpen] = useState(false);
   const [roomForm, setRoomForm] = useState({
+    id: null,
     type: '',
     amenities: '',
     price: '',
     beds: '',
-    imageBase64: '',
+    image_url: '',
+    imageType: '',
   });
   const [isUploading, setIsUploading] = useState(false);
+  const [isImageUpdated, setIsImageUpdated] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+
+  const fetchRooms = async () => {
+    try {
+      const response = await axios.get('https://ez1pt1j0a5.execute-api.us-east-1.amazonaws.com/displayRoom/display-room');
+      setRooms(response.data);
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchRooms = async () => {
-      try {
-        const response = await axios.get('https://ez1pt1j0a5.execute-api.us-east-1.amazonaws.com/displayRoom/display-room');
-        setRooms(response.data);
-      } catch (error) {
-        console.error('Error fetching rooms:', error);
-      }
-    };
-
     fetchRooms();
   }, []);
 
   const handleEdit = (id) => {
-    console.log(`Edit room with id ${id}`);
+    const roomToEdit = rooms.find(room => room.id === id);
+    if (roomToEdit) {
+      setRoomForm({
+        id: roomToEdit.id,
+        type: roomToEdit.type,
+        amenities: roomToEdit.amenities,
+        price: roomToEdit.price,
+        beds: roomToEdit.beds,
+        image_url: roomToEdit.image_url,
+        imageType: roomToEdit.imageType,
+      });
+      setIsImageUpdated(false);
+      handleOpen();
+    }
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://v2bam8aejj.execute-api.us-east-1.amazonaws.com/development/agent/room/delete-room/${id}`);
+      await axios.post('https://v2bam8aejj.execute-api.us-east-1.amazonaws.com/development/agent/room/delete-room', { id });
       setRooms(prevRooms => prevRooms.filter(room => room.id !== id));
-      console.log('Room information deleted successfully');
+      showSnackbar('Room deleted successfully', 'success');
     } catch (error) {
-      console.error('Error deleting room', error);
+      console.error('Error deleting room:', error);
+      showSnackbar('Failed to delete room', 'error');
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Request data:', error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
     }
   };
 
@@ -54,13 +83,15 @@ const DisplayRoom = () => {
     const file = e.target.files[0];
     if (file) {
       setIsUploading(true);
+      setIsImageUpdated(true);
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = () => {
         setIsUploading(false);
         setRoomForm({
           ...roomForm,
-          imageBase64: reader.result.split(',')[1] // Extract base64 data
+          image_url: `data:${file.type};base64,${reader.result.split(',')[1]}`,
+          imageType: file.type,
         });
       };
     }
@@ -68,13 +99,40 @@ const DisplayRoom = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const roomData = { ...roomForm };
+
+    
+    if (!isImageUpdated) {
+      delete roomData.image_url;
+      delete roomData.imageType;
+    }
+
     try {
-      const response = await axios.post('https://ez1pt1j0a5.execute-api.us-east-1.amazonaws.com/addRoom/add-room', roomForm);
-      console.log('Room added successfully:', response.data);
-      setRooms(prevRooms => [...prevRooms, response.data]);
+      const apiUrl = roomForm.id 
+        ? `https://kw1eb8d81k.execute-api.us-east-1.amazonaws.com/update-room/update-room` 
+        : `https://g25rcl49d9.execute-api.us-east-1.amazonaws.com/createRoom/create-room`;
+
+      const method = roomForm.id ? 'put' : 'post';
+
+      await axios[method](apiUrl, roomData);
+      
+      fetchRooms(); 
+
       handleClose();
+      showSnackbar(roomForm.id ? 'Room updated successfully' : 'Room added successfully', 'success');
     } catch (error) {
-      console.error('Error adding room:', error);
+      console.error('Error adding/updating room:', error);
+      showSnackbar('Failed to add/update room', 'error');
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+        console.error('Response status:', error.response.status);
+        console.error('Response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Request data:', error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
     }
   };
 
@@ -85,20 +143,35 @@ const DisplayRoom = () => {
   const handleClose = () => {
     setOpen(false);
     setRoomForm({
+      id: null,
       type: '',
       amenities: '',
       price: '',
       beds: '',
-      imageBase64: '',
+      image_url: '',
+      imageType: '',
     });
+    setIsImageUpdated(false);
+  };
+
+  const showSnackbar = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
     <div>
       <h1>Rooms</h1>
-      <Button variant="contained" color="primary" onClick={handleOpen} style={{ marginBottom: '20px' }}>
-        Add Room
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+        <Button variant="contained" color="primary" onClick={handleOpen} startIcon={<AddIcon />}>
+          Add Room
+        </Button>
+      </Box>
 
       <Grid container spacing={3}>
         {rooms.map(room => (
@@ -107,8 +180,10 @@ const DisplayRoom = () => {
               <CardMedia
                 component="img"
                 height="200"
+                width="100%"
                 image={room.image_url}
                 alt={`Image of ${room.type}`}
+                style={{ objectFit: 'cover' }}
               />
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h5" component="div">
@@ -154,7 +229,7 @@ const DisplayRoom = () => {
           p: 4,
         }}>
           <Typography id="add-room-modal-title" variant="h6" component="h2" gutterBottom>
-            Add Room
+            {roomForm.id ? 'Edit Room' : 'Add Room'}
           </Typography>
           <form onSubmit={handleSubmit}>
             <TextField
@@ -193,25 +268,37 @@ const DisplayRoom = () => {
               onChange={handleInputChange}
               required
             />
-            <input
-              accept="image/*"
-              id="image-upload-button"
-              type="file"
-              onChange={handleImageUpload}
-              style={{ display: 'none' }}
-            />
-            <label htmlFor="image-upload-button">
-              <Button variant="contained" component="span">
-                Upload Image
-              </Button>
-            </label>
-            {isUploading && <CircularProgress size={24} style={{ marginLeft: '10px' }} />}
-            <Button type="submit" variant="contained" color="primary" disabled={!roomForm.imageBase64}>
-              Add Room
+            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
+              <input
+                accept="image/*"
+                id="image-upload-button"
+                type="file"
+                onChange={handleImageUpload}
+                style={{ display: 'none' }}
+              />
+              <label htmlFor="image-upload-button">
+                <Button variant="contained" component="span">
+                  Upload Image
+                </Button>
+              </label>
+              {isUploading && <CircularProgress size={24} sx={{ marginLeft: '10px' }} />}
+            </Box>
+            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
+              {roomForm.id ? 'Update Room' : 'Add Room'}
             </Button>
           </form>
         </Box>
       </Modal>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

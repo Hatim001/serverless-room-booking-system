@@ -6,6 +6,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('Room')
 
 class DecimalEncoder(json.JSONEncoder):
+    """Encodes into decimal format"""
     def default(self, o):
         if isinstance(o, Decimal):
             return float(o)
@@ -13,6 +14,7 @@ class DecimalEncoder(json.JSONEncoder):
 
 def lambda_handler(event, context):
     try:
+        """Displays records from DynamoDb"""
         response = table.scan()
         return {
             'statusCode': 200,
