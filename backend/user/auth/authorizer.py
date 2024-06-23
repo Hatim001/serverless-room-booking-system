@@ -30,6 +30,8 @@ def validate_session_in_dynamodb(session_id, token):
     if token != session.get("token"):
         raise Exception("Token doesn't match with session")
 
+    return session
+
 
 def validate_cognito_token(token):
     """validates the cognito token"""
@@ -37,7 +39,7 @@ def validate_cognito_token(token):
     client.get_user(AccessToken=token)
 
 
-def generate_policy(effect, resource, context=None):
+def generate_policy(effect, resource, context={}):
     auth_response = {"principalId": "user"}
     if effect and resource:
         policy_document = {
@@ -49,7 +51,7 @@ def generate_policy(effect, resource, context=None):
         auth_response["policyDocument"] = policy_document
 
     if context:
-        auth_response["context"] = context
+        auth_response["context"] = {**context}
 
     return auth_response
 
@@ -58,12 +60,17 @@ def lambda_handler(event, context):
     headers = event.get("headers")
     validate_headers(headers)
     session_id = headers.get("session-id")
-    validate_session_in_dynamodb(session_id)
+    session = validate_session_in_dynamodb(session_id)
+    auth_context = {
+        "session": session,
+    }
     token = headers.get("auth-token")
     validate_cognito_token(token)
     method_arn = event.get("methodArn")
     try:
-        return generate_policy(effect="Allow", resource=method_arn)
+        return generate_policy(
+            effect="Allow", resource=method_arn, context=auth_context
+        )
     except Exception as e:
         traceback.print_exc()
         return generate_policy(

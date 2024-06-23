@@ -1,5 +1,6 @@
 'use client';
 
+import Footer from '@/components/layouts/Footer';
 import Header from '@/components/layouts/Header';
 import { useAuth } from '@/hooks/use-auth';
 import { GUEST_ROUTES, AGENT_ROUTES, USER_ROUTES } from '@/utils/constants';
@@ -32,6 +33,7 @@ const PublicLayout = ({ children, params }) => {
     <div className="lg:w-3/4 m-auto flex flex-col min-h-screen sm:w-full sm:px-5">
       <Header routes={routes} />
       <main className="flex-grow min-h-full min-w-full">{children}</main>
+      <Footer />
     </div>
   );
 };
