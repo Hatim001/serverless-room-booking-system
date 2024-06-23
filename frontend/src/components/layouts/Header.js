@@ -1,9 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import { usePathname } from 'next/navigation';
 
 const Header = ({ routes }) => {
+  const pathname = usePathname();
+  const isActive = (href) => pathname === href;
   return (
-    <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b border-gray-200 text-sm py-3 sm:py-0 dark:bg-neutral-800 dark:border-neutral-700">
+    <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b-2 border-gray-200 text-sm py-3 sm:py-0 dark:bg-neutral-800 dark:border-neutral-700">
       <nav
         className="relative max-w-[85rem] w-full mx-auto py-2 sm:flex sm:items-center sm:justify-between"
         aria-label="Global"
@@ -68,7 +72,12 @@ const Header = ({ routes }) => {
                 key={index}
                 href={`${route?.path}`}
                 aria-label={route?.label}
-                className="py-3 ps-px sm:px-3 font-medium text-gray-500 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500"
+                className={cn(
+                  'py-3 ps-px sm:px-3 font-medium text-gray-500 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500',
+                  isActive(route?.path)
+                    ? 'text-violet-500 dark:text-primary'
+                    : 'text-gray-500 dark:text-neutral-400',
+                )}
               >
                 {route?.label}
               </Link>

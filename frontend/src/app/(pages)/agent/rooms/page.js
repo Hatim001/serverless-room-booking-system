@@ -1,7 +1,20 @@
 'use client';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Grid, Button, Modal, Box, TextField, CircularProgress, Snackbar, Alert } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Grid,
+  Button,
+  Modal,
+  Box,
+  TextField,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
 const DisplayRoom = () => {
@@ -24,7 +37,9 @@ const DisplayRoom = () => {
 
   const fetchRooms = async () => {
     try {
-      const response = await axios.get('https://ez1pt1j0a5.execute-api.us-east-1.amazonaws.com/displayRoom/display-room');
+      const response = await axios.get(
+        'https://ez1pt1j0a5.execute-api.us-east-1.amazonaws.com/displayRoom/display-room',
+      );
       setRooms(response.data);
     } catch (error) {
       console.error('Error fetching rooms:', error);
@@ -36,7 +51,7 @@ const DisplayRoom = () => {
   }, []);
 
   const handleEdit = (id) => {
-    const roomToEdit = rooms.find(room => room.id === id);
+    const roomToEdit = rooms.find((room) => room.id === id);
     if (roomToEdit) {
       setRoomForm({
         id: roomToEdit.id,
@@ -54,8 +69,11 @@ const DisplayRoom = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.post('https://v2bam8aejj.execute-api.us-east-1.amazonaws.com/development/agent/room/delete-room', { id });
-      setRooms(prevRooms => prevRooms.filter(room => room.id !== id));
+      await axios.post(
+        'https://v2bam8aejj.execute-api.us-east-1.amazonaws.com/development/agent/room/delete-room',
+        { id },
+      );
+      setRooms((prevRooms) => prevRooms.filter((room) => room.id !== id));
       showSnackbar('Room deleted successfully', 'success');
     } catch (error) {
       console.error('Error deleting room:', error);
@@ -75,7 +93,7 @@ const DisplayRoom = () => {
   const handleInputChange = (e) => {
     setRoomForm({
       ...roomForm,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -102,25 +120,27 @@ const DisplayRoom = () => {
 
     const roomData = { ...roomForm };
 
-    
     if (!isImageUpdated) {
       delete roomData.image_url;
       delete roomData.imageType;
     }
 
     try {
-      const apiUrl = roomForm.id 
-        ? `https://kw1eb8d81k.execute-api.us-east-1.amazonaws.com/update-room/update-room` 
+      const apiUrl = roomForm.id
+        ? `https://kw1eb8d81k.execute-api.us-east-1.amazonaws.com/update-room/update-room`
         : `https://g25rcl49d9.execute-api.us-east-1.amazonaws.com/createRoom/create-room`;
 
       const method = roomForm.id ? 'put' : 'post';
 
       await axios[method](apiUrl, roomData);
-      
-      fetchRooms(); 
+
+      fetchRooms();
 
       handleClose();
-      showSnackbar(roomForm.id ? 'Room updated successfully' : 'Room added successfully', 'success');
+      showSnackbar(
+        roomForm.id ? 'Room updated successfully' : 'Room added successfully',
+        'success',
+      );
     } catch (error) {
       console.error('Error adding/updating room:', error);
       showSnackbar('Failed to add/update room', 'error');
@@ -167,16 +187,29 @@ const DisplayRoom = () => {
   return (
     <div>
       <h1>Rooms</h1>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
-        <Button variant="contained" color="primary" onClick={handleOpen} startIcon={<AddIcon />}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginBottom: '20px',
+        }}
+      >
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpen}
+          startIcon={<AddIcon />}
+        >
           Add Room
         </Button>
       </Box>
 
       <Grid container spacing={3}>
-        {rooms.map(room => (
+        {rooms.map((room) => (
           <Grid item key={room.id} xs={12} sm={6} md={4} lg={4}>
-            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Card
+              sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+            >
               <CardMedia
                 component="img"
                 height="200"
@@ -199,10 +232,19 @@ const DisplayRoom = () => {
                   Beds: {room.beds}
                 </Typography>
                 <div style={{ marginTop: 'auto' }}>
-                  <Button variant="outlined" color="primary" onClick={() => handleEdit(room.id)}>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => handleEdit(room.id)}
+                  >
                     Edit
                   </Button>
-                  <Button variant="outlined" color="error" onClick={() => handleDelete(room.id)} style={{ marginLeft: '10px' }}>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDelete(room.id)}
+                    style={{ marginLeft: '10px' }}
+                  >
                     Delete
                   </Button>
                 </div>
@@ -218,17 +260,24 @@ const DisplayRoom = () => {
         aria-labelledby="add-room-modal-title"
         aria-describedby="add-room-modal-description"
       >
-        <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 400,
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          p: 4,
-        }}>
-          <Typography id="add-room-modal-title" variant="h6" component="h2" gutterBottom>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography
+            id="add-room-modal-title"
+            variant="h6"
+            component="h2"
+            gutterBottom
+          >
             {roomForm.id ? 'Edit Room' : 'Add Room'}
           </Typography>
           <form onSubmit={handleSubmit}>
@@ -268,7 +317,9 @@ const DisplayRoom = () => {
               onChange={handleInputChange}
               required
             />
-            <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
+            <Box
+              sx={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}
+            >
               <input
                 accept="image/*"
                 id="image-upload-button"
@@ -281,9 +332,16 @@ const DisplayRoom = () => {
                   Upload Image
                 </Button>
               </label>
-              {isUploading && <CircularProgress size={24} sx={{ marginLeft: '10px' }} />}
+              {isUploading && (
+                <CircularProgress size={24} sx={{ marginLeft: '10px' }} />
+              )}
             </Box>
-            <Button type="submit" variant="contained" color="primary" style={{ marginTop: '20px' }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              style={{ marginTop: '20px' }}
+            >
               {roomForm.id ? 'Update Room' : 'Add Room'}
             </Button>
           </form>
@@ -295,7 +353,11 @@ const DisplayRoom = () => {
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
       >
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
