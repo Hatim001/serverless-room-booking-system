@@ -1,34 +1,33 @@
 import React, { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
-import { Heart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { useRouter } from 'next/navigation';
 
 const RoomCard = ({ room }) => {
-  const { images, name, description, price_per_day, config = {} } = room;
+  const router = useRouter();
+  const { images, name, id, price_per_day, config = {} } = room;
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const prevSlide = () => {
+  const prevSlide = (e) => {
+    e.stopPropagation();
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? images.length - 1 : prevIndex - 1,
     );
   };
 
-  const nextSlide = () => {
+  const nextSlide = (e) => {
+    e.stopPropagation();
     setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? 0 : prevIndex + 1,
     );
   };
 
   return (
-    <Card className="max-w-xs rounded-lg overflow-hidden border-none shadow-none group relative cursor-pointer">
+    <Card
+      className="max-w-xs rounded-lg overflow-hidden border-none shadow-none group relative cursor-pointer"
+      onClick={() => router.push(`/rooms/${room.id}`)}
+    >
       <div className="relative">
         <picture>
           <img

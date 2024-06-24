@@ -30,10 +30,16 @@ const PublicLayout = ({ children, params }) => {
   };
 
   return (
-    <div className="lg:w-3/4 m-auto flex flex-col min-h-screen sm:w-full sm:px-5">
-      <Header routes={routes} />
-      <main className="flex-grow min-h-full min-w-full">{children}</main>
-      <Footer />
+    <div className="lg:w-3/4 m-auto flex flex-col justify-between h-screen">
+      <div className="">
+        <Header routes={routes} />
+      </div>
+      <main className="flex-grow overflow-auto py-2 no-scrollbar">
+        {children}
+      </main>
+      <div className="">
+        <Footer />
+      </div>
     </div>
   );
 };
