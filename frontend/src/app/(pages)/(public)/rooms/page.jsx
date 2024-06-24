@@ -7,7 +7,7 @@ const Index = () => {
       <div className="w-1/4 h-full pr-2 hidden lg:block">
         <RoomFilters />
       </div>
-      <div className="w-3/4 h-full px-4">
+      <div className="w-3/4 h-full px-4 overflow-scroll">
         <RoomList />
       </div>
     </div>
