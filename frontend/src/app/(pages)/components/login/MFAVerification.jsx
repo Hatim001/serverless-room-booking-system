@@ -67,10 +67,12 @@ const MFAVerification = ({ role }) => {
       method: 'POST',
       body: JSON.stringify(payload),
     })
-      .then((res) => {
+      .then(async (res) => {
         if (res.ok) {
-          refreshSession();
-          return router.push(`/rooms`);
+          await refreshSession();
+          return setTimeout(() => {
+            router.push(`${role === 'user' ? '/rooms' : '/agent/rooms'}`);
+          }, 1);
         }
       })
       .finally(() => {

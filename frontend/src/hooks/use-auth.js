@@ -27,8 +27,8 @@ export const AuthProvider = ({ children }) => {
     await prepareSession();
   };
 
-  const refreshSession = () => {
-    prepareSession();
+  const refreshSession = async () => {
+    await prepareSession();
   };
 
   const isAuthenticatedUser = () => {
