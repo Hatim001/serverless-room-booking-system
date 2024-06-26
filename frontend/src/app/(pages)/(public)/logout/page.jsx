@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
+import { Loading } from '@/components/ui/loading';
 
 const Index = () => {
   const { logout } = useAuth();
@@ -16,7 +17,7 @@ const Index = () => {
     router.push('/');
   };
 
-  return <div>Logging out....</div>;
+  return <Loading placeHolder={'Logging out....'} />;
 };
 
 export default Index;

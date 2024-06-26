@@ -79,7 +79,7 @@ const RoomBooking = ({ room }) => {
   const calculateTotalPrice = (from, to) => {
     if (from && to) {
       const days = (to - from) / (1000 * 60 * 60 * 24);
-      return days * room?.price_per_day;
+      return Math.ceil(days) * room?.price_per_day;
     }
     return 0;
   };
@@ -87,7 +87,7 @@ const RoomBooking = ({ room }) => {
   const noOfDays = (range) => {
     const { from, to } = range || {};
     if (from && to) {
-      return (to - from) / (1000 * 60 * 60 * 24);
+      return Math.ceil((to - from) / (1000 * 60 * 60 * 24));
     }
     return 0;
   };
@@ -149,21 +149,23 @@ const RoomBooking = ({ room }) => {
               />
             </div>
             <Button type="submit">Reserve</Button>
-            <div className="flex justify-between items-center text-sm">
-              <span>
-                ${room?.price_per_day} CAD X{' '}
+            <div className="flex justify-between items-center text-xs">
+              <span className="font-medium underline">
+                ${room?.price_per_day} CAD x{' '}
                 {noOfDays(form?.getValues()?.dateRange) || 0} nights
               </span>
               <span>${totalPrice} CAD</span>
             </div>
-            <div className="flex justify-between items-center text-sm">
-              <span>Taxes:</span>
+            <div className="flex justify-between items-center text-xs">
+              <span className="font-medium">Taxes:</span>
               <span>${(totalPrice * 0.1).toFixed(2)} CAD</span>
             </div>
             <Separator />
-            <div className="flex justify-between items-center text-sm">
-              <span>Total:</span>
-              <span>${(totalPrice * 1.1).toFixed(2)} CAD</span>
+            <div className="flex justify-between items-center text-xs">
+              <span className="font-medium">Total:</span>
+              <span className="font-bold text-base">
+                ${(totalPrice * 1.1).toFixed(2)} CAD
+              </span>
             </div>
           </CardContent>
         </form>

@@ -42,7 +42,7 @@ const Index = ({ params }) => {
   };
 
   const NavBar = () => (
-    <Breadcrumb className="py-2">
+    <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -60,7 +60,7 @@ const Index = ({ params }) => {
   );
 
   const Header = () => (
-    <div className="flex justify-end items-center py-2">
+    <div className="flex justify-end items-center">
       <div className="flex space-x-4">
         <button className="text-gray-500 hover:text-gray-700">
           <Share className="w-6 h-6" />
@@ -105,8 +105,10 @@ const Index = ({ params }) => {
 
   return (
     <div>
-      <NavBar />
-      <Header />
+      <div className="flex items-center w-full justify-between py-4">
+        <NavBar />
+        <Header />
+      </div>
       <Gallery />
       <div className="grid grid-cols-1 grid-cols-3 gap-6 pt-6">
         <div className="md:col-span-2">

@@ -30,6 +30,10 @@ const USER_ROUTES = [
 
 const AGENT_ROUTES = [
   {
+    label: 'Rooms',
+    path: '/agent/rooms',
+  },
+  {
     label: 'Logout',
     path: '/logout',
   },
