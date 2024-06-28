@@ -1,0 +1,118 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Term Assignment Cloud (B00969786)",
+  "Resources": {
+    "ConstantsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "constants",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "constants.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "RegisterCredentialsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "register_credentials",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "register_credentials.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "ResendCodeLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "resend_code",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "resend_code.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "SecondFactorAuthenticationLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "second_factor_authentication",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "second_factor_authentication.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "StoreCipherKeyLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "store_cipher_key",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "store_cipher_key.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "StoreSecurityQuestionLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "store_security_question",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "store_security_question.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "ThirdFactorAuthenticationLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "third_factor_authentication",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "third_factor_authentication.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "VerificationLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "verification",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "verification.py.zip"
+        },
+        "Timeout": 120
+      }
+    }
+  }
+}
