@@ -2,16 +2,114 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Term Assignment Cloud (B00969786)",
   "Resources": {
-    "ConstantsLambda": {
+    "AuthorizerLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "constants",
+        "FunctionName": "authorizer",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
           "S3Bucket": "serverless-trial",
-          "S3Key": "constants.py.zip"
+          "S3Key": "authorizer.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "CodeVerifyLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "code_verify",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "code_verify.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "CreateRoomLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "create_room",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "create_room.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "DeleteRoomLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "delete_room",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "delete_room.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "EditRoomLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "edit_room",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "edit_room.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "GetMFAStatusLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "get_mfa_status",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "get_mfa_status.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "GetRoomDetailsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "get_room_details",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "get_room_details.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "LoginCredentialsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "login_credentials",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "login_credentials.py.zip"
         },
         "Timeout": 120
       }
@@ -44,72 +142,100 @@
         "Timeout": 120
       }
     },
-    "SecondFactorAuthenticationLambda": {
+    "SessionLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "second_factor_authentication",
+        "FunctionName": "session",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
           "S3Bucket": "serverless-trial",
-          "S3Key": "second_factor_authentication.py.zip"
+          "S3Key": "session.py.zip"
         },
         "Timeout": 120
       }
     },
-    "StoreCipherKeyLambda": {
+    "SetCaesarCipherLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "store_cipher_key",
+        "FunctionName": "setup_caesar_cipher",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
           "S3Bucket": "serverless-trial",
-          "S3Key": "store_cipher_key.py.zip"
+          "S3Key": "setup_caesar_cipher.py.zip"
         },
         "Timeout": 120
       }
     },
-    "StoreSecurityQuestionLambda": {
+    "SetSecurityQuestionLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "store_security_question",
+        "FunctionName": "setup_security_question",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
           "S3Bucket": "serverless-trial",
-          "S3Key": "store_security_question.py.zip"
+          "S3Key": "setup_security_question.py.zip"
         },
         "Timeout": 120
       }
     },
-    "ThirdFactorAuthenticationLambda": {
+    "GetUserRoomsLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "third_factor_authentication",
+        "FunctionName": "user_get_rooms",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
           "S3Bucket": "serverless-trial",
-          "S3Key": "third_factor_authentication.py.zip"
+          "S3Key": "user_get_rooms.py.zip"
         },
         "Timeout": 120
       }
     },
-    "VerificationLambda": {
+    "ValidatorLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "verification",
+        "FunctionName": "validator",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
           "S3Bucket": "serverless-trial",
-          "S3Key": "verification.py.zip"
+          "S3Key": "validator.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "VerifyCipherLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "verify_cipher",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "verify_cipher.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "VerifySecurityAnswer": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "verify_security_answer",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "verify_security_answer.py.zip"
         },
         "Timeout": 120
       }
