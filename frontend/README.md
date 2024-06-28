@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DalVacationHome Application Configuration
 
-## Getting Started
+This README provides instructions on how to configure and integrate environment variables in our DalVacationHome application.
 
-First, run the development server:
+## Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Before you begin, make sure you have the following:
+
+- Node.js installed on your machine
+- A code editor of your choice
+
+## Installation
+
+1. Clone the repository to your local machine:
+
+- SSH
+
+```
+git clone git@git.cs.dal.ca:patrawala/csci5410-s24-sdp-32.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- HTTP
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```
+git clone https://git.cs.dal.ca/patrawala/csci5410-s24-sdp-32.git
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. Navigate to the project directory:
 
-## Learn More
+```
+cd csci5410-s24-sdp-32
+```
 
-To learn more about Next.js, take a look at the following resources:
+3. Navigate to the frontend folder
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+cd frontend
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. Install the dependencies:
 
-## Deploy on Vercel
+```
+npm install
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+To integrate environment variables in your application, follow these steps:
+
+1. Create a new file named `.env` in the frontend directory of your project.
+
+2. Open the `.env` file and define your environment variables.
+
+3. Save the `.env` file.
+
+## Running the Application
+
+To run your Next.js application, use the following command:
+
+```
+npm run dev
+```
+
+This will start the development server and you can access your application at `http://localhost:3000`.
+
+## Conclusion
+
+Congratulations! You have successfully configured and integrated environment variables in your application. Feel free to explore and customize your application further.

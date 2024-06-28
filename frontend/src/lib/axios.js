@@ -1,15 +1,28 @@
+'use server';
+
 import axios from 'axios';
+import { getSession } from './session';
 
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
   timeout: 30000,
 });
 
 instance.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const session = await getSession();
+    const authToken = session?.token;
+    const session_id = session?.id;
+    if (authToken) {
+      config.headers['auth-token'] = `${authToken}`;
+    }
+    if (session_id) {
+      config.headers['session-id'] = session_id;
+    }
     return config;
   },
   (error) => {
@@ -26,12 +39,4 @@ instance.interceptors.response.use(
   },
 );
 
-const GET = (url, config) => instance.get(url, config);
-
-const POST = (url, data, config) => instance.post(url, data, config);
-
-const PUT = (url, data, config) => instance.put(url, data, config);
-
-const DELETE = (url, config) => instance.delete(url, config);
-
-export { instance as axios, GET, POST, PUT, DELETE };
+export { instance as axios };
