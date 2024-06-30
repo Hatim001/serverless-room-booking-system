@@ -1,9 +1,11 @@
-import cn from '@/utils/class-names';
-import '@/styles/global.css';
-import { ThemeProvider } from '@/components/theme-provider';
+import { cn } from '@/lib/utils';
 import { AuthProvider } from '@/hooks/use-auth';
-import { inter } from './fonts';
 import { Toaster } from '@/components/ui/toaster';
+import { ThemeProvider } from '@/components/theme-provider';
+
+import { inter } from './fonts';
+
+import '@/styles/global.css';
 
 export const metadata = {
   title: 'Dal Vacation Home',
