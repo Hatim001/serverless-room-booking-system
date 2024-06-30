@@ -2,23 +2,31 @@ import React from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import Image from 'next/image';
+import Logo from '../../../public/logo.png';
 
 const Header = ({ routes }) => {
   const pathname = usePathname();
   const isActive = (href) => pathname === href;
   return (
-    <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b-2 border-gray-200 text-sm py-3 sm:py-0 dark:bg-neutral-800 dark:border-neutral-700">
+    <header className="sticky top-0 inset-x-0 flex flex-wrap sm:justify-start sm:flex-nowrap z-50 w-full bg-white border-b-2 border-slate-200 text-sm py-3 sm:py-0 dark:bg-neutral-800 dark:border-neutral-700">
       <nav
         className="relative max-w-[85rem] w-full mx-auto py-2 sm:flex sm:items-center sm:justify-between"
         aria-label="Global"
       >
-        <div className="flex items-center justify-between">
+        <div className="h-[50px] w-[250px]">
           <Link
             href="/"
-            className="flex-none text-xl font-semibold dark:text-white"
+            className="text-xl font-semibold dark:text-white"
             aria-label="DalVacation"
           >
-            Dal Vacation Home
+            <Image
+              src={Logo}
+              alt="/"
+              // layout="fill"
+              // objectFit="contain"
+              className="max-h-full max-w-full"
+            />
           </Link>
         </div>
         <div

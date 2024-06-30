@@ -1,5 +1,6 @@
 'use client';
 
+import { isEmpty } from '@/utils/Helpers';
 import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
@@ -31,12 +32,20 @@ export const AuthProvider = ({ children }) => {
     await prepareSession();
   };
 
+  const isMFAConfigured = () => {
+    return session?.mfa_1?.configured && session?.mfa_2?.configured;
+  };
+
+  const isMFAVerified = () => {
+    return session?.mfa_1?.verified && session?.mfa_2?.verified;
+  };
+
   const isAuthenticatedUser = () => {
-    return session?.role === 'user';
+    return session?.role === 'user' && isMFAConfigured() && isMFAVerified();
   };
 
   const isAuthenticatedAgent = () => {
-    return session?.role === 'agent';
+    return session?.role === 'agent' && isMFAConfigured() && isMFAVerified();
   };
 
   return (
