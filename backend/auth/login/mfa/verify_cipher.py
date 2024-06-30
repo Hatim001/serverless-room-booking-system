@@ -8,6 +8,8 @@ from decimal import Decimal
 dynamodb = boto3.resource("dynamodb")
 client = boto3.client("cognito-idp")
 cognito_client_id = os.getenv("COGNITO_CLIENT_ID")
+sns_topic_arn = 'arn:aws:sns:us-east-1:055374150954:Login'
+sns_client = boto3.client('sns')
 
 
 class DecimalEncoder(json.JSONEncoder):
@@ -32,7 +34,7 @@ def validate_and_get_user(email):
     table = dynamodb.Table("dvh-user")
     response = table.get_item(Key={"email": email})
     if "Item" not in response:
-        raise Exception("Email doesn't exists in system")
+        raise Exception("Email doesn't exist in the system")
 
     user = response.get("Item")
     if not user.get("mfa_2", {}).get("configured"):
@@ -64,7 +66,7 @@ def validate_and_get_session(session_id):
     table = dynamodb.Table("dvh-session")
     response = table.get_item(Key={"id": session_id})
     if "Item" not in response:
-        raise Exception("Session doesn't exists in system")
+        raise Exception("Session doesn't exist in the system")
 
     session = response.get("Item")
     if not session.get("mfa_1").get("verified"):
@@ -97,17 +99,72 @@ def update_session_with_token(session_id, token, expiry_time):
     session_table = dynamodb.Table("dvh-session")
     response = session_table.update_item(
         Key={"id": session_id},
-        UpdateExpression="SET #tk = :token, expiry_time = :expiry_time, mfa_2.verified = :verified",
+        UpdateExpression="SET #tk = :token, expiry_time = :expiry_time, #mfa_2 = :mfa_2_data",
         ExpressionAttributeValues={
             ":token": token,
             ":expiry_time": int(time.time() + expiry_time),
-            ":verified": True,
+            ":mfa_2_data": {
+                "verified": True,
+            },
         },
-        ExpressionAttributeNames={"#tk": "token"},
+        ExpressionAttributeNames={"#tk": "token", "#mfa_2": "mfa_2"},
         ReturnValues="ALL_NEW",
     )
     return response.get("Attributes")
 
+
+def sns_notification_and_subscription(email):
+    """Checks for email subscription and sends notification"""
+    try:
+        subscriptions = sns_client.list_subscriptions_by_topic(TopicArn=sns_topic_arn)
+        already_subscribed = False
+        for subscription in subscriptions['Subscriptions']:
+            if subscription['Endpoint'] == email:
+                subscription_arn = subscription['SubscriptionArn']
+                if subscription_arn != 'PendingConfirmation' and ':' in subscription_arn:
+                    already_subscribed = True
+                    break
+
+        if not already_subscribed:
+            # Filter policy applied to send email to respective user
+            subscribe_response = sns_client.subscribe(
+                TopicArn=sns_topic_arn,
+                Protocol='email',
+                Endpoint=email,
+                ReturnSubscriptionArn=True,
+                Attributes={
+                    'FilterPolicy': json.dumps({
+                        'email': [email]
+                    })
+                }
+            )
+
+            # Extract the subscription ARN from the response
+            subscription_arn = subscribe_response['SubscriptionArn']
+            print(f"Subscription ARN: {subscription_arn}")
+
+        # Publish login confirmation email
+        sns_response = sns_client.publish(
+            TopicArn=sns_topic_arn,
+            Subject='Login Successful',
+            Message=f"Dear user,\n\nYour login was successful.\n\nSincerely,\nTeam SDP-32",
+            MessageAttributes={
+                'email': {
+                    'DataType': 'String',
+                    'StringValue': email
+                }
+            }
+        )
+
+        print(f"SNS publish response: {sns_response}")
+
+        return sns_response
+
+    except Exception as e:
+        print(f"Error in sns_notification_and_subscription: {str(e)}")
+        return {
+            "message": str(e)
+        }
 
 def prepare_response(status, message, headers={}, **kwargs):
     """prepares the response"""
@@ -130,7 +187,7 @@ def lambda_handler(event, context):
         validate_payload(payload)
         email = payload.get("email")
         cipher_text = payload.get("cipher_text")
-        user = validate_and_get_user(payload.get("email"))
+        user = validate_and_get_user(email)
         plain_text = payload.get("plain_text")
         cipher_decryption_key = user.get("mfa_2", {}).get("cipher_decryption_key")
         validate_cipher_text(plain_text, cipher_text, cipher_decryption_key)
@@ -139,8 +196,9 @@ def lambda_handler(event, context):
         validate_and_get_session(session_id)
         access_token, expires_in = authenticate_user(email, password)
         session = update_session_with_token(session_id, access_token, expires_in)
+        sns_response = sns_notification_and_subscription(payload.get("email"))
         return prepare_response(
-            status=200, message="User authenticated successfully!!", session=session
+            status=200, message="User login successful!! Confirmation email sent", session=session, sns_response=sns_response
         )
     except Exception as e:
         traceback.print_exc()
