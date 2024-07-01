@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Star } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
 const ratingVariants = {
   default: {
-    star: 'text-foreground',
+    star: 'text-violet-400',
     emptyStar: 'text-muted-foreground',
   },
   destructive: {
@@ -18,30 +18,31 @@ const ratingVariants = {
   },
 };
 
-// interface RatingsProps extends React.HTMLAttributes<HTMLDivElement> {
-//   rating: number
-//   totalStars?: number
-//   size?: number
-//   fill?: boolean
-//   Icon?: React.ReactElement
-//   variant?: keyof typeof ratingVariants
-// }
+const Ratings = ({
+  rating,
+  totalStars = 5,
+  size = 20,
+  fill = true,
+  Icon = <Star />,
+  variant = 'default',
+  onChange,
+  ...props
+}) => {
+  const [currentRating, setCurrentRating] = useState(rating);
 
-const Ratings = ({ ...props }) => {
-  const {
-    rating,
-    totalStars = 5,
-    size = 20,
-    fill = true,
-    Icon = <Star />,
-    variant = 'default',
-  } = props || {};
+  const handleClick = (index) => {
+    const newRating = index + 1;
+    setCurrentRating(newRating);
+    if (onChange) {
+      onChange(newRating);
+    }
+  };
 
-  const fullStars = Math.floor(rating);
+  const fullStars = Math.floor(currentRating);
   const partialStar =
-    rating % 1 > 0 ? (
+    currentRating % 1 > 0 ? (
       <PartialStar
-        fillPercentage={rating % 1}
+        fillPercentage={currentRating % 1}
         size={size}
         className={cn(ratingVariants[variant].star)}
         Icon={Icon}
@@ -57,7 +58,9 @@ const Ratings = ({ ...props }) => {
           className: cn(
             fill ? 'fill-current' : 'fill-transparent',
             ratingVariants[variant].star,
+            'cursor-pointer',
           ),
+          ...(onChange && { onClick: () => handleClick(i) }),
         }),
       )}
       {partialStar}
@@ -65,7 +68,8 @@ const Ratings = ({ ...props }) => {
         React.cloneElement(Icon, {
           key: i + fullStars + 1,
           size,
-          className: cn(ratingVariants[variant].emptyStar),
+          className: cn(ratingVariants[variant].emptyStar, 'cursor-pointer'),
+          ...(onChange && { onClick: () => handleClick(i + fullStars) }),
         }),
       )}
     </div>
@@ -73,15 +77,13 @@ const Ratings = ({ ...props }) => {
 };
 
 // interface PartialStarProps {
-//   fillPercentage: number
-//   size: number
-//   className?: string
-//   Icon: React.ReactElement
+//   fillPercentage: number;
+//   size: number;
+//   className?: string;
+//   Icon: React.ReactElement;
 // }
 
-const PartialStar = ({ ...props }) => {
-  const { fillPercentage, size, className, Icon } = props || {};
-
+const PartialStar = ({ fillPercentage, size, className, Icon }) => {
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
       {React.cloneElement(Icon, {

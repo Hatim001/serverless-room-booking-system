@@ -11,9 +11,6 @@ const ReservedBookings = () => {
     prepareReservedBookings();
   }, [bookings]);
 
-  console.log('bookings', bookings);
-  console.log('reservedBookings', reservedBookings);
-
   const prepareReservedBookings = () => {
     setReservedBookings(
       bookings?.filter((booking) => booking?.status === 'RESERVED'),

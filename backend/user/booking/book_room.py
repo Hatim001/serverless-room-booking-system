@@ -2,8 +2,8 @@ import json
 import boto3
 import traceback
 from uuid import uuid4
-from datetime import datetime, timezone
 from dateutil.parser import parse
+from datetime import datetime, timezone, UTC
 
 
 class DynamoDBService:
@@ -115,6 +115,7 @@ class BookingSchema:
     def prepare(self):
         room = self.room_service.get_room(self.payload.get("roomId"))
         guests = self.payload.get("guests")
+        timestamp = datetime.now(UTC).isoformat()
         if room.get("config", {}).get("guests") < guests:
             raise Exception("Guests count exceeds the room capacity!!")
 
@@ -128,6 +129,8 @@ class BookingSchema:
             "status": "RESERVED",
             "total_price": self.payload.get("totalPrice"),
             "user": self.session_user,
+            "created_at": timestamp,
+            "updated_at": timestamp,
         }
 
 

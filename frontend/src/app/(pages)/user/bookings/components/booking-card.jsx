@@ -1,8 +1,21 @@
+import { useEffect, useState } from 'react';
+
+import { ClipboardCopy } from 'lucide-react';
+
+import { randomNumber } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import EllipsisTooltip from '@/components/ui/ellipsis-tooltip';
-import { randomNumber } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
+import ReviewForm from './review-form';
 
 const BookingCard = ({ booking }) => {
+  const [copied, setCopied] = useState(false);
   const {
     room = {},
     total_price,
@@ -10,8 +23,18 @@ const BookingCard = ({ booking }) => {
     check_out_date,
     guests,
   } = booking;
+
+  useEffect(() => {
+    if (copied) {
+      const timer = setTimeout(() => {
+        setCopied(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [copied]);
+
   return (
-    <div className="transition ease-in-out w-full h-[200px] bg-white rounded-lg shadow hover:shadow-lg hover:outline hover:outline-2 hover:outline-violet-300 hover:p-1 cursor-pointer hover:-translate-y-1">
+    <div className="transition ease-in-out w-full h-[200px] bg-white rounded-lg shadow hover:shadow-lg hover:outline hover:outline-1 hover:outline-violet-300 hover:-translate-y-1">
       <div className="flex justify-left w-full h-full">
         <div className="w-1/3">
           <picture>
@@ -35,6 +58,27 @@ const BookingCard = ({ booking }) => {
               </div>
               <div className="text-sm text-slate-700">
                 {room?.config?.beds} Beds, {room?.config?.bathrooms} Bathrooms{' '}
+              </div>
+              <div className="text-xs flex items-baseline space-x-2">
+                <div className="text-slate-400">Booking Id - {booking?.id}</div>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger
+                      onClick={() => {
+                        setCopied(true);
+                        navigator.clipboard.writeText(booking?.id);
+                      }}
+                    >
+                      <ClipboardCopy
+                        size={'15px'}
+                        className="text-slate-600 hover:text-violet-700 cursor-pointer"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{copied ? 'Copied' : 'Copy to clipboard'}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
             <div className="flex justify-between items-end">
@@ -60,7 +104,7 @@ const BookingCard = ({ booking }) => {
                 <Button size="sm" variant="outline">
                   Mark as Completed
                 </Button>
-                <Button size="sm">Add Review</Button>
+                <ReviewForm booking={booking} />
               </div>
             </div>
           </div>

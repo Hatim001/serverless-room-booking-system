@@ -12,7 +12,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 export function EditRoom({ room, isOpen, onOpenChange }) {
-  console.log('room', room);
   const { toast } = useToast();
   const [disableForm, setDisableForm] = useState(false);
 

@@ -23,9 +23,8 @@ const Header = ({ routes }) => {
             <Image
               src={Logo}
               alt="/"
-              // layout="fill"
-              // objectFit="contain"
               className="max-h-full max-w-full"
+              priority
             />
           </Link>
         </div>
