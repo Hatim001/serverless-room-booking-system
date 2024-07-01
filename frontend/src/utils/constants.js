@@ -20,7 +20,7 @@ const USER_ROUTES = [
   },
   {
     label: 'My Bookings',
-    path: '/bookings',
+    path: '/user/bookings',
   },
   {
     label: 'Logout',

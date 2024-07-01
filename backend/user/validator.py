@@ -1,5 +1,16 @@
+import json
 import boto3
 import traceback
+from decimal import Decimal
+
+
+class DecimalEncoder(json.JSONEncoder):
+    """Helper class to convert a DynamoDB item to JSON."""
+
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
 
 
 def validate_headers(headers):
@@ -33,6 +44,7 @@ def validate_session_in_dynamodb(session_id, token):
     if session.get("role") != "user":
         raise Exception("User is not authorized to access this url.")
 
+    session.pop("token")
     return session
 
 
@@ -66,7 +78,7 @@ def lambda_handler(event, context):
     auth_token = headers.get("auth-token")
     session = validate_session_in_dynamodb(session_id, auth_token)
     auth_context = {
-        "session": session,
+        "session": json.dumps(session, cls=DecimalEncoder),
     }
     token = headers.get("auth-token")
     validate_cognito_token(token)

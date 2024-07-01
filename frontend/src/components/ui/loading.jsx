@@ -7,7 +7,7 @@ const spinnerVariants =
 const Loading = React.forwardRef((props, ref) => {
   const { className, placeHolder = 'Loading...', ...rest } = props;
   return (
-    <div className="flex flex-col items-center space-y-4 h-full w-full p-5">
+    <div className="flex flex-col items-center justify-center space-y-4 h-full w-full p-5">
       <div ref={ref} className={cn(spinnerVariants, className)} {...rest} />
       <div>{placeHolder}</div>
     </div>

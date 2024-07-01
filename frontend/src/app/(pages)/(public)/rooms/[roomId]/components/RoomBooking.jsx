@@ -1,19 +1,25 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { z } from 'zod';
 import { addDays } from 'date-fns';
+import { useForm } from 'react-hook-form';
+
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/components/ui/use-toast';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Separator } from '@/components/ui/separator';
+import { DatePickerWithRange } from '@/components/ui/date-range-picker';
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import {
   Form,
   FormControl,
@@ -22,7 +28,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { DatePickerWithRange } from '@/components/ui/date-range-picker';
 import {
   Select,
   SelectContent,
@@ -49,6 +54,10 @@ const bookingSchema = z.object({
 });
 
 const RoomBooking = ({ room }) => {
+  const { isAuthenticatedUser, session } = useAuth();
+  const [disableBtn, setDisableBtn] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
   const defaultStartDate = addDays(new Date(), 1);
   const defaultEndDate = addDays(defaultStartDate, 2);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -68,12 +77,50 @@ const RoomBooking = ({ room }) => {
   const dateRange = watch('dateRange');
 
   useEffect(() => {
-    const { from, to } = getValues().dateRange;
+    const { from, to } = getValues().dateRange || {};
     setTotalPrice(calculateTotalPrice(from, to));
   }, [dateRange, getValues]);
 
-  const onSubmit = (data) => {
-    console.log('Form data', data);
+  const onSubmit = async (data) => {
+    if (!isAuthenticatedUser()) {
+      return router.push('/user/login');
+    }
+    const payload = {
+      checkInDate: data?.dateRange?.from,
+      checkOutDate: data?.dateRange?.to,
+      roomId: room?.id,
+      userId: session?.user?.id,
+      guests: data?.guests,
+      totalPrice: Number((totalPrice * 1.1).toFixed(2)),
+    };
+
+    setDisableBtn(true);
+    try {
+      const response = await fetch(`/api/user/rooms/${room?.id}/book`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast({
+          title: 'Congratulations 🎉',
+          description: data?.message,
+        });
+        return router.push(`/user/bookings`);
+      } else {
+        toast({
+          title: 'Error',
+          description: data?.message,
+          variant: 'destructive',
+        });
+        form.setError('formError', {
+          type: 'manual',
+          message: data?.message,
+        });
+      }
+    } finally {
+      setDisableBtn(false);
+    }
   };
 
   const calculateTotalPrice = (from, to) => {
@@ -101,6 +148,11 @@ const RoomBooking = ({ room }) => {
             <CardDescription>per night</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col space-y-4">
+            {form.formState.errors.formError && (
+              <div className="mb-4 text-sm font-medium text-red-600">
+                {form.formState.errors.formError.message}
+              </div>
+            )}
             <div>
               <FormField
                 name="dateRange"
@@ -148,7 +200,9 @@ const RoomBooking = ({ room }) => {
                 )}
               />
             </div>
-            <Button type="submit">Reserve</Button>
+            <Button type="submit" disabled={disableBtn}>
+              Reserve
+            </Button>
             <div className="flex justify-between items-center text-xs">
               <span className="font-medium underline">
                 ${room?.price_per_day} CAD x{' '}

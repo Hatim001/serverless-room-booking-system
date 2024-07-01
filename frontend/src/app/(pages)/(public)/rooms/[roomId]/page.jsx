@@ -21,7 +21,7 @@ const Index = ({ params }) => {
   const { roomId } = params;
   const [room, setRoom] = useState({});
   const [loading, setLoading] = useState(false);
-  const { images = [], price_per_day, name } = room;
+  const { images = [], name } = room;
 
   useEffect(() => {
     fetchRoomDetails();

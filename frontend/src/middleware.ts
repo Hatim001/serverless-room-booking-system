@@ -15,7 +15,7 @@ const PUBLIC_PATHS = [
   '/agent/register',
   '/agent/register/verify',
   '/rooms',
-  '/rooms/*',
+  '/rooms/(.*)',
   '/user/login/mfa-verify',
   '/user/register/mfa-setup',
   '/agent/login/mfa-verify',
@@ -44,7 +44,8 @@ const MFA_CONFIG_PATHS = [
 const MFA_VERIFY_PATHS = ['/user/login/mfa-verify', '/agent/login/mfa-verify'];
 
 const isPublicPath = (pathname: string) => {
-  const regex = new RegExp(`^(${PUBLIC_PATHS.join('|')})`);
+  const publicRegexes = PUBLIC_PATHS.map((path) => path.replace('(.*)', '.*'));
+  const regex = new RegExp(`^(${publicRegexes.join('|')})$`);
   return regex.test(pathname);
 };
 
