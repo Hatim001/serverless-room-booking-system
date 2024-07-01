@@ -2,123 +2,7 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Term Assignment Cloud (B00969786)",
   "Resources": {
-    "AuthorizerLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "authorizer",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "authorizer.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "AuthorizerApiGateway": {
-      "Type": "AWS::ApiGateway::RestApi",
-      "Properties": {
-        "Name": "AuthorizerApi"
-      }
-    },
-    "AuthorizerApiGatewayResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "LoginApiGateway"
-        },
-        "ParentId": {
-          "Fn::GetAtt": ["LoginApiGateway", "RootResourceId"]
-        },
-        "PathPart": "login"
-      }
-    },
-    "AuthorizerApiGatewayMethod": {
-      "Type": "AWS::ApiGateway::Method",
-      "Properties": {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "POST",
-        "ResourceId": {
-          "Ref": "LoginApiGatewayResource"
-        },
-        "RestApiId": {
-          "Ref": "LoginApiGateway"
-        },
-        "ApiKeyRequired": false,
-        "Integration": {
-          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "POST",
-          "IntegrationResponses": [
-            {
-              "StatusCode": "200",
-              "ResponseTemplates": {
-                "application/json": ""
-              },
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          ],
-          "Type": "AWS_PROXY",
-          "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoginLambda.Arn}/invocations"
-          }
-        },
-        "MethodResponses": [
-          {
-            "StatusCode": "200",
-            "ResponseModels": {
-              "application/json": "Empty"
-            },
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Headers": false,
-              "method.response.header.Access-Control-Allow-Methods": false,
-              "method.response.header.Access-Control-Allow-Origin": false
-            }
-          }
-        ]
-      }
-    },
-    "AuthorizerApiGatewayDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": ["LoginApiGatewayMethod"],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "LoginApiGateway"
-        }
-      }
-    },
-    "AuthorizerApiGatewayStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "LoginApiGatewayDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "LoginApiGateway"
-        },
-        "DeploymentId": {
-          "Ref": "LoginApiGatewayDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "AuthorizerLambdaPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "LoginLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${LoginApiGateway}/*/POST/login"
-        }
-      }
-    },
-
-    "CodeVerifyLambda": {
+    "RegistrationCodeVerifyLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "code_verify",
@@ -340,6 +224,69 @@
           "S3Key": "verify_security_answer.py.zip"
         },
         "Timeout": 120
+      }
+    },
+    "AuthApiGateway": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "AuthApi"
+      }
+    },
+    "AuthApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "AuthApiGateway"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "AuthApiGateway",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "auth"
+      }
+    },
+    "UserApiGateway": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "UserApi"
+      }
+    },
+    "UserApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "UserApiGateway"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "UserApiGateway",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "user"
+      }
+    },
+    "AgentApiGateway": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "AgentApi"
+      }
+    },
+    "AgentApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "AgentApiGateway"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "AgentApiGateway",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "agent"
       }
     }
   }
