@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "Term Assignment Cloud (B00969786)",
+  "Description": "Serverless Group-32 IaC",
   "Resources": {
     "RegistrationCodeVerifyLambda": {
       "Type": "AWS::Lambda::Function",
@@ -226,6 +226,8 @@
         "Timeout": 120
       }
     },
+
+
     "AuthApiGateway": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
@@ -247,6 +249,191 @@
         "PathPart": "auth"
       }
     },
+      "SessionApiResource": {
+        "Type": "AWS::ApiGateway::Resource",
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "ParentId": {
+            "Fn::GetAtt": [
+              "AuthApiGateway",
+              "RootResourceId"
+            ]
+          },
+          "PathPart": "session"
+        }
+      },
+
+      "SessionApiGETMethod": {
+        "Type": "AWS::ApiGateway::Method",
+        "Properties": {
+          "AuthorizationType": "NONE",
+          "HttpMethod": "GET",
+          "ResourceId": {
+            "Ref": "SessionApiResource"
+          },
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "ApiKeyRequired": false,
+          "Integration": {
+            "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+            "IntegrationHttpMethod": "GET",
+            "IntegrationResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseTemplates": {
+                  "application/json": ""
+                },
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                  "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                  "method.response.header.Access-Control-Allow-Origin": "'*'"
+                }
+              }
+            ],
+            "Type": "AWS_PROXY",
+            "Uri": {
+              "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SessionLambda.Arn}/invocations"
+            }
+          },
+          "MethodResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseModels": {
+                "application/json": "Empty"
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": false,
+                "method.response.header.Access-Control-Allow-Methods": false,
+                "method.response.header.Access-Control-Allow-Origin": false
+              }
+            }
+          ]
+        }
+      },
+      "SessionApiGETDeployment": {
+        "Type": "AWS::ApiGateway::Deployment",
+        "DependsOn": ["SessionApiGETMethod"],
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          }
+        }
+      },
+      "SessionApiGETStage": {
+        "Type": "AWS::ApiGateway::Stage",
+        "DependsOn": "SessionApiGETDeployment",
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "DeploymentId": {
+            "Ref": "SessionApiGETDeployment"
+          },
+          "StageName": "prod"
+        }
+      },
+      "SessionLambdaGETPermission": {
+        "Type": "AWS::Lambda::Permission",
+        "Properties": {
+          "FunctionName": {
+            "Ref": "SessionLambda"
+          },
+          "Action": "lambda:InvokeFunction",
+          "Principal": "apigateway.amazonaws.com",
+          "SourceArn": {
+            "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${AuthApiGateway}/*/GET/auth/session"
+          }
+        }
+      },
+      "SessionApiOPTIONSMethod": {
+        "Type": "AWS::ApiGateway::Method",
+        "Properties": {
+          "AuthorizationType": "NONE",
+          "HttpMethod": "OPTIONS",
+          "ResourceId": {
+            "Ref": "SessionApiResource"
+          },
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "ApiKeyRequired": false,
+          "Integration": {
+            "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+            "IntegrationHttpMethod": "OPTIONS",
+            "IntegrationResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseTemplates": {
+                  "application/json": ""
+                },
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                  "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                  "method.response.header.Access-Control-Allow-Origin": "'*'"
+                }
+              }
+            ],
+            "Type": "AWS_PROXY",
+            "Uri": {
+              "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SessionLambda.Arn}/invocations"
+            }
+          },
+          "MethodResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseModels": {
+                "application/json": "Empty"
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": false,
+                "method.response.header.Access-Control-Allow-Methods": false,
+                "method.response.header.Access-Control-Allow-Origin": false
+              }
+            }
+          ]
+        }
+      },
+      "SessionApiOPTIONSDeployment": {
+        "Type": "AWS::ApiGateway::Deployment",
+        "DependsOn": ["SessionApiOPTIONSMethod"],
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          }
+        }
+      },
+      "SessionApiOPTIONSStage": {
+        "Type": "AWS::ApiGateway::Stage",
+        "DependsOn": "SessionApiOPTIONSDeployment",
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "DeploymentId": {
+            "Ref": "SessionApiOPTIONSDeployment"
+          },
+          "StageName": "sessionoptionsprod"
+        }
+      },
+      "SessionLambdaOPTIONSPermission": {
+        "Type": "AWS::Lambda::Permission",
+        "Properties": {
+          "FunctionName": {
+            "Ref": "SessionLambda"
+          },
+          "Action": "lambda:InvokeFunction",
+          "Principal": "apigateway.amazonaws.com",
+          "SourceArn": {
+            "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${AuthApiGateway}/*/OPTIONS/auth/session"
+          }
+        }
+      },
+
+
+
     "UserApiGateway": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
@@ -268,6 +455,8 @@
         "PathPart": "user"
       }
     },
+
+
     "AgentApiGateway": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
