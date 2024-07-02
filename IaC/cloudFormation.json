@@ -432,6 +432,190 @@
         }
       },
 
+      "RegisterApiResource": {
+        "Type": "AWS::ApiGateway::Resource",
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "ParentId": {
+            "Fn::GetAtt": [
+              "AuthApiGateway",
+              "RootResourceId"
+            ]
+          },
+          "PathPart": "register"
+        }
+      },
+
+      "RegisterApiPOSTMethod": {
+        "Type": "AWS::ApiGateway::Method",
+        "Properties": {
+          "AuthorizationType": "NONE",
+          "HttpMethod": "POST",
+          "ResourceId": {
+            "Ref": "RegisterApiResource"
+          },
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "ApiKeyRequired": false,
+          "Integration": {
+            "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+            "IntegrationHttpMethod": "POST",
+            "IntegrationResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseTemplates": {
+                  "application/json": ""
+                },
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                  "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                  "method.response.header.Access-Control-Allow-Origin": "'*'"
+                }
+              }
+            ],
+            "Type": "AWS_PROXY",
+            "Uri": {
+              "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterCredentialsLambda.Arn}/invocations"
+            }
+          },
+          "MethodResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseModels": {
+                "application/json": "Empty"
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": false,
+                "method.response.header.Access-Control-Allow-Methods": false,
+                "method.response.header.Access-Control-Allow-Origin": false
+              }
+            }
+          ]
+        }
+      },
+      "RegisterApiPOSTDeployment": {
+        "Type": "AWS::ApiGateway::Deployment",
+        "DependsOn": ["RegisterApiPOSTMethod"],
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          }
+        }
+      },
+      "RegisterApiPOSTStage": {
+        "Type": "AWS::ApiGateway::Stage",
+        "DependsOn": "RegisterApiPOSTDeployment",
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "DeploymentId": {
+            "Ref": "SessionApiGETDeployment"
+          },
+          "StageName": "register_post_prod"
+        }
+      },
+      "RegisterLambdaPOSTPermission": {
+        "Type": "AWS::Lambda::Permission",
+        "Properties": {
+          "FunctionName": {
+            "Ref": "RegisterCredentialsLambda"
+          },
+          "Action": "lambda:InvokeFunction",
+          "Principal": "apigateway.amazonaws.com",
+          "SourceArn": {
+            "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${AuthApiGateway}/*/POST/auth/register"
+          }
+        }
+      },
+
+      "RegisterApiOPTIONSMethod": {
+        "Type": "AWS::ApiGateway::Method",
+        "Properties": {
+          "AuthorizationType": "NONE",
+          "HttpMethod": "OPTIONS",
+          "ResourceId": {
+            "Ref": "RegisterApiResource"
+          },
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "ApiKeyRequired": false,
+          "Integration": {
+            "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+            "IntegrationHttpMethod": "OPTIONS",
+            "IntegrationResponses": [
+              {
+                "StatusCode": "200",
+                "ResponseTemplates": {
+                  "application/json": ""
+                },
+                "ResponseParameters": {
+                  "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                  "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                  "method.response.header.Access-Control-Allow-Origin": "'*'"
+                }
+              }
+            ],
+            "Type": "AWS_PROXY",
+            "Uri": {
+              "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterCredentialsLambda.Arn}/invocations"
+            }
+          },
+          "MethodResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseModels": {
+                "application/json": "Empty"
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": false,
+                "method.response.header.Access-Control-Allow-Methods": false,
+                "method.response.header.Access-Control-Allow-Origin": false
+              }
+            }
+          ]
+        }
+      },
+      "RegisterApiOPTIONSDeployment": {
+        "Type": "AWS::ApiGateway::Deployment",
+        "DependsOn": ["RegisterApiOPTIONSMethod"],
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          }
+        }
+      },
+      "RegisterApiOPTIONSStage": {
+        "Type": "AWS::ApiGateway::Stage",
+        "DependsOn": "RegisterApiOPTIONSDeployment",
+        "Properties": {
+          "RestApiId": {
+            "Ref": "AuthApiGateway"
+          },
+          "DeploymentId": {
+            "Ref": "RegisterApiOPTIONSDeployment"
+          },
+          "StageName": "register_options_prod"
+        }
+      },
+      "RegisterLambdaOPTIONSPermission": {
+        "Type": "AWS::Lambda::Permission",
+        "Properties": {
+          "FunctionName": {
+            "Ref": "RegisterCredentialsLambda"
+          },
+          "Action": "lambda:InvokeFunction",
+          "Principal": "apigateway.amazonaws.com",
+          "SourceArn": {
+            "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${AuthApiGateway}/*/OPTIONS/auth/register"
+          }
+        }
+      },
+
 
 
     "UserApiGateway": {
