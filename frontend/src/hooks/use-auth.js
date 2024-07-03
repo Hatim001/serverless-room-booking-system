@@ -58,6 +58,7 @@ export const AuthProvider = ({ children }) => {
         refreshSession,
         isAuthenticatedUser,
         isAuthenticatedAgent,
+        isAuthenticated: isAuthenticatedUser() || isAuthenticatedAgent(),
       }}
     >
       {children}

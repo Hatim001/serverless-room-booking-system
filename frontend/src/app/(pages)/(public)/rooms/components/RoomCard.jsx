@@ -3,6 +3,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
+import FallbackImage from '@/components/fallback-image';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const RoomCard = ({ room }) => {
   const router = useRouter();
@@ -29,13 +31,14 @@ const RoomCard = ({ room }) => {
       onClick={() => router.push(`/rooms/${room.id}`)}
     >
       <div className="relative">
-        <picture>
-          <img
-            src={images?.[currentIndex]}
-            alt="A cozy mountain cabin with a wooden deck and a white door"
-            className="w-full h-48 object-cover rounded"
+        <div className="w-full h-48 object-cover rounded">
+          <FallbackImage
+            fill={true}
+            objectFit="cover"
+            src={images?.[currentIndex]?.url}
+            alt={name}
           />
-        </picture>
+        </div>
         {/* <Badge className="absolute top-4 left-4 bg-white text-black px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
           Guest favorite
         </Badge>

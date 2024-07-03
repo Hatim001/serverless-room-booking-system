@@ -60,13 +60,13 @@ const formSchema = z.object({
       (files) =>
         files.every((file) => {
           if (file instanceof File) {
-            return file.size <= 5 * 1024 * 1024;
+            return file.size <= 2 * 1024 * 1024;
           } else {
             return true;
           }
         }),
       {
-        message: 'Each image must be less than 5MB.',
+        message: 'Each image must be less than 2MB.',
       },
     ),
 });
@@ -111,8 +111,8 @@ const RoomForm = ({ room, onSubmit, disableForm }) => {
       return;
     }
     for (let file of files) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert('Each image must be less than 5MB.');
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Each image must be less than 2MB.');
         return;
       }
     }
