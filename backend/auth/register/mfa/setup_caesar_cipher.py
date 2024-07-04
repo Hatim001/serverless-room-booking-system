@@ -1,14 +1,15 @@
+import os
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
 import traceback
 
 table_name = "dvh-user"
-sns_topic_arn = 'arn:aws:sns:us-east-1:055374150954:Registration'
+sns_topic_arn = os.getenv("SNS_TOPIC_ARN")
 
 dynamodb = boto3.resource("dynamodb")
 table = dynamodb.Table(table_name)
-sns_client = boto3.client('sns')
+sns_client = boto3.client("sns")
 client = boto3.client("cognito-idp")
 
 
@@ -60,15 +61,19 @@ def configure_caesar_cipher(payload):
         ReturnValues="ALL_NEW",
     )
 
+
 def sns_notification_and_subscription(email):
     """Checks for email subscription and sends notification"""
     try:
         subscriptions = sns_client.list_subscriptions_by_topic(TopicArn=sns_topic_arn)
         already_subscribed = False
-        for subscription in subscriptions['Subscriptions']:
-            if subscription['Endpoint'] == email:
-                subscription_arn = subscription['SubscriptionArn']
-                if subscription_arn != 'PendingConfirmation' and ':' in subscription_arn:
+        for subscription in subscriptions["Subscriptions"]:
+            if subscription["Endpoint"] == email:
+                subscription_arn = subscription["SubscriptionArn"]
+                if (
+                    subscription_arn != "PendingConfirmation"
+                    and ":" in subscription_arn
+                ):
                     already_subscribed = True
                     break
 
@@ -76,31 +81,21 @@ def sns_notification_and_subscription(email):
             # Filter policy applied to send email to respective user
             subscribe_response = sns_client.subscribe(
                 TopicArn=sns_topic_arn,
-                Protocol='email',
+                Protocol="email",
                 Endpoint=email,
                 ReturnSubscriptionArn=True,
-                Attributes={
-                    'FilterPolicy': json.dumps({
-                        'email': [email]
-                    })
-                }
+                Attributes={"FilterPolicy": json.dumps({"email": [email]})},
             )
 
-
-            subscription_arn = subscribe_response['SubscriptionArn']
+            subscription_arn = subscribe_response["SubscriptionArn"]
             print(f"Subscription ARN: {subscription_arn}")
 
         # Publish registration confirmation email
         sns_response = sns_client.publish(
             TopicArn=sns_topic_arn,
-            Subject='Registration Successful',
+            Subject="Registration Successful",
             Message=f"Dear user,\n\nYour registration was successful. Thank you for registering!\n\nSincerely,\nTeam SDP-32",
-            MessageAttributes={
-                'email': {
-                    'DataType': 'String',
-                    'StringValue': email
-                }
-            }
+            MessageAttributes={"email": {"DataType": "String", "StringValue": email}},
         )
 
         print(f"SNS publish response: {sns_response}")
@@ -109,15 +104,29 @@ def sns_notification_and_subscription(email):
 
     except Exception as e:
         print(f"Error in sns_notification_and_subscription: {str(e)}")
-        return {
-            "message": str(e)
+        return {"message": str(e)}
+
+
+class ResponseBuilder:
+    @staticmethod
+    def prepare_response(status, message, **kwargs):
+        response = {
+            "statusCode": status,
+            "body": json.dumps({"message": message, **kwargs}),
+            "headers": {
+                "Access-Control-Allow-Credentials": "true",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Origin": "http://localhost:3000",
+            },
         }
+        return response
+
 
 def lambda_handler(event, context):
     payload = json.loads(event.get("body"))
     try:
         validate_payload(payload)
-        user = validate_and_get_user(payload.get("email"))
+        validate_and_get_user(payload.get("email"))
 
         # Update DynamoDB with Caesar cipher configuration
         configure_caesar_cipher(payload)
@@ -125,29 +134,11 @@ def lambda_handler(event, context):
         # Subscribe and send confirmation email to the newly registered user
         sns_response = sns_notification_and_subscription(payload.get("email"))
 
-        return {
-            "statusCode": 200,
-            "body": json.dumps({
-                "message": "Registration successful. Confirmation email sent.",
-                "sns_response": sns_response
-            }),
-            "headers": {
-                "Access-Control-Allow-Credentials": "true",
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-            }
-        }
-
+        return ResponseBuilder.prepare_response(
+            200,
+            "Registration successful. Confirmation email sent.",
+            sns_response=sns_response,
+        )
     except Exception as e:
         traceback.print_exc()
-        return {
-            "statusCode": 500,
-            "body": json.dumps({
-                "message": str(e)
-            }),
-            "headers": {
-                "Access-Control-Allow-Credentials": "true",
-                "Access-Control-Allow-Headers": "Content-Type",
-                "Access-Control-Allow-Origin": "http://localhost:3000",
-            }
-        }
+        return ResponseBuilder.prepare_response(500, str(e))
