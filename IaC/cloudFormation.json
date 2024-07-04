@@ -2,7 +2,11 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Serverless Group-32 IaC",
   "Resources": {
-    "RegistrationCodeVerifyLambda": {
+
+
+
+
+    "AuthRegistrationCodeVerifyLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "code_verify",
@@ -10,111 +14,13 @@
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
-          "S3Bucket": "serverless-trial",
+          "S3Bucket": "auth-serverless",
           "S3Key": "code_verify.py.zip"
         },
         "Timeout": 120
       }
     },
-    "CreateRoomLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "create_room",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "create_room.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "DeleteRoomLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "delete_room",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "delete_room.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "EditRoomLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "edit_room",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "edit_room.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "GetMFAStatusLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "get_mfa_status",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "get_mfa_status.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "GetRoomDetailsLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "get_room_details",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "get_room_details.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "LoginCredentialsLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "login_credentials",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "login_credentials.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "RegisterCredentialsLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "register_credentials",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "register_credentials.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "ResendCodeLambda": {
+    "AuthRegistrationResendCodeLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "resend_code",
@@ -128,7 +34,49 @@
         "Timeout": 120
       }
     },
-    "SessionLambda": {
+    "AuthLoginCredentialsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "login_credentials",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "auth-serverless",
+          "S3Key": "login_credentials.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AuthGetMFAStatusLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "get_mfa_status",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "auth-serverless",
+          "S3Key": "get_mfa_status.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AuthRegisterCredentialsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "register_credentials",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-trial",
+          "S3Key": "register_credentials.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AuthSessionLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "session",
@@ -136,13 +84,13 @@
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
-          "S3Bucket": "serverless-trial",
+          "S3Bucket": "auth-serverless",
           "S3Key": "session.py.zip"
         },
         "Timeout": 120
       }
     },
-    "SetCaesarCipherLambda": {
+    "AuthSetCaesarCipherLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "setup_caesar_cipher",
@@ -150,13 +98,13 @@
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
-          "S3Bucket": "serverless-trial",
+          "S3Bucket": "auth-serverless",
           "S3Key": "setup_caesar_cipher.py.zip"
         },
         "Timeout": 120
       }
     },
-    "SetSecurityQuestionLambda": {
+    "AuthSetSecurityQuestionLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "setup_security_question",
@@ -164,41 +112,13 @@
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
-          "S3Bucket": "serverless-trial",
+          "S3Bucket": "auth-serverless",
           "S3Key": "setup_security_question.py.zip"
         },
         "Timeout": 120
       }
     },
-    "GetUserRoomsLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "user_get_rooms",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "user_get_rooms.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "ValidatorLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "validator",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "serverless-trial",
-          "S3Key": "validator.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "VerifyCipherLambda": {
+    "AuthVerifyCipherLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "verify_cipher",
@@ -206,13 +126,27 @@
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
-          "S3Bucket": "serverless-trial",
+          "S3Bucket": "auth-serverless",
           "S3Key": "verify_cipher.py.zip"
         },
         "Timeout": 120
       }
     },
-    "VerifySecurityAnswer": {
+    "AuthLogoutAnswer": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "logout",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "auth-serverless",
+          "S3Key": "logout.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AuthVerifySecurityAnswerLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "verify_security_answer",
@@ -220,14 +154,226 @@
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
-          "S3Bucket": "serverless-trial",
+          "S3Bucket": "auth-serverless",
           "S3Key": "verify_security_answer.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AuthAuthorizerLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "authorizer",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "auth-serverless",
+          "S3Key": "authorizer.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AuthConstantsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "constants",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "auth-serverless",
+          "S3Key": "constants.py.zip"
         },
         "Timeout": 120
       }
     },
 
 
+    "UserBookRoomLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "book_room",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "book_room.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "UserBookRoomApprovalLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "book_room_approval",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "book_room_approval.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "UserBookRoomRequestLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "book_room_request",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "book_room_request.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "UserGetBookingsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "get_bookings",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "get_bookings.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "UserAddFeedbackLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "add_feedback",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "add_feedback.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "UserGetRoomDetailsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "get_room_details",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "get_room_details.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "UserGetRoomsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "user_get_rooms",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "user_get_rooms.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "UserValidatorLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "validator",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "validator.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+
+
+    "AgentCreateRoomLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "create_room",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "agent-serverless",
+          "S3Key": "create_room.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AgentDeleteRoomLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "delete_room",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "agent-serverless",
+          "S3Key": "delete_room.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AgentEditRoomLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "edit_room",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "agent-serverless",
+          "S3Key": "edit_room.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AgentGetRoomsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "get_rooms",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "agent-serverless",
+          "S3Key": "get_rooms.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AgentValidatorLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "validator",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "lambda/signup.handler",
+        "Code": {
+          "S3Bucket": "agent-serverless",
+          "S3Key": "validator.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
 
 
 
@@ -294,7 +440,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SessionLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthSessionLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -336,11 +482,11 @@
         "StageName": "prod"
       }
     },
-    "SessionLambdaGETPermission": {
+    "AuthSessionLambdaGETPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "SessionLambda"
+          "Ref": "AuthSessionLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -379,7 +525,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SessionLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthSessionLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -421,11 +567,11 @@
         "StageName": "sessionoptionsprod"
       }
     },
-    "SessionLambdaOPTIONSPermission": {
+    "AuthSessionLambdaOPTIONSPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "SessionLambda"
+          "Ref": "AuthSessionLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -476,7 +622,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterCredentialsLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthRegisterCredentialsLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -522,7 +668,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "RegisterCredentialsLambda"
+          "Ref": "AuthRegisterCredentialsLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -561,7 +707,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegisterCredentialsLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthRegisterCredentialsLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -607,7 +753,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "RegisterCredentialsLambda"
+          "Ref": "AuthRegisterCredentialsLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -670,7 +816,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SetSecurityQuestionLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthSetSecurityQuestionLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -716,7 +862,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "SetSecurityQuestionLambda"
+          "Ref": "AuthSetSecurityQuestionLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -755,7 +901,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SetSecurityQuestionLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthSetSecurityQuestionLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -801,7 +947,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "SetSecurityQuestionLambda"
+          "Ref": "AuthSetSecurityQuestionLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -852,7 +998,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SetCaesarCipherLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthSetCaesarCipherLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -898,7 +1044,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "SetCaesarCipherLambda"
+          "Ref": "AuthSetCaesarCipherLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -937,7 +1083,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SetCaesarCipherLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthSetCaesarCipherLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -983,7 +1129,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "SetCaesarCipherLambda"
+          "Ref": "AuthSetCaesarCipherLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -1034,7 +1180,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetMFAStatusLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthGetMFAStatusLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -1080,7 +1226,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "GetMFAStatusLambda"
+          "Ref": "AuthGetMFAStatusLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -1119,7 +1265,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetMFAStatusLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthGetMFAStatusLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -1165,7 +1311,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "GetMFAStatusLambda"
+          "Ref": "AuthGetMFAStatusLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -1216,7 +1362,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegistrationCodeVerifyLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthRegistrationCodeVerifyLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -1262,7 +1408,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "RegistrationCodeVerifyLambda"
+          "Ref": "AuthRegistrationCodeVerifyLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -1301,7 +1447,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${RegistrationCodeVerifyLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthRegistrationCodeVerifyLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -1347,7 +1493,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "RegistrationCodeVerifyLambda"
+          "Ref": "AuthRegistrationCodeVerifyLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -1398,7 +1544,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ResendCodeLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthRegistrationResendCodeLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -1440,11 +1586,11 @@
         "StageName": "resend_code_post_prod"
       }
     },
-    "ResendCodeLambdaPOSTPermission": {
+    "AuthRegistrationResendCodeLambdaPOSTPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "ResendCodeLambda"
+          "Ref": "AuthRegistrationResendCodeLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -1483,7 +1629,7 @@
           ],
           "Type": "AWS_PROXY",
           "Uri": {
-            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ResendCodeLambda.Arn}/invocations"
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthRegistrationResendCodeLambda.Arn}/invocations"
           }
         },
         "MethodResponses": [
@@ -1525,11 +1671,11 @@
         "StageName": "resend_code_options_prod"
       }
     },
-    "ResendCodeLambdaOPTIONSPermission": {
+    "AuthRegistrationResendCodeLambdaOPTIONSPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "ResendCodeLambda"
+          "Ref": "AuthRegistrationResendCodeLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
