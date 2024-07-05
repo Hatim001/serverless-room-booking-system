@@ -10,7 +10,9 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
+    "@google-cloud/dialogflow-cx": "^4.7.0",
     "@hookform/resolvers": "^3.6.0",
+    "@kommunicate/kommunicate-chatbot-plugin": "^0.0.7",
     "@preline/select": "^2.3.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.0",
@@ -47,6 +49,7 @@
     "react-hook-form": "^7.51.5",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^10.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

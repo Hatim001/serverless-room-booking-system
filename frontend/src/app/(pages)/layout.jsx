@@ -5,6 +5,7 @@ import Header from '@/components/layouts/Header';
 import { useAuth } from '@/hooks/use-auth';
 import { GUEST_ROUTES, AGENT_ROUTES, USER_ROUTES } from '@/utils/constants';
 import React, { useEffect, useState } from 'react';
+import ChatBot from '@/components/VirtualBot/ChatBot';
 
 const PublicLayout = ({ children, params }) => {
   const [routes, setRoutes] = useState(GUEST_ROUTES);
@@ -29,6 +30,7 @@ const PublicLayout = ({ children, params }) => {
     }
   };
 
+ 
   return (
     <div className="lg:w-3/4 m-auto flex flex-col justify-between h-screen">
       <div className="">
@@ -37,6 +39,7 @@ const PublicLayout = ({ children, params }) => {
       <main className="flex-grow overflow-auto py-2 no-scrollbar">
         {children}
       </main>
+      <ChatBot session={session} />
       <div className="">
         <Footer />
       </div>
