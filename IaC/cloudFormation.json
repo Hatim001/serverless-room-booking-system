@@ -372,6 +372,7 @@
         "Name": "APIsSDP-32"
       }
     },
+
     "AuthApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -399,6 +400,92 @@
         "PathPart": "session"
       }
     },
+    "RegisterApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "AuthApiResource"
+        },
+        "PathPart": "register"
+      }
+    },
+    "RegisterMFAApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "RegisterApiResource"
+        },
+        "PathPart": "mfa"
+      }
+    },
+    "MFASecurityQuestionApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "RegisterMFAApiResource"
+        },
+        "PathPart": "security-question"
+      }
+    },
+    "MFACaesarCipherApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "RegisterMFAApiResource"
+        },
+        "PathPart": "caesar-cipher"
+      }
+    },
+    "MFAStatusApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "RegisterMFAApiResource"
+        },
+        "PathPart": "status"
+      }
+    },
+    "RegisterVerifyApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "RegisterApiResource"
+        },
+        "PathPart": "verify"
+      }
+    },
+    "ResendCodeApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "RegisterApiResource"
+        },
+        "PathPart": "resend-code"
+      }
+    },
+
+
     "SessionApiGETMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -445,43 +532,6 @@
             }
           }
         ]
-      }
-    },
-    "SessionApiGETDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "SessionApiGETMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "SessionApiGETStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "SessionApiGETDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "SessionApiGETDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "AuthSessionLambdaGETPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthSessionLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/auth/session"
-        }
       }
     },
     "SessionApiOPTIONSMethod": {
@@ -532,55 +582,6 @@
         ]
       }
     },
-    "SessionApiOPTIONSDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "SessionApiOPTIONSMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "SessionApiOPTIONSStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "SessionApiOPTIONSDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "SessionApiOPTIONSDeployment"
-        },
-        "StageName": "prod-opt"
-      }
-    },
-    "AuthSessionLambdaOPTIONSPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthSessionLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/session"
-        }
-      }
-    },
-    "RegisterApiResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "ParentId": {
-          "Ref": "AuthApiResource"
-        },
-        "PathPart": "register"
-      }
-    },
     "RegisterApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -627,43 +628,6 @@
             }
           }
         ]
-      }
-    },
-    "RegisterApiPOSTDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "RegisterApiPOSTMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "RegisterApiPOSTStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "RegisterApiPOSTDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "RegisterApiPOSTDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "RegisterLambdaPOSTPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthRegisterCredentialsLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register"
-        }
       }
     },
     "RegisterApiOPTIONSMethod": {
@@ -714,67 +678,6 @@
         ]
       }
     },
-    "RegisterApiOPTIONSDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "RegisterApiOPTIONSMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "RegisterApiOPTIONSStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "RegisterApiOPTIONSDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "RegisterApiOPTIONSDeployment"
-        },
-        "StageName": "prod-opt"
-      }
-    },
-    "RegisterLambdaOPTIONSPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthRegisterCredentialsLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register"
-        }
-      }
-    },
-    "RegisterMFAApiResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "ParentId": {
-          "Ref": "RegisterApiResource"
-        },
-        "PathPart": "mfa"
-      }
-    },
-    "MFASecurityQuestionApiResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "ParentId": {
-          "Ref": "RegisterMFAApiResource"
-        },
-        "PathPart": "security-question"
-      }
-    },
     "MFASecurityQuestionPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -821,43 +724,6 @@
             }
           }
         ]
-      }
-    },
-    "MFASecurityQuestionApiPOSTDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "MFASecurityQuestionPOSTMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "MFASecurityQuestionApiPOSTStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "MFASecurityQuestionApiPOSTDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "MFASecurityQuestionApiPOSTDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "MFASecurityQuestionLambdaPOSTPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthSetSecurityQuestionLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register/mfa/security-question"
-        }
       }
     },
     "MFASecurityQuestionOPTIONSMethod": {
@@ -908,55 +774,6 @@
         ]
       }
     },
-    "MFASecurityQuestionOPTIONSDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "MFASecurityQuestionOPTIONSMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "MFASecurityQuestionOPTIONSStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "MFASecurityQuestionOPTIONSDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "MFASecurityQuestionOPTIONSDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "MFASecurityQuestionOPTIONSPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthSetSecurityQuestionLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register/mfa/security-question"
-        }
-      }
-    },
-    "MFACaesarCipherApiResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "ParentId": {
-          "Ref": "RegisterMFAApiResource"
-        },
-        "PathPart": "caesar-cipher"
-      }
-    },
     "MFACaesarCipherPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -1003,43 +820,6 @@
             }
           }
         ]
-      }
-    },
-    "MFACaesarCipherApiPOSTDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "MFACaesarCipherPOSTMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "MFACaesarCipherApiPOSTStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "MFACaesarCipherApiPOSTDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "MFACaesarCipherApiPOSTDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "MFACaesarCipherLambdaPOSTPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthSetCaesarCipherLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register/mfa/caesar-cipher"
-        }
       }
     },
     "MFACaesarCipherOPTIONSMethod": {
@@ -1090,55 +870,6 @@
         ]
       }
     },
-    "MFACaesarCipherOPTIONSDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "MFACaesarCipherOPTIONSMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "MFACaesarCipherOPTIONSStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "MFACaesarCipherOPTIONSDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "MFACaesarCipherOPTIONSDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "MFACaesarCipherOPTIONSPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthSetCaesarCipherLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register/mfa/caesar-cipher"
-        }
-      }
-    },
-    "MFAStatusApiResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "ParentId": {
-          "Ref": "RegisterMFAApiResource"
-        },
-        "PathPart": "status"
-      }
-    },
     "MFAStatusGETMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -1185,43 +916,6 @@
             }
           }
         ]
-      }
-    },
-    "MFAStatusApiGETDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "MFAStatusGETMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "MFAStatusApiGETStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "MFAStatusApiGETDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "MFAStatusApiGETDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "MFAStatusLambdaGETPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthGetMFAStatusLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/auth/register/mfa/status"
-        }
       }
     },
     "MFAStatusOPTIONSMethod": {
@@ -1272,55 +966,6 @@
         ]
       }
     },
-    "MFAStatusOPTIONSDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "MFAStatusOPTIONSMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "MFAStatusOPTIONSStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "MFAStatusOPTIONSDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "MFAStatusOPTIONSDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "MFAStatusLambdaOPTIONSPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthGetMFAStatusLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register/mfa/status"
-        }
-      }
-    },
-    "RegisterVerifyApiResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "ParentId": {
-          "Ref": "RegisterApiResource"
-        },
-        "PathPart": "verify"
-      }
-    },
     "RegisterVerifyApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -1367,43 +1012,6 @@
             }
           }
         ]
-      }
-    },
-    "RegisterVerifyApiPOSTDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "RegisterVerifyApiPOSTMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "RegisterVerifyApiPOSTStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "RegisterVerifyApiPOSTDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "RegisterVerifyApiPOSTDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "RegisterVerifyLambdaPOSTPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthRegistrationCodeVerifyLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register/verify"
-        }
       }
     },
     "RegisterVerifyApiOPTIONSMethod": {
@@ -1454,55 +1062,6 @@
         ]
       }
     },
-    "RegisterVerifyApiOPTIONSDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "RegisterVerifyApiOPTIONSMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "RegisterVerifyApiOPTIONSStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "RegisterVerifyApiOPTIONSDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "RegisterVerifyApiOPTIONSDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "RegisterVerifyLambdaOPTIONSPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthRegistrationCodeVerifyLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register/verify"
-        }
-      }
-    },
-    "ResendCodeApiResource": {
-      "Type": "AWS::ApiGateway::Resource",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "ParentId": {
-          "Ref": "RegisterApiResource"
-        },
-        "PathPart": "resend-code"
-      }
-    },
     "ResendCodeApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -1549,43 +1108,6 @@
             }
           }
         ]
-      }
-    },
-    "ResendCodeApiPOSTDeployment": {
-      "Type": "AWS::ApiGateway::Deployment",
-      "DependsOn": [
-        "ResendCodeApiPOSTMethod"
-      ],
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "ResendCodeApiPOSTStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "ResendCodeApiPOSTDeployment",
-      "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
-        },
-        "DeploymentId": {
-          "Ref": "ResendCodeApiPOSTDeployment"
-        },
-        "StageName": "prod"
-      }
-    },
-    "AuthRegistrationResendCodeLambdaPOSTPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AuthRegistrationResendCodeLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register/resend-code"
-        }
       }
     },
     "ResendCodeApiOPTIONSMethod": {
@@ -1636,28 +1158,203 @@
         ]
       }
     },
-    "ResendCodeApiOPTIONSDeployment": {
+
+
+
+    "AuthApiDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "DependsOn": [
+        "SessionApiGETMethod",
+        "SessionApiOPTIONSMethod",
+        "RegisterApiPOSTMethod",
+        "RegisterApiOPTIONSMethod",
+        "MFASecurityQuestionPOSTMethod",
+        "MFASecurityQuestionOPTIONSMethod",
+        "MFACaesarCipherPOSTMethod",
+        "MFACaesarCipherOPTIONSMethod",
+        "MFAStatusGETMethod",
+        "RegisterVerifyApiPOSTMethod",
+        "RegisterVerifyApiOPTIONSMethod",
+        "ResendCodeApiPOSTMethod",
         "ResendCodeApiOPTIONSMethod"
       ],
       "Properties": {
         "RestApiId": {
           "Ref": "ApiStack"
+        },
+        "StageName": "prod"
+      }
+    },
+
+
+
+    "AuthSessionLambdaGETPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthSessionLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/auth/session"
         }
       }
     },
-    "ResendCodeApiOPTIONSStage": {
-      "Type": "AWS::ApiGateway::Stage",
-      "DependsOn": "ResendCodeApiOPTIONSDeployment",
+    "AuthSessionLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
       "Properties": {
-        "RestApiId": {
-          "Ref": "ApiStack"
+        "FunctionName": {
+          "Ref": "AuthSessionLambda"
         },
-        "DeploymentId": {
-          "Ref": "ResendCodeApiOPTIONSDeployment"
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/session"
+        }
+      }
+    },
+    "RegisterLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthRegisterCredentialsLambda"
         },
-        "StageName": "prod"
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register"
+        }
+      }
+    },
+    "RegisterLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthRegisterCredentialsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register"
+        }
+      }
+    },
+    "MFASecurityQuestionLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthSetSecurityQuestionLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register/mfa/security-question"
+        }
+      }
+    },
+    "MFASecurityQuestionOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthSetSecurityQuestionLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register/mfa/security-question"
+        }
+      }
+    },
+    "MFACaesarCipherLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthSetCaesarCipherLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register/mfa/caesar-cipher"
+        }
+      }
+    },
+    "MFACaesarCipherOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthSetCaesarCipherLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register/mfa/caesar-cipher"
+        }
+      }
+    },
+    "MFAStatusLambdaGETPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthGetMFAStatusLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/auth/register/mfa/status"
+        }
+      }
+    },
+    "MFAStatusLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthGetMFAStatusLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register/mfa/status"
+        }
+      }
+    },
+    "RegisterVerifyLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthRegistrationCodeVerifyLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register/verify"
+        }
+      }
+    },
+    "RegisterVerifyLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthRegistrationCodeVerifyLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/register/verify"
+        }
+      }
+    },
+    "AuthRegistrationResendCodeLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AuthRegistrationResendCodeLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/auth/register/resend-code"
+        }
       }
     },
     "AuthRegistrationResendCodeLambdaOPTIONSPermission": {
