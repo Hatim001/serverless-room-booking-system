@@ -8,8 +8,8 @@ from decimal import Decimal
 dynamodb = boto3.resource("dynamodb")
 client = boto3.client("cognito-idp")
 cognito_client_id = os.getenv("COGNITO_CLIENT_ID")
-sns_topic_arn = 'arn:aws:sns:us-east-1:055374150954:Login'
-sns_client = boto3.client('sns')
+sns_topic_arn = os.getenv("SNS_TOPIC_ARN")
+sns_client = boto3.client("sns")
 
 
 class DecimalEncoder(json.JSONEncoder):
@@ -118,10 +118,13 @@ def sns_notification_and_subscription(email):
     try:
         subscriptions = sns_client.list_subscriptions_by_topic(TopicArn=sns_topic_arn)
         already_subscribed = False
-        for subscription in subscriptions['Subscriptions']:
-            if subscription['Endpoint'] == email:
-                subscription_arn = subscription['SubscriptionArn']
-                if subscription_arn != 'PendingConfirmation' and ':' in subscription_arn:
+        for subscription in subscriptions["Subscriptions"]:
+            if subscription["Endpoint"] == email:
+                subscription_arn = subscription["SubscriptionArn"]
+                if (
+                    subscription_arn != "PendingConfirmation"
+                    and ":" in subscription_arn
+                ):
                     already_subscribed = True
                     break
 
@@ -129,31 +132,22 @@ def sns_notification_and_subscription(email):
             # Filter policy applied to send email to respective user
             subscribe_response = sns_client.subscribe(
                 TopicArn=sns_topic_arn,
-                Protocol='email',
+                Protocol="email",
                 Endpoint=email,
                 ReturnSubscriptionArn=True,
-                Attributes={
-                    'FilterPolicy': json.dumps({
-                        'email': [email]
-                    })
-                }
+                Attributes={"FilterPolicy": json.dumps({"email": [email]})},
             )
 
             # Extract the subscription ARN from the response
-            subscription_arn = subscribe_response['SubscriptionArn']
+            subscription_arn = subscribe_response["SubscriptionArn"]
             print(f"Subscription ARN: {subscription_arn}")
 
         # Publish login confirmation email
         sns_response = sns_client.publish(
             TopicArn=sns_topic_arn,
-            Subject='Login Successful',
+            Subject="Login Successful",
             Message=f"Dear user,\n\nYour login was successful.\n\nSincerely,\nTeam SDP-32",
-            MessageAttributes={
-                'email': {
-                    'DataType': 'String',
-                    'StringValue': email
-                }
-            }
+            MessageAttributes={"email": {"DataType": "String", "StringValue": email}},
         )
 
         print(f"SNS publish response: {sns_response}")
@@ -162,9 +156,8 @@ def sns_notification_and_subscription(email):
 
     except Exception as e:
         print(f"Error in sns_notification_and_subscription: {str(e)}")
-        return {
-            "message": str(e)
-        }
+        return {"message": str(e)}
+
 
 def prepare_response(status, message, headers={}, **kwargs):
     """prepares the response"""
@@ -198,7 +191,10 @@ def lambda_handler(event, context):
         session = update_session_with_token(session_id, access_token, expires_in)
         sns_response = sns_notification_and_subscription(payload.get("email"))
         return prepare_response(
-            status=200, message="User login successful!! Confirmation email sent", session=session, sns_response=sns_response
+            status=200,
+            message="User login successful!! Confirmation email sent",
+            session=session,
+            sns_response=sns_response,
         )
     except Exception as e:
         traceback.print_exc()

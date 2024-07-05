@@ -4,9 +4,8 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'placehold.co',
+        hostname: 'dvh-bucket.s3.amazonaws.com',
         port: '',
-        pathname: '*',
       },
     ],
   },

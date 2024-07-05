@@ -1,14 +1,31 @@
+import os
 import json
 import boto3
 import traceback
 from uuid import uuid4
+from decimal import Decimal
 from dateutil.parser import parse
 from datetime import datetime, timezone, UTC
+
+dynamodb = boto3.resource("dynamodb")
+sqs = boto3.client("sqs")
+sns = boto3.client("sns")
+
+SQS_QUEUE_URL = os.getenv("SQS_QUEUE_URL")
+
+
+class DecimalEncoder(json.JSONEncoder):
+    """Helper class to convert a DynamoDB item to JSON."""
+
+    def default(self, obj):
+        if isinstance(obj, Decimal):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
 
 
 class DynamoDBService:
     def __init__(self):
-        self.dynamodb = boto3.resource("dynamodb")
+        self.dynamodb = dynamodb
 
     def get_item(self, table_name, key):
         table = self.dynamodb.Table(table_name)
@@ -105,6 +122,11 @@ class BookingService:
     def book_room(self, schema):
         self.db_service.put_item("dvh-booking", schema)
 
+        # Send message to SQS queue
+        sqs.send_message(
+            QueueUrl=SQS_QUEUE_URL, MessageBody=json.dumps(schema, cls=DecimalEncoder)
+        )
+
 
 class BookingSchema:
     def __init__(self, payload, session_user):
@@ -126,7 +148,7 @@ class BookingSchema:
             "check_out_date": self.payload.get("checkOutDate"),
             "guests": guests,
             "room": room,
-            "status": "RESERVED",
+            "status": "PENDING",
             "total_price": self.payload.get("totalPrice"),
             "user": self.session_user,
             "created_at": timestamp,
@@ -147,7 +169,7 @@ class ResponseBuilder:
     def prepare_response(status, message, **kwargs):
         response = {
             "statusCode": status,
-            "body": json.dumps({"message": message, **kwargs}),
+            "body": json.dumps({"message": message, **kwargs}, cls=DecimalEncoder),
             "headers": {
                 "Access-Control-Allow-Credentials": "true",
                 "Access-Control-Allow-Headers": "Content-Type",
@@ -174,7 +196,7 @@ def lambda_handler(event, context):
         booking_service.book_room(schema)
 
         return ResponseBuilder.prepare_response(
-            status=200, message="Room reserved successfully!!"
+            status=200, message="Room booking request submitted successfully!!"
         )
     except Exception as e:
         traceback.print_exc()
