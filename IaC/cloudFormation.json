@@ -2,10 +2,6 @@
   "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Serverless Group-32 IaC",
   "Resources": {
-
-
-
-
     "AuthRegistrationCodeVerifyLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -28,7 +24,7 @@
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
-          "S3Bucket": "serverless-trial",
+          "S3Bucket": "auth-serverless",
           "S3Key": "resend_code.py.zip"
         },
         "Timeout": 120
@@ -70,7 +66,7 @@
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
         "Code": {
-          "S3Bucket": "serverless-trial",
+          "S3Bucket": "auth-serverless",
           "S3Key": "register_credentials.py.zip"
         },
         "Timeout": 120
@@ -132,7 +128,7 @@
         "Timeout": 120
       }
     },
-    "AuthLogoutAnswer": {
+    "AuthLogoutLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
         "FunctionName": "logout",
@@ -188,8 +184,6 @@
         "Timeout": 120
       }
     },
-
-
     "UserBookRoomLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -283,7 +277,7 @@
         "Handler": "lambda/signup.handler",
         "Code": {
           "S3Bucket": "serverless-user",
-          "S3Key": "user_get_rooms.py.zip"
+          "S3Key": "get_rooms.py.zip"
         },
         "Timeout": 120
       }
@@ -291,7 +285,7 @@
     "UserValidatorLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "validator",
+        "FunctionName": "user_validator",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
@@ -302,8 +296,6 @@
         "Timeout": 120
       }
     },
-
-
     "AgentCreateRoomLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -363,7 +355,7 @@
     "AgentValidatorLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
-        "FunctionName": "validator",
+        "FunctionName": "agent_validator",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "lambda/signup.handler",
@@ -374,9 +366,6 @@
         "Timeout": 120
       }
     },
-
-
-
     "ApiStack": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
@@ -564,7 +553,7 @@
         "DeploymentId": {
           "Ref": "SessionApiOPTIONSDeployment"
         },
-        "StageName": "sessionoptionsprod"
+        "StageName": "prod-opt"
       }
     },
     "AuthSessionLambdaOPTIONSPermission": {
@@ -659,9 +648,9 @@
           "Ref": "ApiStack"
         },
         "DeploymentId": {
-          "Ref": "SessionApiGETDeployment"
+          "Ref": "RegisterApiPOSTDeployment"
         },
-        "StageName": "register_post_prod"
+        "StageName": "prod"
       }
     },
     "RegisterLambdaPOSTPermission": {
@@ -746,7 +735,7 @@
         "DeploymentId": {
           "Ref": "RegisterApiOPTIONSDeployment"
         },
-        "StageName": "register_options_prod"
+        "StageName": "prod-opt"
       }
     },
     "RegisterLambdaOPTIONSPermission": {
@@ -855,7 +844,7 @@
         "DeploymentId": {
           "Ref": "MFASecurityQuestionApiPOSTDeployment"
         },
-        "StageName": "mfa_question_post_prod"
+        "StageName": "prod"
       }
     },
     "MFASecurityQuestionLambdaPOSTPermission": {
@@ -940,7 +929,7 @@
         "DeploymentId": {
           "Ref": "MFASecurityQuestionOPTIONSDeployment"
         },
-        "StageName": "mfa_question_options_prod"
+        "StageName": "prod"
       }
     },
     "MFASecurityQuestionOPTIONSPermission": {
@@ -1037,7 +1026,7 @@
         "DeploymentId": {
           "Ref": "MFACaesarCipherApiPOSTDeployment"
         },
-        "StageName": "mfa_caesar_cipher_post_prod"
+        "StageName": "prod"
       }
     },
     "MFACaesarCipherLambdaPOSTPermission": {
@@ -1122,7 +1111,7 @@
         "DeploymentId": {
           "Ref": "MFACaesarCipherOPTIONSDeployment"
         },
-        "StageName": "mfa_caesar_cipher_options_prod"
+        "StageName": "prod"
       }
     },
     "MFACaesarCipherOPTIONSPermission": {
@@ -1219,7 +1208,7 @@
         "DeploymentId": {
           "Ref": "MFAStatusApiGETDeployment"
         },
-        "StageName": "mfa_status_get_prod"
+        "StageName": "prod"
       }
     },
     "MFAStatusLambdaGETPermission": {
@@ -1304,7 +1293,7 @@
         "DeploymentId": {
           "Ref": "MFAStatusOPTIONSDeployment"
         },
-        "StageName": "mfa_status_options_prod"
+        "StageName": "prod"
       }
     },
     "MFAStatusLambdaOPTIONSPermission": {
@@ -1401,7 +1390,7 @@
         "DeploymentId": {
           "Ref": "RegisterVerifyApiPOSTDeployment"
         },
-        "StageName": "register_verify_post_prod"
+        "StageName": "prod"
       }
     },
     "RegisterVerifyLambdaPOSTPermission": {
@@ -1486,7 +1475,7 @@
         "DeploymentId": {
           "Ref": "RegisterVerifyApiOPTIONSDeployment"
         },
-        "StageName": "register_verify_options_prod"
+        "StageName": "prod"
       }
     },
     "RegisterVerifyLambdaOPTIONSPermission": {
@@ -1583,7 +1572,7 @@
         "DeploymentId": {
           "Ref": "ResendCodeApiPOSTDeployment"
         },
-        "StageName": "resend_code_post_prod"
+        "StageName": "prod"
       }
     },
     "AuthRegistrationResendCodeLambdaPOSTPermission": {
@@ -1668,7 +1657,7 @@
         "DeploymentId": {
           "Ref": "ResendCodeApiOPTIONSDeployment"
         },
-        "StageName": "resend_code_options_prod"
+        "StageName": "prod"
       }
     },
     "AuthRegistrationResendCodeLambdaOPTIONSPermission": {
