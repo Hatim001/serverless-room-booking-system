@@ -6,6 +6,11 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'dvh-bucket.s3.amazonaws.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+      },
     ],
   },
 };

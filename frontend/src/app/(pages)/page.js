@@ -7,7 +7,7 @@ const Index = () => {
       <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-10">
         <div className="mt-5 max-w-2xl text-center mx-auto">
           <h1 className="block font-bold text-gray-800 text-4xl md:text-5xl lg:text-6xl dark:text-neutral-200">
-            {'Book your vacation home '}
+            {'Boook your vacation home'}
             <span className="bg-clip-text bg-gradient-to-tl from-blue-600 to-violet-600 text-transparent">
               Now!!
             </span>
