@@ -1,4 +1,4 @@
-import { handleSuccess } from '@/lib/response';
+import { handleError, handleSuccess } from '@/lib/response';
 import { getSession } from '@/lib/session';
 
 export const GET = async (request) => {
