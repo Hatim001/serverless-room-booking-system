@@ -23,6 +23,10 @@ const USER_ROUTES = [
     path: '/user/bookings',
   },
   {
+    label: 'Tickets',
+    path: '/user/tickets',
+  },
+  {
     label: 'Logout',
     path: '/logout',
   },
@@ -30,8 +34,16 @@ const USER_ROUTES = [
 
 const AGENT_ROUTES = [
   {
+    label: 'Dashboard',
+    path: '/agent/dashboard',
+  },
+  {
     label: 'Rooms',
     path: '/agent/rooms',
+  },
+  {
+    label: 'Tickets',
+    path: '/agent/tickets',
   },
   {
     label: 'Logout',

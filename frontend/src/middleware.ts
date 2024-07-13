@@ -25,9 +25,9 @@ const PUBLIC_PATHS = [
 
 const SUDO_PATHS = ['/logout'];
 
-const AGENT_PATHS = ['/agent/rooms'];
+const AGENT_PATHS = ['/agent/rooms', '/agent/tickets', '/agent/dashboard'];
 
-const USER_PATHS = ['/rooms', '/user/bookings'];
+const USER_PATHS = ['/rooms', '/user/bookings', '/user/tickets'];
 
 const LOGIN_SIGNUP_PATHS = [
   '/user/login',
