@@ -79,7 +79,7 @@ def lambda_handler(event, context):
         }
         
         
-    except Exception, e:
+    except Exception as e:
         return {
             'statusCode': 200,
             'message':'failed',
