@@ -40,6 +40,7 @@ export async function sendMessageToDialogflow(message,session) {
         parameters: {
           fields: {
             userRole: { kind: 'stringValue', stringValue: session.role ? session.role : 'guest' },
+            userEmail: { kind: 'stringValue', stringValue: session.user.email ? session.user.email : '' },
           }
         }
       }
