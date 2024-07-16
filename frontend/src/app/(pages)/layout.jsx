@@ -30,7 +30,6 @@ const PublicLayout = ({ children, params }) => {
     }
   };
 
- 
   return (
     <div className="lg:w-3/4 m-auto flex flex-col justify-between h-screen">
       <div className="">
