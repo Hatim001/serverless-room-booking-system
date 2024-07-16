@@ -27,11 +27,18 @@ def publish_message(request):
     
     try:
         # validating booking details and assigning agent
-        response = requests.post(API_ENDPOINT, json={"email": userEmail})
+        response = requests.post(API_ENDPOINT, json={"userEmail": userEmail,"bookingId":bookingId})
         response_json = response.json()
 
         if response_json.get('message') != 'success':
             return prepare_response(response_json.get('errorMessage'))
+
+        body_json = json.loads(response_json.get('body'))
+        agent_email=body_json.get('agent_email')
+        ticket_id=body_json.get('ticket_id')
+
+        parameters['agentEmail']=agent_email
+        parameters['ticket_id']=ticket_id
 
         # publishing message on topic
         publisher = pubsub_v1.PublisherClient()
@@ -40,9 +47,8 @@ def publish_message(request):
         message_data = 'create ticket'.encode('utf-8')
         future = publisher.publish(topic_path, message_data, **parameters)
         future.result()
-        # print("Message sent")
 
-        bot_response = "Thank you reaching out! We have created a new ticket #{} and agent:{} will be assisting you with this ticket. You can have chat with agent by clicking on the Tickets option in navigation bar".format(response_json.get('ticket_id'),response_json.get('agent_email'))
+        bot_response = "Thank you reaching out! We have created a new ticket #{} and agent:{} will be assisting you with this ticket. You can have chat with agent by clicking on the Tickets option in navigation bar".format(ticket_id,agent_email)
 
         return prepare_response(bot_response)
     except Exception as e:

@@ -4,6 +4,7 @@ import boto3
 import traceback
 from boto3.dynamodb.conditions import Attr
 from uuid import uuid4
+import random
 
 
 dynamodb = boto3.resource("dynamodb")
@@ -50,18 +51,16 @@ def assign_agent():
     
     # Randomly selecting an agent
     selected_agent = random.choice(agents)
-    
     return selected_agent.get('email')
     
 
 def lambda_handler(event, context):
     
-    payload = json.loads(event.get("body"))
     try:
-        validate_headers(payload)
+        validate_headers(event)
         
-        email=payload.get('userEmail')
-        bookingId=payload.get('bookingId')
+        email=event.get('userEmail')
+        bookingId=event.get('bookingId')
         check_booking_details(bookingId,email)
         
         ticket_id=uuid4().hex
