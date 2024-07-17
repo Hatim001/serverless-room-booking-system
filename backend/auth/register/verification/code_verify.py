@@ -6,6 +6,8 @@ import traceback
 dynamodb = boto3.resource("dynamodb")
 table_name = os.getenv("DYNAMODB_TABLE_NAME")
 cognito_client_id = os.getenv("COGNITO_CLIENT_ID")
+sns_topic_arn = os.getenv("SNS_TOPIC_ARN")
+sns_client = boto3.client("sns")
 
 
 def validate_payload(payload):
@@ -51,6 +53,32 @@ def update_user_verification_status(email):
     )
 
 
+def send_subscription_confirmation_email(email):
+    """sends the subscription confirmation email"""
+    is_subscribed = False
+    paginator = sns_client.get_paginator("list_subscriptions_by_topic")
+    for page in paginator.paginate(TopicArn=sns_topic_arn):
+        for subscription in page["Subscriptions"]:
+            if (
+                subscription["Protocol"] == "email"
+                and subscription["Endpoint"] == email
+            ):
+                is_subscribed = True
+                break
+
+        if is_subscribed:
+            break
+
+    if not is_subscribed:
+        sns_client.subscribe(
+            TopicArn=sns_topic_arn,
+            Protocol="email",
+            Endpoint=email,
+            ReturnSubscriptionArn=True,
+            Attributes={"FilterPolicy": json.dumps({"email": [email]})},
+        )
+
+
 def lambda_handler(event, context):
     payload = json.loads(event.get("body"))
     try:
@@ -59,6 +87,7 @@ def lambda_handler(event, context):
         code = payload.get("code")
         verify_code(email, code)
         update_user_verification_status(email)
+        send_subscription_confirmation_email(email)
         return prepare_response(status=200, message="User verified successfully!!")
     except Exception as e:
         traceback.print_exc()

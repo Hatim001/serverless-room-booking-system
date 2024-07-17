@@ -99,64 +99,50 @@ def update_session_with_token(session_id, token, expiry_time):
     session_table = dynamodb.Table("dvh-session")
     response = session_table.update_item(
         Key={"id": session_id},
-        UpdateExpression="SET #tk = :token, expiry_time = :expiry_time, #mfa_2 = :mfa_2_data",
+        UpdateExpression="SET #tk = :token, expiry_time = :expiry_time, mfa_2.verified = :is_verified",
         ExpressionAttributeValues={
             ":token": token,
             ":expiry_time": int(time.time() + expiry_time),
-            ":mfa_2_data": {
-                "verified": True,
-            },
+            ":is_verified": True,
         },
-        ExpressionAttributeNames={"#tk": "token", "#mfa_2": "mfa_2"},
+        ExpressionAttributeNames={"#tk": "token"},
         ReturnValues="ALL_NEW",
     )
     return response.get("Attributes")
 
 
-def sns_notification_and_subscription(email):
+def send_login_notification(email):
     """Checks for email subscription and sends notification"""
-    try:
-        subscriptions = sns_client.list_subscriptions_by_topic(TopicArn=sns_topic_arn)
-        already_subscribed = False
-        for subscription in subscriptions["Subscriptions"]:
-            if subscription["Endpoint"] == email:
-                subscription_arn = subscription["SubscriptionArn"]
-                if (
-                    subscription_arn != "PendingConfirmation"
-                    and ":" in subscription_arn
-                ):
-                    already_subscribed = True
-                    break
+    is_subscribed = False
+    paginator = sns_client.get_paginator("list_subscriptions_by_topic")
+    for page in paginator.paginate(TopicArn=sns_topic_arn):
+        for subscription in page["Subscriptions"]:
+            if (
+                subscription["Protocol"] == "email"
+                and subscription["Endpoint"] == email
+            ):
+                is_subscribed = True
+                break
 
-        if not already_subscribed:
-            # Filter policy applied to send email to respective user
-            subscribe_response = sns_client.subscribe(
-                TopicArn=sns_topic_arn,
-                Protocol="email",
-                Endpoint=email,
-                ReturnSubscriptionArn=True,
-                Attributes={"FilterPolicy": json.dumps({"email": [email]})},
-            )
+        if is_subscribed:
+            break
 
-            # Extract the subscription ARN from the response
-            subscription_arn = subscribe_response["SubscriptionArn"]
-            print(f"Subscription ARN: {subscription_arn}")
-
-        # Publish login confirmation email
-        sns_response = sns_client.publish(
+    if not is_subscribed:
+        sns_client.subscribe(
             TopicArn=sns_topic_arn,
-            Subject="Login Successful",
-            Message=f"Dear user,\n\nYour login was successful.\n\nSincerely,\nTeam SDP-32",
-            MessageAttributes={"email": {"DataType": "String", "StringValue": email}},
+            Protocol="email",
+            Endpoint=email,
+            ReturnSubscriptionArn=True,
+            Attributes={"FilterPolicy": json.dumps({"email": [email]})},
         )
+        return
 
-        print(f"SNS publish response: {sns_response}")
-
-        return sns_response
-
-    except Exception as e:
-        print(f"Error in sns_notification_and_subscription: {str(e)}")
-        return {"message": str(e)}
+    sns_client.publish(
+        TopicArn=sns_topic_arn,
+        Subject="Login Successful",
+        Message=f"Dear user,\n\nYour login was successful.\n\nSincerely,\nTeam SDP-32",
+        MessageAttributes={"email": {"DataType": "String", "StringValue": email}},
+    )
 
 
 def prepare_response(status, message, headers={}, **kwargs):
@@ -189,12 +175,11 @@ def lambda_handler(event, context):
         validate_and_get_session(session_id)
         access_token, expires_in = authenticate_user(email, password)
         session = update_session_with_token(session_id, access_token, expires_in)
-        sns_response = sns_notification_and_subscription(payload.get("email"))
+        send_login_notification(email)
         return prepare_response(
             status=200,
             message="User login successful!! Confirmation email sent",
             session=session,
-            sns_response=sns_response,
         )
     except Exception as e:
         traceback.print_exc()
