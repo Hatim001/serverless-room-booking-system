@@ -117,10 +117,10 @@ const Conversation = () => {
     return (
       <div className="flex-grow w-full mt-4 overflow-y-scroll">
         <div className="grid grid-col-1 gap-2">
-          {chatData.map((message) => {
+          {chatData.map((message, index) => {
             return (
               <div
-                key={message.id}
+                key={index}
                 className={`flex text-sm flex-col space-y-1 ${
                   message.sender === 'agent' ? 'items-start' : 'items-end'
                 }`}
