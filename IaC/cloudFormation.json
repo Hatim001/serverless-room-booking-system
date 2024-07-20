@@ -156,20 +156,6 @@
         "Timeout": 120
       }
     },
-    "AuthAuthorizerLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "authorizer",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "auth-serverless",
-          "S3Key": "authorizer.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
     "AuthConstantsLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -612,7 +598,45 @@
       }
     },
 
-
+    "AgentApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiStack",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "agent"
+      }
+    },
+    "AgentRoomsApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "AgentApiResource"
+        },
+        "PathPart": "rooms"
+      }
+    },
+    "AgentRoomsGetRoomIdApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "AgentRoomsApiResource"
+        },
+        "PathPart": ":roomId"
+      }
+    },
 
 
     "SessionApiGETMethod": {
@@ -2010,6 +2034,296 @@
     },
 
 
+    "AgentRoomsApiGETMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "ResourceId": {
+          "Ref": "AgentApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "GET",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentGetRoomsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsApiPOSTMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "AgentApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "GET",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentCreateRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsApiOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "AgentApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentCreateRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsGetRoomIdApiPUTMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "PUT",
+        "ResourceId": {
+          "Ref": "AgentRoomsGetRoomIdApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "PUT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentEditRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsGetRoomIdApiDELETEMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "DELETE",
+        "ResourceId": {
+          "Ref": "AgentRoomsGetRoomIdApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "DELETE",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentDeleteRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsGetRoomIdApiOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "AgentRoomsGetRoomIdApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentDeleteRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+
+
     "ApiDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "DependsOn": [
@@ -2021,7 +2335,9 @@
         "LoginMFACaesarCipherApiPOSTMethod", "LoginMFACaesarCipherApiOPTIONSMethod", "LoginMFASecurityQuestionApiPOSTMethod",
         "LoginMFASecurityQuestionApiOPTIONSMethod", "UserBookingApiGETMethod", "UserRoomsApiGETMethod",
         "UserRoomsApiOPTIONSMethod", "UserRoomsGetRoomIdApiGETMethod", "UserRoomsGetRoomIdApiOPTIONSMethod",
-        "UserRoomsBookRoomApiPOSTMethod", "UserRoomsBookRoomApiOPTIONSMethod"
+        "UserRoomsBookRoomApiPOSTMethod", "UserRoomsBookRoomApiOPTIONSMethod", "AgentRoomsApiGETMethod",
+        "AgentRoomsApiPOSTMethod", "AgentRoomsApiOPTIONSMethod", "AgentRoomsGetRoomIdApiPUTMethod",
+        "AgentRoomsGetRoomIdApiDELETEMethod", "AgentRoomsGetRoomIdApiOPTIONSMethod"
       ],
       "Properties": {
         "RestApiId": {
@@ -2319,6 +2635,7 @@
         }
       }
     },
+
     "UserGetBookingsLambdaGETPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -2384,7 +2701,6 @@
         }
       }
     },
-
     "UserBookRoomRequestLambdaPOSTPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -2410,6 +2726,89 @@
           "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/:roomId/book"
         }
       }
-    }
+    },
+
+
+    "AgentGetRoomsLambdaGETPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentGetRoomsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/agent/rooms"
+        }
+      }
+    },
+    "AgentCreateRoomsLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentCreateRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/agent/rooms"
+        }
+      }
+    },
+    "AgentCreateRoomsLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentCreateRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/agent/rooms"
+        }
+      }
+    },
+    "AgentDeleteRoomsLambdaDELPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentDeleteRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/DEL/agent/rooms/:roomId"
+        }
+      }
+    },
+    "AgentEditRoomsLambdaPUTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentEditRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/PUT/agent/rooms/:roomId"
+        }
+      }
+    },
+    "AgentDeleteRoomsLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentDeleteRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/agent/rooms/:roomId"
+        }
+      }
+    },
+
+
+
   }
 }
