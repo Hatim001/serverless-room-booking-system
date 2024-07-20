@@ -352,15 +352,40 @@
         "Timeout": 120
       }
     },
-
-
     "ApiStack": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
         "Name": "APIsSDP-32"
       }
     },
-
+    "UserRoomsBookRoomApiAuthorizer": {
+      "Type": "AWS::ApiGateway::Authorizer",
+      "Properties": {
+        "Name": "UserRoomsBookAuthorizer",
+        "Type": "TOKEN",
+        "AuthorizerUri": {
+          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserValidatorLambda.Arn}/invocations"
+        },
+        "IdentitySource": "method.request.header.Authorization",
+        "RestApiId": {
+          "Ref": "ApiStack"
+        }
+      }
+    },
+    "AgentRoomsApiAuthorizer": {
+      "Type": "AWS::ApiGateway::Authorizer",
+      "Properties": {
+        "Name": "AgentAuthorizer",
+        "Type": "TOKEN",
+        "AuthorizerUri": {
+          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentValidatorLambda.Arn}/invocations"
+        },
+        "IdentitySource": "method.request.header.Authorization",
+        "RestApiId": {
+          "Ref": "ApiStack"
+        }
+      }
+    },
     "AuthApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -532,8 +557,6 @@
         "PathPart": "security-question"
       }
     },
-
-
     "UserApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -597,7 +620,6 @@
         "PathPart": "book"
       }
     },
-
     "AgentApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -637,8 +659,6 @@
         "PathPart": ":roomId"
       }
     },
-
-
     "SessionApiGETMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -1695,7 +1715,6 @@
         ]
       }
     },
-
     "UserBookingApiGETMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -1939,7 +1958,10 @@
     "UserRoomsBookRoomApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "UserRoomsBookRoomApiAuthorizer"
+        },
         "HttpMethod": "POST",
         "ResourceId": {
           "Ref": "UserRoomsBookRoomApiResource"
@@ -2032,8 +2054,6 @@
         ]
       }
     },
-
-
     "AgentRoomsApiGETMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -2085,7 +2105,10 @@
     "AgentRoomsApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "AgentRoomsApiAuthorizer"
+        },
         "HttpMethod": "POST",
         "ResourceId": {
           "Ref": "AgentApiResource"
@@ -2178,10 +2201,15 @@
         ]
       }
     },
-    "AgentRoomsGetRoomIdApiPUTMethod": {
+
+
+    "AgentRoomsEditRoomIdApiPUTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "AgentRoomsApiAuthorizer"
+        },
         "HttpMethod": "PUT",
         "ResourceId": {
           "Ref": "AgentRoomsGetRoomIdApiResource"
@@ -2226,10 +2254,13 @@
         ]
       }
     },
-    "AgentRoomsGetRoomIdApiDELETEMethod": {
+    "AgentRoomsDeleteRoomIdApiDELETEMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "NONE",
+        "AuthorizationType": "CUSTOM",
+        "AuthorizerId": {
+          "Ref": "AgentRoomsApiAuthorizer"
+        },
         "HttpMethod": "DELETE",
         "ResourceId": {
           "Ref": "AgentRoomsGetRoomIdApiResource"
@@ -2274,6 +2305,7 @@
         ]
       }
     },
+
     "AgentRoomsGetRoomIdApiOPTIONSMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -2322,22 +2354,43 @@
         ]
       }
     },
-
-
     "ApiDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "DependsOn": [
-        "SessionApiGETMethod", "SessionApiOPTIONSMethod", "RegisterApiPOSTMethod", "RegisterApiOPTIONSMethod",
-        "MFASecurityQuestionPOSTMethod", "MFASecurityQuestionOPTIONSMethod", "MFACaesarCipherPOSTMethod",
-        "MFACaesarCipherOPTIONSMethod", "MFAStatusGETMethod", "RegisterVerifyApiPOSTMethod",
-        "RegisterVerifyApiOPTIONSMethod", "ResendCodeApiPOSTMethod", "ResendCodeApiOPTIONSMethod",
-        "LogOutApiDELETEMethod", "LogoutApiOPTIONSMethod", "LoginApiPOSTMethod", "LoginApiOPTIONSMethod",
-        "LoginMFACaesarCipherApiPOSTMethod", "LoginMFACaesarCipherApiOPTIONSMethod", "LoginMFASecurityQuestionApiPOSTMethod",
-        "LoginMFASecurityQuestionApiOPTIONSMethod", "UserBookingApiGETMethod", "UserRoomsApiGETMethod",
-        "UserRoomsApiOPTIONSMethod", "UserRoomsGetRoomIdApiGETMethod", "UserRoomsGetRoomIdApiOPTIONSMethod",
-        "UserRoomsBookRoomApiPOSTMethod", "UserRoomsBookRoomApiOPTIONSMethod", "AgentRoomsApiGETMethod",
-        "AgentRoomsApiPOSTMethod", "AgentRoomsApiOPTIONSMethod", "AgentRoomsGetRoomIdApiPUTMethod",
-        "AgentRoomsGetRoomIdApiDELETEMethod", "AgentRoomsGetRoomIdApiOPTIONSMethod"
+        "SessionApiGETMethod",
+        "SessionApiOPTIONSMethod",
+        "RegisterApiPOSTMethod",
+        "RegisterApiOPTIONSMethod",
+        "MFASecurityQuestionPOSTMethod",
+        "MFASecurityQuestionOPTIONSMethod",
+        "MFACaesarCipherPOSTMethod",
+        "MFACaesarCipherOPTIONSMethod",
+        "MFAStatusGETMethod",
+        "RegisterVerifyApiPOSTMethod",
+        "RegisterVerifyApiOPTIONSMethod",
+        "ResendCodeApiPOSTMethod",
+        "ResendCodeApiOPTIONSMethod",
+        "LogOutApiDELETEMethod",
+        "LogoutApiOPTIONSMethod",
+        "LoginApiPOSTMethod",
+        "LoginApiOPTIONSMethod",
+        "LoginMFACaesarCipherApiPOSTMethod",
+        "LoginMFACaesarCipherApiOPTIONSMethod",
+        "LoginMFASecurityQuestionApiPOSTMethod",
+        "LoginMFASecurityQuestionApiOPTIONSMethod",
+        "UserBookingApiGETMethod",
+        "UserRoomsApiGETMethod",
+        "UserRoomsApiOPTIONSMethod",
+        "UserRoomsGetRoomIdApiGETMethod",
+        "UserRoomsGetRoomIdApiOPTIONSMethod",
+        "UserRoomsBookRoomApiPOSTMethod",
+        "UserRoomsBookRoomApiOPTIONSMethod",
+        "AgentRoomsApiGETMethod",
+        "AgentRoomsApiPOSTMethod",
+        "AgentRoomsApiOPTIONSMethod",
+        "AgentRoomsEditRoomIdApiPUTMethod",
+        "AgentRoomsDeleteRoomIdApiDELETEMethod",
+        "AgentRoomsGetRoomIdApiOPTIONSMethod"
       ],
       "Properties": {
         "RestApiId": {
@@ -2346,9 +2399,6 @@
         "StageName": "prod"
       }
     },
-
-
-
     "AuthSessionLambdaGETPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -2635,7 +2685,6 @@
         }
       }
     },
-
     "UserGetBookingsLambdaGETPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -2727,8 +2776,6 @@
         }
       }
     },
-
-
     "AgentGetRoomsLambdaGETPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -2808,7 +2855,57 @@
       }
     },
 
-
-
+    "UserRoomBookValidatorLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserValidatorLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/user/rooms/:roomId/book"
+        }
+      }
+    },
+    "AgentCreateRoomValidatorLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentValidatorLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/agent/rooms"
+        }
+      }
+    },
+    "AgentEditRoomValidatorLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentValidatorLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/PUT/agent/rooms/:roomId"
+        }
+      }
+    },
+    "AgentDeleteRoomValidatorLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentValidatorLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/DEL/agent/rooms/:roomId"
+        }
+      }
+    }
   }
 }
