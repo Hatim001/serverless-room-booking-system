@@ -599,6 +599,20 @@
         "PathPart": ":roomId"
       }
     },
+    "UserRoomsBookRoomApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "UserRoomsGetRoomIdApiResource"
+        },
+        "PathPart": "book"
+      }
+    },
+
+
 
 
     "SessionApiGETMethod": {
@@ -1898,37 +1912,116 @@
         ]
       }
     },
+    "UserRoomsBookRoomApiPOSTMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "UserRoomsBookRoomApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserBookRoomRequestLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "UserRoomsBookRoomApiOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "UserRoomsBookRoomApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserBookRoomRequestLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
 
 
     "ApiDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "DependsOn": [
-        "SessionApiGETMethod",
-        "SessionApiOPTIONSMethod",
-        "RegisterApiPOSTMethod",
-        "RegisterApiOPTIONSMethod",
-        "MFASecurityQuestionPOSTMethod",
-        "MFASecurityQuestionOPTIONSMethod",
-        "MFACaesarCipherPOSTMethod",
-        "MFACaesarCipherOPTIONSMethod",
-        "MFAStatusGETMethod",
-        "RegisterVerifyApiPOSTMethod",
-        "RegisterVerifyApiOPTIONSMethod",
-        "ResendCodeApiPOSTMethod",
-        "ResendCodeApiOPTIONSMethod",
-        "LogOutApiDELETEMethod",
-        "LogoutApiOPTIONSMethod",
-        "LoginApiPOSTMethod",
-        "LoginApiOPTIONSMethod",
-        "LoginMFACaesarCipherApiPOSTMethod",
-        "LoginMFACaesarCipherApiOPTIONSMethod",
-        "LoginMFASecurityQuestionApiPOSTMethod",
-        "LoginMFASecurityQuestionApiOPTIONSMethod",
-        "UserBookingApiGETMethod",
-        "UserRoomsApiGETMethod",
-        "UserRoomsApiOPTIONSMethod",
-        "UserRoomsGetRoomIdApiGETMethod",
-        "UserRoomsGetRoomIdApiOPTIONSMethod"
+        "SessionApiGETMethod", "SessionApiOPTIONSMethod", "RegisterApiPOSTMethod", "RegisterApiOPTIONSMethod",
+        "MFASecurityQuestionPOSTMethod", "MFASecurityQuestionOPTIONSMethod", "MFACaesarCipherPOSTMethod",
+        "MFACaesarCipherOPTIONSMethod", "MFAStatusGETMethod", "RegisterVerifyApiPOSTMethod",
+        "RegisterVerifyApiOPTIONSMethod", "ResendCodeApiPOSTMethod", "ResendCodeApiOPTIONSMethod",
+        "LogOutApiDELETEMethod", "LogoutApiOPTIONSMethod", "LoginApiPOSTMethod", "LoginApiOPTIONSMethod",
+        "LoginMFACaesarCipherApiPOSTMethod", "LoginMFACaesarCipherApiOPTIONSMethod", "LoginMFASecurityQuestionApiPOSTMethod",
+        "LoginMFASecurityQuestionApiOPTIONSMethod", "UserBookingApiGETMethod", "UserRoomsApiGETMethod",
+        "UserRoomsApiOPTIONSMethod", "UserRoomsGetRoomIdApiGETMethod", "UserRoomsGetRoomIdApiOPTIONSMethod",
+        "UserRoomsBookRoomApiPOSTMethod", "UserRoomsBookRoomApiOPTIONSMethod"
       ],
       "Properties": {
         "RestApiId": {
@@ -2288,6 +2381,33 @@
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/:roomId"
+        }
+      }
+    },
+
+    "UserBookRoomRequestLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserBookRoomRequestLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/user/rooms/:roomId/book"
+        }
+      }
+    },
+    "UserBookRoomRequestLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserBookRoomRequestLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/:roomId/book"
         }
       }
     }
