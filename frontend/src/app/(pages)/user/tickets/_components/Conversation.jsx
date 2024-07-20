@@ -1,113 +1,30 @@
-'use client';
+// 'use client';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { SendHorizontal } from 'lucide-react';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import useTicketConversations from '@/lib/firebaseUtils/useTicketsConversations';
+import { useAuth } from '@/hooks/use-auth';
+import pushMessage from '@/lib/firebaseUtils/utilsFunctions';
 
-const chatData = [
-  {
-    id: 1,
-    message: 'Hello, how can I help you today?',
-    sender: 'agent',
-    timestamp: '12:00 PM',
-  },
-  {
-    id: 2,
-    message: 'I have a problem with my order',
-    sender: 'customer',
-    timestamp: '12:01 PM',
-  },
-  {
-    id: 3,
-    message: 'Sure, what seems to be the issue?',
-    sender: 'agent',
-    timestamp: '12:02 PM',
-  },
-  {
-    id: 4,
-    message: 'My order was not delivered',
-    sender: 'customer',
-    timestamp: '12:03 PM',
-  },
-  {
-    id: 5,
-    message:
-      'I am sorry to hear that, can you please provide me with your order number?',
-    sender: 'agent',
-    timestamp: '12:04 PM',
-  },
-  {
-    id: 6,
-    message: 'Hello, how can I help you today?',
-    sender: 'agent',
-    timestamp: '12:00 PM',
-  },
-  {
-    id: 7,
-    message: 'I have a problem with my order',
-    sender: 'customer',
-    timestamp: '12:01 PM',
-  },
-  {
-    id: 8,
-    message: 'Sure, what seems to be the issue?',
-    sender: 'agent',
-    timestamp: '12:02 PM',
-  },
-  {
-    id: 9,
-    message: 'My order was not delivered',
-    sender: 'customer',
-    timestamp: '12:03 PM',
-  },
-  {
-    id: 10,
-    message:
-      'I am sorry to hear that, can you please provide me with your order number?',
-    sender: 'agent',
-    timestamp: '12:04 PM',
-  },
-  {
-    id: 1,
-    message: 'Hello, how can I help you today?',
-    sender: 'agent',
-    timestamp: '12:00 PM',
-  },
-  {
-    id: 2,
-    message: 'I have a problem with my order',
-    sender: 'customer',
-    timestamp: '12:01 PM',
-  },
-  {
-    id: 3,
-    message: 'Sure, what seems to be the issue?',
-    sender: 'agent',
-    timestamp: '12:02 PM',
-  },
-  {
-    id: 4,
-    message: 'My order was not delivered',
-    sender: 'customer',
-    timestamp: '12:03 PM',
-  },
-  {
-    id: 5,
-    message:
-      'I am sorry to hear that, can you please provide me with your order number?',
-    sender: 'agent',
-    timestamp: '12:04 PM',
-  },
-];
-
-const Conversation = () => {
+const Conversation = ({ selectedTicket, setSelectedTicket }) => {
   const messagesEndRef = useRef(null);
+  const { isAuthenticatedUser, session } = useAuth();
+  const [chatData, setChatData] = useState([]);
+  const chatSubscriptionRef = useRef(null);
+  const messageData = useTicketConversations(
+    selectedTicket?.ticketId,
+    session?.user?.email,
+    chatSubscriptionRef,
+  );
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+  useEffect(() => {
+    setChatData(messageData);
+  }, [messageData]);
 
   useEffect(() => {
     scrollToBottom();
@@ -115,31 +32,31 @@ const Conversation = () => {
 
   const Messages = () => {
     return (
-      <div className="flex-grow w-full mt-4 overflow-y-scroll">
+      <div className="flex-grow w-full mt-4 overflow-y-scroll p-4">
         <div className="grid grid-col-1 gap-2">
-          {chatData.map((message) => {
+          {chatData.map((messageData, index) => {
             return (
               <div
-                key={message.id}
+                key={index}
                 className={`flex text-sm flex-col space-y-1 ${
-                  message.sender === 'agent' ? 'items-start' : 'items-end'
+                  !messageData.isOutgoing ? 'items-start' : 'items-end'
                 }`}
               >
                 <div
                   className={`p-2 rounded-lg ${
-                    message.sender === 'agent'
+                    messageData.isOutgoing
                       ? 'bg-gray-200 text-gray-800'
                       : 'bg-violet-500 text-white'
                   }`}
                 >
-                  {message.message}
+                  {messageData.message}
                 </div>
                 <div
                   className={`text-xs text-gray-500 ${
-                    message.sender === 'agent' ? 'text-left' : 'text-right'
+                    !messageData.isOutgoing ? 'text-left' : 'text-right'
                   }`}
                 >
-                  {message.timestamp}
+                  {messageData.timestamp}
                 </div>
               </div>
             );
@@ -151,10 +68,28 @@ const Conversation = () => {
   };
 
   const BottomBar = () => {
+    const [message, setMessage] = useState('');
+
+    const inputChangeHandler = (event) => {
+      // console.log("message data:",event.target.value)
+      setMessage(event.target.value);
+    };
+
+    const handleButtonClick = () => {
+      if (message) {
+        pushMessage(selectedTicket, message, session?.user?.email);
+        setMessage('');
+      }
+    };
+
     return (
       <div className="h-20 w-full flex justify-between items-end py-1 space-x-2">
-        <Input placeholder="Type a message" />
-        <Button>
+        <Input
+          onChange={inputChangeHandler}
+          value={message}
+          placeholder="Type a message"
+        />
+        <Button onClick={() => handleButtonClick()}>
           <SendHorizontal size={'15px'} />
         </Button>
       </div>
@@ -163,8 +98,16 @@ const Conversation = () => {
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
-      <Messages />
-      <BottomBar />
+      {selectedTicket===null ? (
+        <div className='w-full h-full flex justify-center items-center'>
+          <h3 className="font-medium text-lg">Select a ticket</h3>
+        </div>
+      ) : (
+        <>
+          <Messages />
+          <BottomBar />
+        </>
+      )}
     </div>
   );
 };

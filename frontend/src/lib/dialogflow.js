@@ -4,7 +4,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-const projectId = process.env.NEXT_PUBLIC_DIALOGFLOW_PROJECT_ID
+const projectId = process.env.NEXT_PUBLIC_GCP_PROJECT_ID
 const location = process.env.NEXT_PUBLIC_GOOGLE_DIALOGFLOW_REGION
 const agentId = process.env.NEXT_PUBLIC_GOOGLE_DIALOGFLOW_AGENT_ID
 const sessionId = uuidv4();
