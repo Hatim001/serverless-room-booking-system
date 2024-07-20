@@ -4,7 +4,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-const projectId = process.env.NEXT_PUBLIC_DIALOGFLOW_PROJECT_ID
+const projectId = process.env.NEXT_PUBLIC_GCP_PROJECT_ID
 const location = process.env.NEXT_PUBLIC_GOOGLE_DIALOGFLOW_REGION
 const agentId = process.env.NEXT_PUBLIC_GOOGLE_DIALOGFLOW_AGENT_ID
 const sessionId = uuidv4();
@@ -40,6 +40,7 @@ export async function sendMessageToDialogflow(message,session) {
         parameters: {
           fields: {
             userRole: { kind: 'stringValue', stringValue: session.role ? session.role : 'guest' },
+            userEmail: { kind: 'stringValue', stringValue: session.user.email ? session.user.email : '' },
           }
         }
       }

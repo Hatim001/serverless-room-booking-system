@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import {
   Collapsible,
@@ -7,53 +5,37 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { ChevronRightIcon, ChevronsUpDown } from 'lucide-react';
-import { useState } from 'react';
+import {  useEffect, useState, useRef } from 'react';
+import { useAuth } from '@/hooks/use-auth';
+import useTicketsConnections from '@/lib/firebaseUtils/useTicketsConnections';
 
-const closedTickets = [
-  {
-    id: 1,
-    title: 'Ticket 1',
-    status: 'Closed',
-    date: '2021-07-21',
-  },
-  {
-    id: 2,
-    title: 'Ticket 2',
-    status: 'Closed',
-    date: '2021-07-21',
-  },
-  {
-    id: 3,
-    title: 'Ticket 3',
-    status: 'Closed',
-    date: '2021-07-21',
-  },
-];
 
-const openTickets = [
-  {
-    id: 4,
-    title: 'Ticket 4',
-    status: 'Open',
-    date: '2021-07-21',
-  },
-  {
-    id: 5,
-    title: 'Ticket 5',
-    status: 'Open',
-    date: '2021-07-21',
-  },
-  {
-    id: 6,
-    title: 'Ticket 6',
-    status: 'Open',
-    date: '2021-07-21',
-  },
-];
-
-const Tickets = () => {
+const Tickets = ({ selectedTicket, setSelectedTicket }) => {
+  const { isAuthenticatedUser, session } = useAuth();
   const [isOpenForClosedTickets, setIsOpenForClosedTickets] = useState(false);
   const [isOpenForOpenTickets, setIsOpenForOpenTickets] = useState(true);
+  // const chatSubscriptionRef = useRef(null);
+  const  ticketList  = useTicketsConnections(session?.user?.email);
+  const [openTickets, setOpenTickets] = useState([]);
+  const [closedTickets, setClosedTickets] = useState([]);
+
+  const handleTicketClick = (ticket) => {
+    setSelectedTicket(ticket)
+   }
+
+
+  useEffect(() => {
+    setOpenTickets(ticketList?.filter((ticket) => !ticket.isResolved))
+    setClosedTickets(ticketList?.filter((ticket) => ticket.isResolved))
+    if (selectedTicket) {
+      const matchingTicket = ticketList.find(ticket => ticket?.ticketId === selectedTicket?.ticketId);
+      if (matchingTicket) {
+          setSelectedTicket(matchingTicket);
+      }
+  }
+  }, [ticketList]);
+
+
 
   return (
     <div className="h-full">
@@ -72,14 +54,15 @@ const Tickets = () => {
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent className="space-y-2">
-          {openTickets.map((ticket, index) => (
+          {openTickets.sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp).map((ticket, index) => (
             <div
-              className="flex items-center justify-between rounded-lg bg-background p-4 hover:bg-muted"
+            className={`flex items-center justify-between rounded-lg ${ticket.ticketId === selectedTicket?.ticketId ? 'bg-muted border' : 'bg-background'} p-4 hover:bg-muted`}
               key={index}
+              onClick={() => handleTicketClick(ticket)}
             >
               <div>
-                <h4 className="text-sm font-medium">{ticket?.title}</h4>
-                <p className="text-xs text-muted-foreground">{ticket?.date}</p>
+                <h4 className="text-sm truncate text-ellipsis font-medium">Ticket: #{ticket?.ticketId}</h4>
+                <p className="text-xs text-muted-foreground">Booking ID: #{ticket?.bookingId}</p>
               </div>
               <ChevronRightIcon className="h-5 w-5 text-muted-foreground" />
             </div>
@@ -102,14 +85,15 @@ const Tickets = () => {
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent className="space-y-2">
-          {closedTickets.map((ticket, index) => (
+          {closedTickets.sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp).map((ticket, index) => (
             <div
-              className="flex items-center justify-between rounded-lg bg-background p-4 hover:bg-muted"
+            className={`flex items-center justify-between rounded-lg ${ticket.ticketId === selectedTicket?.ticketId ? 'bg-muted border' : 'bg-background'} p-4 hover:bg-muted`}
               key={index}
+              onClick={() => handleTicketClick(ticket)}
             >
               <div>
-                <h4 className="text-sm font-medium">{ticket?.title}</h4>
-                <p className="text-xs text-muted-foreground">{ticket?.date}</p>
+                <h4 className="text-sm font-medium">Ticket: #{ticket?.ticketId}</h4>
+                <p className="text-xs text-muted-foreground">Booking: #{ticket?.bookingId}</p>
               </div>
               <ChevronRightIcon className="h-5 w-5 text-muted-foreground" />
             </div>
