@@ -27,6 +27,12 @@ const Tickets = ({ selectedTicket, setSelectedTicket }) => {
   useEffect(() => {
     setOpenTickets(ticketList?.filter((ticket) => !ticket.isResolved))
     setClosedTickets(ticketList?.filter((ticket) => ticket.isResolved))
+    if (selectedTicket) {
+      const matchingTicket = ticketList.find(ticket => ticket?.ticketId === selectedTicket?.ticketId);
+      if (matchingTicket) {
+          setSelectedTicket(matchingTicket);
+      }
+  }
   }, [ticketList]);
 
 

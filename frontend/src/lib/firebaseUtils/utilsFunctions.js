@@ -18,9 +18,9 @@ const pushMessage= async (seletectedTicket,inputMessage,currentUserEmail) => {
 
     var secondUser;
     if (seletectedTicket.agentEmail === currentUserEmail) {
-        secondUser = seletectedTicket.agentEmail;
-    } else {
         secondUser = seletectedTicket.userEmail;
+    } else {
+        secondUser = seletectedTicket.agentEmail;
     }
     const currentTimestamp = Date.now();
     const ticketId = seletectedTicket.ticketId;
@@ -37,4 +37,19 @@ const pushMessage= async (seletectedTicket,inputMessage,currentUserEmail) => {
     });
 }
 
-export default pushMessage
+const markTicketAsResolved = async (seletectedTicket,currentUserEmail) => {
+
+    if(!seletectedTicket) return
+    console.log("Insided markedAsResolved:",seletectedTicket)
+    pushMessage(seletectedTicket,"Agent as marked this ticket as resolved",currentUserEmail)
+    const ticketId = seletectedTicket.ticketId;
+    await updateDoc(doc(db, "chatConnections", seletectedTicket.userEmail), {
+        [ticketId + ".isResolved"]: true,
+    });
+    await updateDoc(doc(db, "chatConnections", seletectedTicket.agentEmail), {
+        [ticketId + ".isResolved"]: true,
+    });
+
+}
+
+export  {pushMessage,markTicketAsResolved}

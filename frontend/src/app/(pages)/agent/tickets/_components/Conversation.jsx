@@ -1,11 +1,10 @@
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { SendHorizontal } from 'lucide-react';
 import React, { useEffect, useState, useRef } from 'react';
 import useTicketConversations from '@/lib/firebaseUtils/useTicketsConversations';
 import { useAuth } from '@/hooks/use-auth';
-import pushMessage from '@/lib/firebaseUtils/utilsFunctions';
+import {pushMessage, markTicketAsResolved} from '@/lib/firebaseUtils/utilsFunctions';
 
 const Conversation = ({ selectedTicket, setSelectedTicket }) => {
   const messagesEndRef = useRef(null);
@@ -81,24 +80,39 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
       }
     };
 
+    const handleMarkAsResolved = () => {
+      markTicketAsResolved(selectedTicket,session?.user?.email)
+      setSelectedTicket(null)
+    }
+    
+
     return (
       <div className="h-20 w-full flex justify-between items-end py-1 space-x-2">
         <Input
           onChange={inputChangeHandler}
           value={message}
+          disabled={selectedTicket?.isResolved}
           placeholder="Type a message"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleButtonClick();
+            }
+          }}
         />
-        <Button onClick={() => handleButtonClick()}>
+        <Button disabled={selectedTicket?.isResolved} onClick={() => handleButtonClick()}>
           <SendHorizontal size={'15px'} />
         </Button>
+        {!selectedTicket.isResolved && (
+          <Button onClick={() => handleMarkAsResolved()}>Close Ticket</Button>
+        )}
       </div>
     );
   };
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
-      {selectedTicket===null ? (
-        <div className='w-full h-full flex justify-center items-center'>
+      {selectedTicket === null ? (
+        <div className="w-full h-full flex justify-center items-center">
           <h3 className="font-medium text-lg">Select a ticket</h3>
         </div>
       ) : (

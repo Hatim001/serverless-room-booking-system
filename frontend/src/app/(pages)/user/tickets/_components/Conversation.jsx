@@ -6,7 +6,7 @@ import { SendHorizontal } from 'lucide-react';
 import React, { useEffect, useState, useRef } from 'react';
 import useTicketConversations from '@/lib/firebaseUtils/useTicketsConversations';
 import { useAuth } from '@/hooks/use-auth';
-import pushMessage from '@/lib/firebaseUtils/utilsFunctions';
+import {pushMessage} from '@/lib/firebaseUtils/utilsFunctions';
 
 const Conversation = ({ selectedTicket, setSelectedTicket }) => {
   const messagesEndRef = useRef(null);
@@ -37,7 +37,6 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
           {chatData.map((messageData, index) => {
             return (
               <div
-                key={index}
                 key={index}
                 className={`flex text-sm flex-col space-y-1 ${
                   !messageData.isOutgoing ? 'items-start' : 'items-end'
@@ -88,9 +87,15 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
         <Input
           onChange={inputChangeHandler}
           value={message}
+          disabled={selectedTicket?.isResolved}
           placeholder="Type a message"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleButtonClick();
+            }
+          }}
         />
-        <Button onClick={() => handleButtonClick()}>
+        <Button disabled={selectedTicket?.isResolved} onClick={() => handleButtonClick()}>
           <SendHorizontal size={'15px'} />
         </Button>
       </div>

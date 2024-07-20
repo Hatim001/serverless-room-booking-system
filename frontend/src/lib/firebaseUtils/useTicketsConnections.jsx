@@ -31,7 +31,6 @@ const useTicketsConnections = (currentUser,chatSubscriptionRef) => {
                 bookingId: conversations[key]?.bookingId,
               });
             });
-            console.log(userList)
             setUsersForChat(userList);
           }
         },
