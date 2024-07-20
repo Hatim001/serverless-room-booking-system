@@ -2,7 +2,6 @@
 
 import { Loading } from '@/components/ui/loading';
 import { Separator } from '@/components/ui/separator';
-import { randomNumber } from '@/lib/utils';
 import { Heart, Share } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import RoomBooking from './components/RoomBooking';
@@ -16,6 +15,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import FallbackImage from '@/components/fallback-image';
 
 const Index = ({ params }) => {
   const { roomId } = params;
@@ -75,25 +75,27 @@ const Index = ({ params }) => {
   );
 
   const Gallery = () => (
-    <div className="grid grid-cols-2 gap-1 rounded">
-      <div>
-        <picture>
-          <img
-            src={`https://picsum.photos/id/${randomNumber(1, 100)}/1500`}
-            alt={`${room?.name} Cover Image`}
-            className="w-full h-full object-cover"
-          />
-        </picture>
+    <div className="grid grid-cols-2 gap-1 rounded h-[500px]">
+      <div className="relative w-full h-full">
+        <FallbackImage
+          fill={true}
+          objectFit="cover"
+          src={room?.images?.[0]}
+          alt={`${room?.name} Cover Image`}
+          className="w-full h-full"
+        />
       </div>
       <div className="grid grid-cols-2 gap-1">
-        {[0, 1, 2, 3].map((image, index) => (
-          <picture key={index}>
-            <img
-              src={`https://picsum.photos/id/${randomNumber(1, 100)}/1000`}
+        {[1, 2, 3, 4].map((image, index) => (
+          <div key={index} className="relative">
+            <FallbackImage
+              fill={true}
+              objectFit="cover"
+              src={room?.images?.[index]}
               alt={`${room?.name} Cover Image - ${index}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full static"
             />
-          </picture>
+          </div>
         ))}
       </div>
     </div>
@@ -119,7 +121,7 @@ const Index = ({ params }) => {
         </div>
         <Separator className="col-span-3" />
         <div className="col-span-3">
-          <RoomReviews />
+          <RoomReviews room={room} />
         </div>
       </div>
     </div>

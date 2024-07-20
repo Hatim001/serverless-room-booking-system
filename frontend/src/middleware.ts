@@ -55,9 +55,9 @@ const redirectToUserRooms = (request: NextRequest) => {
   return NextResponse.redirect(url);
 };
 
-const redirectToAgentRooms = (request: NextRequest) => {
+const redirectToAgentDashboard = (request: NextRequest) => {
   const url = request.nextUrl.clone();
-  url.pathname = '/agent/rooms';
+  url.pathname = '/agent/dashboard';
   return NextResponse.redirect(url);
 };
 
@@ -105,13 +105,13 @@ export default async function middleware(
     if (LOGIN_SIGNUP_PATHS.includes(request.nextUrl.pathname)) {
       return isUser
         ? redirectToUserRooms(request)
-        : redirectToAgentRooms(request);
+        : redirectToAgentDashboard(request);
     }
     if (isUser && AGENT_PATHS.includes(request.nextUrl.pathname)) {
       return redirectToUserRooms(request);
     }
     if (isAgent && USER_PATHS.includes(request.nextUrl.pathname)) {
-      return redirectToAgentRooms(request);
+      return redirectToAgentDashboard(request);
     }
   } else if (
     isLoggedInWithoutMFAConfigured &&

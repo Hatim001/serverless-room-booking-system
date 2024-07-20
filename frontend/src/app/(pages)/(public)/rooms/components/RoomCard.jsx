@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
 import FallbackImage from '@/components/fallback-image';
 
 const RoomCard = ({ room }) => {
   const router = useRouter();
-  const { images, name, id, price_per_day, config = {} } = room;
+  const {
+    images,
+    name,
+    id,
+    price_per_day,
+    config = {},
+    total_reviews = 0,
+    overall_rating = 0,
+  } = room;
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const prevSlide = (e) => {
@@ -26,7 +34,7 @@ const RoomCard = ({ room }) => {
 
   return (
     <Card
-      className="max-w-xs rounded-lg overflow-hidden border-none shadow-none group relative cursor-pointer"
+      className="max-w-xs rounded-lg overflow-hidden border-none shadow-none hover:bg-slate-100	hover:p-0.5 group relative cursor-pointer transition-all"
       onClick={() => router.push(`/rooms/${room.id}`)}
     >
       <div className="relative">
@@ -58,9 +66,12 @@ const RoomCard = ({ room }) => {
       <CardContent className="p-1 pt-2 text-xs">
         <div className="flex justify-between text-sm items-center">
           <div className="basis-3/4 truncate font-semibold">{name}</div>
-          <div className="basis-1/4 flex justify-end font-normal">
-            <span>4.8</span>
-            <span>(12)</span>
+          <div className="basis-1/4 flex justify-end font-normal space-x-1">
+            <span className="flex items-center">
+              <span>{overall_rating.toFixed(1)}</span>
+              <Star size={'12px'} color="orange" />
+            </span>
+            <span>({total_reviews})</span>
           </div>
         </div>
         <div className="flex items-center space-x-2 py-1">
