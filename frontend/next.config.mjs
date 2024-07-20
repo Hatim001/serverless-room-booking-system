@@ -5,7 +5,6 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'dvh-bucket.s3.amazonaws.com',
-        port: '',
       },
     ],
   },

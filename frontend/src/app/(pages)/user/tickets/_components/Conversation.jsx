@@ -38,6 +38,7 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
             return (
               <div
                 key={index}
+                key={index}
                 className={`flex text-sm flex-col space-y-1 ${
                   !messageData.isOutgoing ? 'items-start' : 'items-end'
                 }`}
