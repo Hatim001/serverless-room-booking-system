@@ -58,6 +58,14 @@ def get_booked_room_ids(check_in_date, check_out_date):
     return [item.get("room_id") for item in response.get("Items", [])]
 
 
+def get_feedbacks(room_id):
+    """Gets the feedbacks for the room."""
+    table = dynamodb.Table("dvh-feedback")
+    response = table.scan(FilterExpression=Attr("room_id").eq(room_id))
+    feedbacks = response.get("Items", [])
+    return feedbacks or []
+
+
 def get_rooms(filters):
     """Gets the rooms from DynamoDB."""
     check_in_date = parse_date(filters.get("checkInDate")).isoformat()
@@ -98,7 +106,21 @@ def get_rooms(filters):
         )
 
     response = table.scan(FilterExpression=filter_expression)
-    return response.get("Items", [])
+    rooms = response.get("Items", [])
+    if not rooms:
+        return []
+
+    for room in rooms:
+        room_id = room.get("id")
+        feedbacks = get_feedbacks(room_id)
+        room["overall_rating"] = (
+            sum([feedback.get("rating") for feedback in feedbacks]) / len(feedbacks)
+            if feedbacks
+            else 0
+        )
+        room["total_reviews"] = len(feedbacks)
+
+    return rooms
 
 
 def lambda_handler(event, context):

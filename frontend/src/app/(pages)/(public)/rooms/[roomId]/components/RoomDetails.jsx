@@ -1,9 +1,35 @@
 import { Separator } from '@/components/ui/separator';
 import DUMMY_AMENITIES from '@/utils/amenities';
-import React from 'react';
+import { Star } from 'lucide-react';
+import React, { useEffect } from 'react';
 
 const RoomDetails = ({ room }) => {
-  const { name, config, description, amenities = [], review = [] } = room;
+  const { name, config, description, amenities = [], feedbacks = [] } = room;
+  const [overallRating, setOverallRating] = React.useState(0);
+  const [totalReviews, setTotalReviews] = React.useState(0);
+  const [likePercentage, setLikePercentage] = React.useState(0);
+
+  useEffect(() => {
+    prepareOverallFeedback();
+  }, []);
+
+  const prepareOverallFeedback = () => {
+    const totalFeedbacks = feedbacks.length;
+    const averageSentimentScore =
+      feedbacks.reduce(
+        (acc, feedback) => acc + (feedback?.sentiment?.score || 0.5),
+        0,
+      ) / totalFeedbacks;
+
+    setTotalReviews(totalFeedbacks);
+    setLikePercentage(averageSentimentScore?.toFixed(1) * 100);
+    setOverallRating(
+      (
+        feedbacks.reduce((acc, feedback) => acc + feedback.rating, 0) /
+        totalFeedbacks
+      ).toFixed(1),
+    );
+  };
 
   const RoomTitle = () => (
     <div>
@@ -18,10 +44,38 @@ const RoomDetails = ({ room }) => {
     </div>
   );
 
-  const OverallFeedbackAndPolarity = () => <div></div>;
+  const OverallFeedbackAndPolarity = () => (
+    <div>
+      <span className="text-lg font-medium">Overall Feedback</span>
+      <div className="flex items-center space-x-10 mt-5">
+        <div className="flex flex-col space-y-3">
+          <div className="flex space-x-1 items-center">
+            <span className="text-5xl font-semibold text-slate-700">
+              {overallRating}
+            </span>
+            <Star className="text-yellow-500" fill="yellow" />
+          </div>
+          <div className="text-md text-slate-500">Overall Rating</div>
+        </div>
+
+        <div className="flex flex-col space-y-3">
+          <div className="text-5xl font-semibold text-slate-700">
+            {totalReviews}
+          </div>
+          <div className="text-md text-slate-500">Total Reviews</div>
+        </div>
+
+        <div className="flex flex-col space-y-3">
+          <div className="text-5xl font-semibold text-slate-700">{`${likePercentage}%`}</div>
+          <div className="text-md text-slate-500">Like Percentage</div>
+        </div>
+      </div>
+    </div>
+  );
 
   const RoomDescription = () => (
     <div>
+      <span className="text-lg font-medium">Description</span>
       <p className="text-sm leading-loose">{description}</p>
     </div>
   );
@@ -54,8 +108,8 @@ const RoomDetails = ({ room }) => {
     <div className="grid grid-cols-1 gap-5 pr-6">
       <RoomTitle />
       <Separator className="my-6" />
-      {/* <OverallFeedbackAndPolarity />
-      <Separator className="my-6" /> */}
+      <OverallFeedbackAndPolarity />
+      <Separator className="my-6" />
       <RoomDescription />
       <Separator className="my-6" />
       <RoomAmenities />

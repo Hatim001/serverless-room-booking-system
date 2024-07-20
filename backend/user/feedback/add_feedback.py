@@ -51,14 +51,18 @@ class FeedbackService:
         if not isinstance(rating, int) or rating < 1 or rating > 5:
             raise ValueError("Rating must be an integer between 1 and 5")
 
-    def create_feedback_entry(self, booking, payload, user_id):
+    def create_feedback_entry(self, booking, payload, user):
         feedback_id = str(uuid4())
         timestamp = datetime.now(UTC).isoformat()
         feedback_entry = {
             "id": feedback_id,
             "booking_id": booking.get("id"),
             "room_id": booking.get("room", {}).get("id"),
-            "user_id": user_id,
+            "user": {
+                "id": user.get("id"),
+                "name": user.get("name"),
+                "email": user.get("email"),
+            },
             "rating": payload.get("rating"),
             "comment": payload.get("comment"),
             "created_at": timestamp,
@@ -129,7 +133,6 @@ def lambda_handler(event, context):
         feedback_service.validate_payload(payload)
 
         session_user = SessionService.get_user_from_session(event)
-        user_id = session_user.get("id")
 
         booking_service = BookingService()
         booking = booking_service.get_booking(booking_id)
@@ -137,7 +140,7 @@ def lambda_handler(event, context):
             return ResponseBuilder.prepare_response(404, "Booking not found")
 
         feedback_entry = feedback_service.create_feedback_entry(
-            booking, payload, user_id
+            booking, payload, session_user
         )
 
         feedback_service.add_feedback_to_booking(booking_id, feedback_entry)
