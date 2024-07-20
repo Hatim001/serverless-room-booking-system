@@ -194,9 +194,15 @@ resource "google_dialogflow_cx_page" "confirm" {
 
   entry_fulfillment {
     return_partial_responses = true
+
+    messages {
+          text {
+            text = ["Thank you for using our service! Have a good day"]
+          }
+        }
   }
   transition_routes {
-      intent      = google_dialogflow_cx_intent.no.id
+      condition   = "true"
       target_page = "${google_dialogflow_cx_agent.agent.start_flow}/pages/END_SESSION"
     }
 }
