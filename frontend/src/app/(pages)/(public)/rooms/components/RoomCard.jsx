@@ -4,7 +4,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
 import FallbackImage from '@/components/fallback-image';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const RoomCard = ({ room }) => {
   const router = useRouter();

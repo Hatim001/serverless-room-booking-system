@@ -62,49 +62,38 @@ def configure_caesar_cipher(payload):
     )
 
 
-def sns_notification_and_subscription(email):
+def send_registration_notification(email):
     """Checks for email subscription and sends notification"""
-    try:
-        subscriptions = sns_client.list_subscriptions_by_topic(TopicArn=sns_topic_arn)
-        already_subscribed = False
-        for subscription in subscriptions["Subscriptions"]:
-            if subscription["Endpoint"] == email:
-                subscription_arn = subscription["SubscriptionArn"]
-                if (
-                    subscription_arn != "PendingConfirmation"
-                    and ":" in subscription_arn
-                ):
-                    already_subscribed = True
-                    break
+    is_subscribed = False
+    paginator = sns_client.get_paginator("list_subscriptions_by_topic")
+    for page in paginator.paginate(TopicArn=sns_topic_arn):
+        for subscription in page["Subscriptions"]:
+            if (
+                subscription["Protocol"] == "email"
+                and subscription["Endpoint"] == email
+            ):
+                is_subscribed = True
+                break
 
-        if not already_subscribed:
-            # Filter policy applied to send email to respective user
-            subscribe_response = sns_client.subscribe(
-                TopicArn=sns_topic_arn,
-                Protocol="email",
-                Endpoint=email,
-                ReturnSubscriptionArn=True,
-                Attributes={"FilterPolicy": json.dumps({"email": [email]})},
-            )
+        if is_subscribed:
+            break
 
-            subscription_arn = subscribe_response["SubscriptionArn"]
-            print(f"Subscription ARN: {subscription_arn}")
-
-        # Publish registration confirmation email
-        sns_response = sns_client.publish(
+    if not is_subscribed:
+        sns_client.subscribe(
             TopicArn=sns_topic_arn,
-            Subject="Registration Successful",
-            Message=f"Dear user,\n\nYour registration was successful. Thank you for registering!\n\nSincerely,\nTeam SDP-32",
-            MessageAttributes={"email": {"DataType": "String", "StringValue": email}},
+            Protocol="email",
+            Endpoint=email,
+            ReturnSubscriptionArn=True,
+            Attributes={"FilterPolicy": json.dumps({"email": [email]})},
         )
+        return
 
-        print(f"SNS publish response: {sns_response}")
-
-        return sns_response
-
-    except Exception as e:
-        print(f"Error in sns_notification_and_subscription: {str(e)}")
-        return {"message": str(e)}
+    sns_client.publish(
+        TopicArn=sns_topic_arn,
+        Subject="Registration Successful",
+        Message=f"Dear user,\n\nYour registration was successful. Thank you for registering!\n\nSincerely,\nTeam SDP-32",
+        MessageAttributes={"email": {"DataType": "String", "StringValue": email}},
+    )
 
 
 class ResponseBuilder:
@@ -127,17 +116,11 @@ def lambda_handler(event, context):
     try:
         validate_payload(payload)
         validate_and_get_user(payload.get("email"))
-
-        # Update DynamoDB with Caesar cipher configuration
         configure_caesar_cipher(payload)
-
-        # Subscribe and send confirmation email to the newly registered user
-        sns_response = sns_notification_and_subscription(payload.get("email"))
-
+        send_registration_notification(payload.get("email"))
         return ResponseBuilder.prepare_response(
             200,
             "Registration successful. Confirmation email sent.",
-            sns_response=sns_response,
         )
     except Exception as e:
         traceback.print_exc()
