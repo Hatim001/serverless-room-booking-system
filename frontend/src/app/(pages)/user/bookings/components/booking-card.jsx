@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/tooltip';
 
 import ReviewForm from './review-form';
+import FallbackImage from '@/components/fallback-image';
 
 const BookingCard = ({ booking }) => {
   const [copied, setCopied] = useState(false);
@@ -36,15 +37,24 @@ const BookingCard = ({ booking }) => {
   return (
     <div className="transition ease-in-out w-full h-[200px] bg-white rounded-lg shadow hover:shadow-lg hover:outline hover:outline-1 hover:outline-violet-300 hover:-translate-y-1">
       <div className="flex justify-left w-full h-full">
-        <div className="w-1/3">
-          <picture>
+        <div className="w-1/3 h-full relative">
+          {/* <picture>
             <img
               src={`https://picsum.photos/id/${randomNumber(1, 100)}/1500`}
               // src={booking?.room?.images?.[0]?.url}
               alt={`${booking?.room?.name} Cover Image`}
               className="w-full h-full object-cover rounded-l-lg"
             />
-          </picture>
+          </picture> */}
+          <div className="w-full max-h-[200px]">
+            <FallbackImage
+              fill={true}
+              objectFit="cover"
+              src={room?.images?.[0]?.url}
+              alt={`${room?.name} Cover Image`}
+              className="rounded-l-lg"
+            />
+          </div>
         </div>
         <div className="w-2/3 p-4">
           <div className="flex flex-col justify-between h-full space-y-2">
@@ -101,9 +111,6 @@ const BookingCard = ({ booking }) => {
                 </div>
               </div>
               <div className="space-x-2">
-                <Button size="sm" variant="outline">
-                  Mark as Completed
-                </Button>
                 <ReviewForm booking={booking} />
               </div>
             </div>

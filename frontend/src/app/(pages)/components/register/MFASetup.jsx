@@ -62,21 +62,17 @@ const MFASetup = ({ role }) => {
       email: searchParams.get('email'),
       cipher_decryption_key: values?.encryptionKey,
     };
-    fetch('/api/auth/register/mfa/caesar-cipher', {
+    return fetch('/api/auth/register/mfa/caesar-cipher', {
       method: 'POST',
       body: JSON.stringify(payload),
     })
       .then((res) => {
-        const data = res.json();
-        if (res.ok) {
-          router.push(`/${role}/login`);
-        } else {
-          toast({
-            title: 'Error',
-            description: data?.message,
-            variant: 'destructive',
-          });
-        }
+        return {
+          res,
+          callback: async () => {
+            router.push(`/${role}/login`);
+          },
+        };
       })
       .finally(() => {
         setDisableForm(false);

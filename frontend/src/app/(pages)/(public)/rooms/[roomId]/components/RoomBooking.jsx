@@ -164,6 +164,7 @@ const RoomBooking = ({ room }) => {
                       <DatePickerWithRange
                         date={field.value}
                         setDate={field.onChange}
+                        calenderProps={{ disabled: [{ before: new Date() }] }}
                       />
                     </FormControl>
                     <FormMessage />

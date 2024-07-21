@@ -80,7 +80,7 @@ const Index = ({ params }) => {
         <FallbackImage
           fill={true}
           objectFit="cover"
-          src={room?.images?.[0]}
+          src={room?.images?.[0]?.url}
           alt={`${room?.name} Cover Image`}
           className="w-full h-full"
         />
@@ -91,7 +91,7 @@ const Index = ({ params }) => {
             <FallbackImage
               fill={true}
               objectFit="cover"
-              src={room?.images?.[index]}
+              src={room?.images?.[index]?.url}
               alt={`${room?.name} Cover Image - ${index}`}
               className="w-full h-full static"
             />
