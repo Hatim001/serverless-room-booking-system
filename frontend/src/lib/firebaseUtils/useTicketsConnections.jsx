@@ -3,15 +3,12 @@ import { useEffect, useState } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 
-const useTicketsConnections = (currentUser,chatSubscriptionRef) => {
+const useTicketsConnections = (currentUser, chatSubscriptionRef) => {
   const [usersForChat, setUsersForChat] = useState([]);
-  let unsubFunction=()=>{ }
+  let unsubFunction = () => {};
 
   useEffect(() => {
     const getChats = () => {
-
-    
-
       const unsub = onSnapshot(
         doc(db, 'chatConnections', currentUser),
         (doc) => {
@@ -21,7 +18,7 @@ const useTicketsConnections = (currentUser,chatSubscriptionRef) => {
             Object.keys(conversations).forEach((key) => {
               userList.push({
                 name: conversations[key]?.name,
-                lastUpdatedTimestamp:conversations[key]?.lastUpdatedTimestamp,
+                lastUpdatedTimestamp: conversations[key]?.lastUpdatedTimestamp,
                 lastMessage: conversations[key]?.lastMessage,
                 agentEmail: conversations[key]?.agentEmail,
                 userEmail: conversations[key]?.userEmail,
@@ -37,12 +34,11 @@ const useTicketsConnections = (currentUser,chatSubscriptionRef) => {
       );
 
       // chatSubscriptionRef.current = unsub
-      unsubFunction=unsub
-      
+      unsubFunction = unsub;
     };
     currentUser && getChats();
     return () => {
-        unsubFunction()
+      unsubFunction();
     };
   }, [currentUser]);
 

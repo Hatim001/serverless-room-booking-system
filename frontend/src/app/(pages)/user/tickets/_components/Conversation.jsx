@@ -6,7 +6,7 @@ import { SendHorizontal } from 'lucide-react';
 import React, { useEffect, useState, useRef } from 'react';
 import useTicketConversations from '@/lib/firebaseUtils/useTicketsConversations';
 import { useAuth } from '@/hooks/use-auth';
-import {pushMessage} from '@/lib/firebaseUtils/utilsFunctions';
+import { pushMessage } from '@/lib/firebaseUtils/utilsFunctions';
 
 const Conversation = ({ selectedTicket, setSelectedTicket }) => {
   const messagesEndRef = useRef(null);
@@ -95,7 +95,10 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
             }
           }}
         />
-        <Button disabled={selectedTicket?.isResolved} onClick={() => handleButtonClick()}>
+        <Button
+          disabled={selectedTicket?.isResolved}
+          onClick={() => handleButtonClick()}
+        >
           <SendHorizontal size={'15px'} />
         </Button>
       </div>
@@ -104,8 +107,8 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
 
   return (
     <div className="flex flex-col justify-between w-full h-full">
-      {selectedTicket===null ? (
-        <div className='w-full h-full flex justify-center items-center'>
+      {selectedTicket === null ? (
+        <div className="w-full h-full flex justify-center items-center">
           <h3 className="font-medium text-lg">Select a ticket</h3>
         </div>
       ) : (

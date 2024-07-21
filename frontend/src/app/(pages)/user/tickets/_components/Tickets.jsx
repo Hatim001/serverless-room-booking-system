@@ -5,37 +5,35 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { ChevronRightIcon, ChevronsUpDown } from 'lucide-react';
-import {  useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import useTicketsConnections from '@/lib/firebaseUtils/useTicketsConnections';
-
 
 const Tickets = ({ selectedTicket, setSelectedTicket }) => {
   const { isAuthenticatedUser, session } = useAuth();
   const [isOpenForClosedTickets, setIsOpenForClosedTickets] = useState(false);
   const [isOpenForOpenTickets, setIsOpenForOpenTickets] = useState(true);
   // const chatSubscriptionRef = useRef(null);
-  const  ticketList  = useTicketsConnections(session?.user?.email);
+  const ticketList = useTicketsConnections(session?.user?.email);
   const [openTickets, setOpenTickets] = useState([]);
   const [closedTickets, setClosedTickets] = useState([]);
 
   const handleTicketClick = (ticket) => {
-    setSelectedTicket(ticket)
-   }
-
+    setSelectedTicket(ticket);
+  };
 
   useEffect(() => {
-    setOpenTickets(ticketList?.filter((ticket) => !ticket.isResolved))
-    setClosedTickets(ticketList?.filter((ticket) => ticket.isResolved))
+    setOpenTickets(ticketList?.filter((ticket) => !ticket.isResolved));
+    setClosedTickets(ticketList?.filter((ticket) => ticket.isResolved));
     if (selectedTicket) {
-      const matchingTicket = ticketList.find(ticket => ticket?.ticketId === selectedTicket?.ticketId);
+      const matchingTicket = ticketList.find(
+        (ticket) => ticket?.ticketId === selectedTicket?.ticketId,
+      );
       if (matchingTicket) {
-          setSelectedTicket(matchingTicket);
+        setSelectedTicket(matchingTicket);
       }
-  }
+    }
   }, [ticketList]);
-
-
 
   return (
     <div className="h-full">
@@ -54,19 +52,25 @@ const Tickets = ({ selectedTicket, setSelectedTicket }) => {
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent className="space-y-2">
-          {openTickets.sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp).map((ticket, index) => (
-            <div
-            className={`flex items-center justify-between rounded-lg ${ticket.ticketId === selectedTicket?.ticketId ? 'bg-muted border' : 'bg-background'} p-4 hover:bg-muted`}
-              key={index}
-              onClick={() => handleTicketClick(ticket)}
-            >
-              <div>
-                <h4 className="text-sm truncate text-ellipsis font-medium">Ticket: #{ticket?.ticketId}</h4>
-                <p className="text-xs text-muted-foreground">Booking ID: #{ticket?.bookingId}</p>
+          {openTickets
+            .sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp)
+            .map((ticket, index) => (
+              <div
+                className={`flex items-center justify-between rounded-lg ${ticket.ticketId === selectedTicket?.ticketId ? 'bg-muted border' : 'bg-background'} p-4 hover:bg-muted`}
+                key={index}
+                onClick={() => handleTicketClick(ticket)}
+              >
+                <div>
+                  <h4 className="text-sm truncate text-ellipsis font-medium">
+                    Ticket: #{ticket?.ticketId}
+                  </h4>
+                  <p className="text-xs text-muted-foreground">
+                    Booking ID: #{ticket?.bookingId}
+                  </p>
+                </div>
+                <ChevronRightIcon className="h-5 w-5 text-muted-foreground" />
               </div>
-              <ChevronRightIcon className="h-5 w-5 text-muted-foreground" />
-            </div>
-          ))}
+            ))}
         </CollapsibleContent>
       </Collapsible>
 
@@ -85,19 +89,25 @@ const Tickets = ({ selectedTicket, setSelectedTicket }) => {
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent className="space-y-2">
-          {closedTickets.sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp).map((ticket, index) => (
-            <div
-            className={`flex items-center justify-between rounded-lg ${ticket.ticketId === selectedTicket?.ticketId ? 'bg-muted border' : 'bg-background'} p-4 hover:bg-muted`}
-              key={index}
-              onClick={() => handleTicketClick(ticket)}
-            >
-              <div>
-                <h4 className="text-sm font-medium">Ticket: #{ticket?.ticketId}</h4>
-                <p className="text-xs text-muted-foreground">Booking: #{ticket?.bookingId}</p>
+          {closedTickets
+            .sort((a, b) => b.lastUpdatedTimestamp - a.lastUpdatedTimestamp)
+            .map((ticket, index) => (
+              <div
+                className={`flex items-center justify-between rounded-lg ${ticket.ticketId === selectedTicket?.ticketId ? 'bg-muted border' : 'bg-background'} p-4 hover:bg-muted`}
+                key={index}
+                onClick={() => handleTicketClick(ticket)}
+              >
+                <div>
+                  <h4 className="text-sm font-medium">
+                    Ticket: #{ticket?.ticketId}
+                  </h4>
+                  <p className="text-xs text-muted-foreground">
+                    Booking: #{ticket?.bookingId}
+                  </p>
+                </div>
+                <ChevronRightIcon className="h-5 w-5 text-muted-foreground" />
               </div>
-              <ChevronRightIcon className="h-5 w-5 text-muted-foreground" />
-            </div>
-          ))}
+            ))}
         </CollapsibleContent>
       </Collapsible>
     </div>

@@ -4,7 +4,10 @@ import { SendHorizontal } from 'lucide-react';
 import React, { useEffect, useState, useRef } from 'react';
 import useTicketConversations from '@/lib/firebaseUtils/useTicketsConversations';
 import { useAuth } from '@/hooks/use-auth';
-import {pushMessage, markTicketAsResolved} from '@/lib/firebaseUtils/utilsFunctions';
+import {
+  pushMessage,
+  markTicketAsResolved,
+} from '@/lib/firebaseUtils/utilsFunctions';
 
 const Conversation = ({ selectedTicket, setSelectedTicket }) => {
   const messagesEndRef = useRef(null);
@@ -81,10 +84,9 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
     };
 
     const handleMarkAsResolved = () => {
-      markTicketAsResolved(selectedTicket,session?.user?.email)
-      setSelectedTicket(null)
-    }
-    
+      markTicketAsResolved(selectedTicket, session?.user?.email);
+      setSelectedTicket(null);
+    };
 
     return (
       <div className="h-20 w-full flex justify-between items-end py-1 space-x-2">
@@ -99,7 +101,10 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
             }
           }}
         />
-        <Button disabled={selectedTicket?.isResolved} onClick={() => handleButtonClick()}>
+        <Button
+          disabled={selectedTicket?.isResolved}
+          onClick={() => handleButtonClick()}
+        >
           <SendHorizontal size={'15px'} />
         </Button>
         {!selectedTicket.isResolved && (
