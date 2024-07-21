@@ -7,6 +7,13 @@
       "Properties": {
         "FunctionName": "code_verify",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "DYNAMODB_TABLE_NAME": "dvh-user",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "code_verify.lambda_handler",
         "Code": {
@@ -21,6 +28,12 @@
       "Properties": {
         "FunctionName": "resend_code",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "resend_code.lambda_handler",
         "Code": {
@@ -35,6 +48,12 @@
       "Properties": {
         "FunctionName": "login_credentials",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "login_credentials.lambda_handler",
         "Code": {
@@ -49,6 +68,15 @@
       "Properties": {
         "FunctionName": "get_mfa_status",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "get_mfa_status.lambda_handler",
         "Code": {
@@ -63,6 +91,13 @@
       "Properties": {
         "FunctionName": "register_credentials",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "register_credentials.lambda_handler",
         "Code": {
@@ -77,6 +112,15 @@
       "Properties": {
         "FunctionName": "session",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "session.lambda_handler",
         "Code": {
@@ -91,6 +135,11 @@
       "Properties": {
         "FunctionName": "setup_caesar_cipher",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "setup_caesar_cipher.lambda_handler",
         "Code": {
@@ -105,6 +154,15 @@
       "Properties": {
         "FunctionName": "setup_security_question",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "setup_security_question.lambda_handler",
         "Code": {
@@ -119,6 +177,12 @@
       "Properties": {
         "FunctionName": "verify_cipher",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "verify_cipher.lambda_handler",
         "Code": {
@@ -133,6 +197,15 @@
       "Properties": {
         "FunctionName": "logout",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "logout.lambda_handler",
         "Code": {
@@ -147,6 +220,15 @@
       "Properties": {
         "FunctionName": "verify_security_answer",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "verify_security_answer.lambda_handler",
         "Code": {
@@ -161,6 +243,12 @@
       "Properties": {
         "FunctionName": "book_room",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "book_room.lambda_handler",
         "Code": {
@@ -175,6 +263,12 @@
       "Properties": {
         "FunctionName": "book_room_approval",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "book_room_approval.lambda_handler",
         "Code": {
@@ -189,6 +283,12 @@
       "Properties": {
         "FunctionName": "book_room_request",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "book_room_request.lambda_handler",
         "Code": {
@@ -203,6 +303,12 @@
       "Properties": {
         "FunctionName": "get_bookings",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
         "Handler": "get_bookings.lambda_handler",
         "Code": {
@@ -343,35 +449,9 @@
       "Properties": {
         "Name": "dvh-backend",
         "EndpointConfiguration": {
-          "Types": ["REGIONAL"]
-        }
-      }
-    },
-    "UserRoomsBookRoomApiAuthorizer": {
-      "Type": "AWS::ApiGateway::Authorizer",
-      "Properties": {
-        "Name": "UserRoomsBookAuthorizer",
-        "Type": "TOKEN",
-        "AuthorizerUri": {
-          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserValidatorLambda.Arn}/invocations"
-        },
-        "IdentitySource": "method.request.header.Authorization",
-        "RestApiId": {
-          "Ref": "ApiStack"
-        }
-      }
-    },
-    "AgentRoomsApiAuthorizer": {
-      "Type": "AWS::ApiGateway::Authorizer",
-      "Properties": {
-        "Name": "AgentAuthorizer",
-        "Type": "TOKEN",
-        "AuthorizerUri": {
-          "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentValidatorLambda.Arn}/invocations"
-        },
-        "IdentitySource": "method.request.header.Authorization",
-        "RestApiId": {
-          "Ref": "ApiStack"
+          "Types": [
+            "REGIONAL"
+          ]
         }
       }
     },
@@ -710,7 +790,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -806,7 +886,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -902,7 +982,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -998,7 +1078,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1094,7 +1174,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1190,7 +1270,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1286,7 +1366,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1334,7 +1414,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "DELETE",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1382,7 +1462,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1478,7 +1558,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1574,7 +1654,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1670,7 +1750,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1814,7 +1894,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1910,7 +1990,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1947,10 +2027,7 @@
     "UserRoomsBookRoomApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": {
-          "Ref": "UserRoomsBookRoomApiAuthorizer"
-        },
+        "AuthorizationType": "NONE",
         "HttpMethod": "POST",
         "ResourceId": {
           "Ref": "UserRoomsBookRoomApiResource"
@@ -2009,7 +2086,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -2094,10 +2171,7 @@
     "AgentRoomsApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": {
-          "Ref": "AgentRoomsApiAuthorizer"
-        },
+        "AuthorizationType": "NONE",
         "HttpMethod": "POST",
         "ResourceId": {
           "Ref": "AgentApiResource"
@@ -2108,7 +2182,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "GET",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -2156,7 +2230,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -2190,15 +2264,10 @@
         ]
       }
     },
-
-
     "AgentRoomsEditRoomIdApiPUTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": {
-          "Ref": "AgentRoomsApiAuthorizer"
-        },
+        "AuthorizationType": "NONE",
         "HttpMethod": "PUT",
         "ResourceId": {
           "Ref": "AgentRoomsGetRoomIdApiResource"
@@ -2209,7 +2278,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "PUT",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -2246,10 +2315,7 @@
     "AgentRoomsDeleteRoomIdApiDELETEMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "CUSTOM",
-        "AuthorizerId": {
-          "Ref": "AgentRoomsApiAuthorizer"
-        },
+        "AuthorizationType": "NONE",
         "HttpMethod": "DELETE",
         "ResourceId": {
           "Ref": "AgentRoomsGetRoomIdApiResource"
@@ -2260,7 +2326,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "DELETE",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -2294,7 +2360,6 @@
         ]
       }
     },
-
     "AgentRoomsGetRoomIdApiOPTIONSMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -2309,7 +2374,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -2355,6 +2420,7 @@
         "MFACaesarCipherPOSTMethod",
         "MFACaesarCipherOPTIONSMethod",
         "MFAStatusGETMethod",
+        "MFAStatusOPTIONSMethod",
         "RegisterVerifyApiPOSTMethod",
         "RegisterVerifyApiOPTIONSMethod",
         "ResendCodeApiPOSTMethod",
@@ -2574,7 +2640,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "AuthRegistrationResendCodeLambda"
+          "Ref": "AuthLogoutLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -2722,7 +2788,7 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/user/rooms/:roomId"
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/user/rooms/{roomId}"
         }
       }
     },
@@ -2735,7 +2801,7 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/:roomId"
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/{roomId}"
         }
       }
     },
@@ -2761,7 +2827,7 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/:roomId/book"
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/{roomId}/book"
         }
       }
     },
@@ -2813,7 +2879,7 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/DEL/agent/rooms/:roomId"
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/DEL/agent/rooms/{roomId}"
         }
       }
     },
@@ -2826,7 +2892,7 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/PUT/agent/rooms/:roomId"
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/PUT/agent/rooms/{roomId}"
         }
       }
     },
@@ -2839,60 +2905,7 @@
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/agent/rooms/:roomId"
-        }
-      }
-    },
-
-    "UserRoomBookValidatorLambdaPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "UserValidatorLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/user/rooms/:roomId/book"
-        }
-      }
-    },
-    "AgentCreateRoomValidatorLambdaPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AgentValidatorLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/agent/rooms"
-        }
-      }
-    },
-    "AgentEditRoomValidatorLambdaPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AgentValidatorLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/PUT/agent/rooms/:roomId"
-        }
-      }
-    },
-    "AgentDeleteRoomValidatorLambdaPermission": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "AgentValidatorLambda"
-        },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "apigateway.amazonaws.com",
-        "SourceArn": {
-          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/DEL/agent/rooms/:roomId"
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/agent/rooms/{roomId}"
         }
       }
     }
