@@ -7,8 +7,15 @@
       "Properties": {
         "FunctionName": "code_verify",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "DYNAMODB_TABLE_NAME": "dvh-user",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "code_verify.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "code_verify.py.zip"
@@ -21,8 +28,14 @@
       "Properties": {
         "FunctionName": "resend_code",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "resend_code.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "resend_code.py.zip"
@@ -35,8 +48,14 @@
       "Properties": {
         "FunctionName": "login_credentials",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "login_credentials.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "login_credentials.py.zip"
@@ -49,8 +68,17 @@
       "Properties": {
         "FunctionName": "get_mfa_status",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "get_mfa_status.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "get_mfa_status.py.zip"
@@ -63,11 +91,18 @@
       "Properties": {
         "FunctionName": "register_credentials",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "register_credentials.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
-          "S3Key": "register_credentials.py.zip"
+          "S3Key": "register_credentials.zip"
         },
         "Timeout": 120
       }
@@ -77,8 +112,17 @@
       "Properties": {
         "FunctionName": "session",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "session.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "session.py.zip"
@@ -91,8 +135,13 @@
       "Properties": {
         "FunctionName": "setup_caesar_cipher",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "setup_caesar_cipher.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "setup_caesar_cipher.py.zip"
@@ -105,8 +154,17 @@
       "Properties": {
         "FunctionName": "setup_security_question",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "setup_security_question.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "setup_security_question.py.zip"
@@ -119,8 +177,14 @@
       "Properties": {
         "FunctionName": "verify_cipher",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "verify_cipher.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "verify_cipher.py.zip"
@@ -133,8 +197,17 @@
       "Properties": {
         "FunctionName": "logout",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "logout.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "logout.py.zip"
@@ -147,39 +220,20 @@
       "Properties": {
         "FunctionName": "verify_security_answer",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "COGNITO_CLIENT_ID": "608i9gemt9ne3kvqmqauga8qvb",
+            "COGNITO_USER_POOL_ID": "us-east-1_CtAw9Vglh",
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue",
+            "DYNAMODB_TABLE_NAME": "dvh-user"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "verify_security_answer.lambda_handler",
         "Code": {
           "S3Bucket": "auth-serverless",
           "S3Key": "verify_security_answer.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "AuthAuthorizerLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "authorizer",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "auth-serverless",
-          "S3Key": "authorizer.py.zip"
-        },
-        "Timeout": 120
-      }
-    },
-    "AuthConstantsLambda": {
-      "Type": "AWS::Lambda::Function",
-      "Properties": {
-        "FunctionName": "constants",
-        "Runtime": "python3.11",
-        "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
-        "Code": {
-          "S3Bucket": "auth-serverless",
-          "S3Key": "constants.py.zip"
         },
         "Timeout": 120
       }
@@ -189,8 +243,14 @@
       "Properties": {
         "FunctionName": "book_room",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "book_room.lambda_handler",
         "Code": {
           "S3Bucket": "serverless-user",
           "S3Key": "book_room.py.zip"
@@ -203,8 +263,14 @@
       "Properties": {
         "FunctionName": "book_room_approval",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "book_room_approval.lambda_handler",
         "Code": {
           "S3Bucket": "serverless-user",
           "S3Key": "book_room_approval.py.zip"
@@ -217,8 +283,14 @@
       "Properties": {
         "FunctionName": "book_room_request",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "book_room_request.lambda_handler",
         "Code": {
           "S3Bucket": "serverless-user",
           "S3Key": "book_room_request.py.zip"
@@ -231,8 +303,14 @@
       "Properties": {
         "FunctionName": "get_bookings",
         "Runtime": "python3.11",
+        "Environment": {
+          "Variables": {
+            "SNS_TOPIC_ARN": "arn:aws:sns:us-east-1:386955125831:dvh-email-notifications",
+            "SQS_QUEUE_URL": "https://sqs.us-east-1.amazonaws.com/386955125831/dvh-room-booking-queue"
+          }
+        },
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "get_bookings.lambda_handler",
         "Code": {
           "S3Bucket": "serverless-user",
           "S3Key": "get_bookings.py.zip"
@@ -246,7 +324,7 @@
         "FunctionName": "add_feedback",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "add_feedback.lambda_handler",
         "Code": {
           "S3Bucket": "serverless-user",
           "S3Key": "add_feedback.py.zip"
@@ -260,7 +338,7 @@
         "FunctionName": "get_room_details",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "get_room_details.lambda_handler",
         "Code": {
           "S3Bucket": "serverless-user",
           "S3Key": "get_room_details.py.zip"
@@ -274,7 +352,7 @@
         "FunctionName": "user_get_rooms",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "get_rooms.lambda_handler",
         "Code": {
           "S3Bucket": "serverless-user",
           "S3Key": "get_rooms.py.zip"
@@ -288,7 +366,7 @@
         "FunctionName": "user_validator",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "validator.lambda_handler",
         "Code": {
           "S3Bucket": "serverless-user",
           "S3Key": "validator.py.zip"
@@ -302,7 +380,7 @@
         "FunctionName": "create_room",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "create_room.lambda_handler",
         "Code": {
           "S3Bucket": "agent-serverless",
           "S3Key": "create_room.py.zip"
@@ -316,7 +394,7 @@
         "FunctionName": "delete_room",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "delete_room.lambda_handler",
         "Code": {
           "S3Bucket": "agent-serverless",
           "S3Key": "delete_room.py.zip"
@@ -330,7 +408,7 @@
         "FunctionName": "edit_room",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "edit_room.lambda_handler",
         "Code": {
           "S3Bucket": "agent-serverless",
           "S3Key": "edit_room.py.zip"
@@ -344,7 +422,7 @@
         "FunctionName": "get_rooms",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "get_rooms.lambda_handler",
         "Code": {
           "S3Bucket": "agent-serverless",
           "S3Key": "get_rooms.py.zip"
@@ -358,7 +436,7 @@
         "FunctionName": "agent_validator",
         "Runtime": "python3.11",
         "Role": "arn:aws:iam::386955125831:role/LabRole",
-        "Handler": "lambda/signup.handler",
+        "Handler": "validator.lambda_handler",
         "Code": {
           "S3Bucket": "agent-serverless",
           "S3Key": "validator.py.zip"
@@ -366,15 +444,17 @@
         "Timeout": 120
       }
     },
-
-
     "ApiStack": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "APIsSDP-32"
+        "Name": "dvh-backend",
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL"
+          ]
+        }
       }
     },
-
     "AuthApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -546,8 +626,108 @@
         "PathPart": "security-question"
       }
     },
-
-
+    "UserApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiStack",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "user"
+      }
+    },
+    "UserBookingApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "UserApiResource"
+        },
+        "PathPart": "bookings"
+      }
+    },
+    "UserRoomsApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "UserApiResource"
+        },
+        "PathPart": "rooms"
+      }
+    },
+    "UserRoomsGetRoomIdApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "UserRoomsApiResource"
+        },
+        "PathPart": "{roomId}"
+      }
+    },
+    "UserRoomsBookRoomApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "UserRoomsGetRoomIdApiResource"
+        },
+        "PathPart": "book"
+      }
+    },
+    "AgentApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiStack",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "agent"
+      }
+    },
+    "AgentRoomsApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "AgentApiResource"
+        },
+        "PathPart": "rooms"
+      }
+    },
+    "AgentRoomsGetRoomIdApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "AgentRoomsApiResource"
+        },
+        "PathPart": "{roomId}"
+      }
+    },
     "SessionApiGETMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -562,7 +742,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "GET",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -610,7 +790,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -706,7 +886,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -802,7 +982,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -898,7 +1078,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -946,7 +1126,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "GET",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -994,7 +1174,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1090,7 +1270,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1186,7 +1366,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1234,7 +1414,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "DELETE",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1282,7 +1462,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1378,7 +1558,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1412,7 +1592,6 @@
         ]
       }
     },
-
     "LoginMFACaesarCipherApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -1475,7 +1654,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1509,7 +1688,6 @@
         ]
       }
     },
-
     "LoginMFASecurityQuestionApiPOSTMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -1572,7 +1750,7 @@
         "ApiKeyRequired": false,
         "Integration": {
           "PassthroughBehavior": "WHEN_NO_TEMPLATES",
-          "IntegrationHttpMethod": "OPTIONS",
+          "IntegrationHttpMethod": "POST",
           "IntegrationResponses": [
             {
               "StatusCode": "200",
@@ -1606,10 +1784,631 @@
         ]
       }
     },
-
-
-
-    "AuthApiDeployment": {
+    "UserBookingApiGETMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "ResourceId": {
+          "Ref": "UserBookingApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserGetBookingsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "UserRoomsApiGETMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "ResourceId": {
+          "Ref": "UserRoomsApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserGetRoomsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "UserRoomsApiOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "UserRoomsApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserGetRoomsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "UserRoomsGetRoomIdApiGETMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "ResourceId": {
+          "Ref": "UserRoomsGetRoomIdApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserGetRoomDetailsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "UserRoomsGetRoomIdApiOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "UserRoomsGetRoomIdApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserGetRoomDetailsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "UserRoomsBookRoomApiPOSTMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "UserRoomsBookRoomApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserBookRoomRequestLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "UserRoomsBookRoomApiOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "UserRoomsBookRoomApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UserBookRoomRequestLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsApiGETMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "ResourceId": {
+          "Ref": "AgentApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentGetRoomsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsApiPOSTMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "AgentApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentCreateRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsApiOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "AgentApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentCreateRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsEditRoomIdApiPUTMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "PUT",
+        "ResourceId": {
+          "Ref": "AgentRoomsGetRoomIdApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'PUT,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentEditRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsDeleteRoomIdApiDELETEMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "DELETE",
+        "ResourceId": {
+          "Ref": "AgentRoomsGetRoomIdApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'DELETE,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentDeleteRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "AgentRoomsGetRoomIdApiOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "AgentRoomsGetRoomIdApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentDeleteRoomLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "ApiDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
       "DependsOn": [
         "SessionApiGETMethod",
@@ -1621,6 +2420,7 @@
         "MFACaesarCipherPOSTMethod",
         "MFACaesarCipherOPTIONSMethod",
         "MFAStatusGETMethod",
+        "MFAStatusOPTIONSMethod",
         "RegisterVerifyApiPOSTMethod",
         "RegisterVerifyApiOPTIONSMethod",
         "ResendCodeApiPOSTMethod",
@@ -1632,7 +2432,20 @@
         "LoginMFACaesarCipherApiPOSTMethod",
         "LoginMFACaesarCipherApiOPTIONSMethod",
         "LoginMFASecurityQuestionApiPOSTMethod",
-        "LoginMFASecurityQuestionApiOPTIONSMethod"
+        "LoginMFASecurityQuestionApiOPTIONSMethod",
+        "UserBookingApiGETMethod",
+        "UserRoomsApiGETMethod",
+        "UserRoomsApiOPTIONSMethod",
+        "UserRoomsGetRoomIdApiGETMethod",
+        "UserRoomsGetRoomIdApiOPTIONSMethod",
+        "UserRoomsBookRoomApiPOSTMethod",
+        "UserRoomsBookRoomApiOPTIONSMethod",
+        "AgentRoomsApiGETMethod",
+        "AgentRoomsApiPOSTMethod",
+        "AgentRoomsApiOPTIONSMethod",
+        "AgentRoomsEditRoomIdApiPUTMethod",
+        "AgentRoomsDeleteRoomIdApiDELETEMethod",
+        "AgentRoomsGetRoomIdApiOPTIONSMethod"
       ],
       "Properties": {
         "RestApiId": {
@@ -1641,9 +2454,6 @@
         "StageName": "prod"
       }
     },
-
-
-
     "AuthSessionLambdaGETPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -1830,7 +2640,7 @@
       "Type": "AWS::Lambda::Permission",
       "Properties": {
         "FunctionName": {
-          "Ref": "AuthRegistrationResendCodeLambda"
+          "Ref": "AuthLogoutLambda"
         },
         "Action": "lambda:InvokeFunction",
         "Principal": "apigateway.amazonaws.com",
@@ -1927,6 +2737,175 @@
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/auth/login/mfa/security-question"
+        }
+      }
+    },
+    "UserGetBookingsLambdaGETPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserGetBookingsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/user/bookings"
+        }
+      }
+    },
+    "UserGetRoomsLambdaGETPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserGetRoomsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/user/rooms"
+        }
+      }
+    },
+    "UserGetRoomsLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserGetRoomsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms"
+        }
+      }
+    },
+    "UserGetRoomDetailsLambdaGETPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserGetRoomDetailsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/user/rooms/{roomId}"
+        }
+      }
+    },
+    "UserGetRoomDetailsLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserGetRoomDetailsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/{roomId}"
+        }
+      }
+    },
+    "UserBookRoomRequestLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserBookRoomRequestLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/user/rooms/{roomId}/book"
+        }
+      }
+    },
+    "UserBookRoomRequestLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "UserBookRoomRequestLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/user/rooms/{roomId}/book"
+        }
+      }
+    },
+    "AgentGetRoomsLambdaGETPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentGetRoomsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/GET/agent/rooms"
+        }
+      }
+    },
+    "AgentCreateRoomsLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentCreateRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/agent/rooms"
+        }
+      }
+    },
+    "AgentCreateRoomsLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentCreateRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/agent/rooms"
+        }
+      }
+    },
+    "AgentDeleteRoomsLambdaDELPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentDeleteRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/DEL/agent/rooms/{roomId}"
+        }
+      }
+    },
+    "AgentEditRoomsLambdaPUTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentEditRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/PUT/agent/rooms/{roomId}"
+        }
+      }
+    },
+    "AgentDeleteRoomsLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentDeleteRoomLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/agent/rooms/{roomId}"
         }
       }
     }
