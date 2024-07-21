@@ -44,7 +44,6 @@ const RoomCard = ({ room }) => {
             objectFit="cover"
             src={images?.[currentIndex]?.url}
             alt={name}
-            unoptimized={true}
           />
         </div>
         {/* <Badge className="absolute top-4 left-4 bg-white text-black px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
