@@ -35,6 +35,18 @@ const CaesarCipher = ({ onSubmit, disableForm = false }) => {
     mode: 'onChange',
   });
 
+  const handleFormSubmit = async (values) => {
+    const res = await onSubmit(values);
+    const data = await res?.res?.json();
+    if (!res?.res?.ok) {
+      form.setError('formError', {
+        message: data?.message,
+      });
+      return;
+    }
+    await res?.callback();
+  };
+
   return (
     <div className="w-full max-w-md mx-auto p-6">
       <div className="mt-7 border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-900 dark:border-neutral-700">
@@ -47,7 +59,12 @@ const CaesarCipher = ({ onSubmit, disableForm = false }) => {
 
           <div className="mt-5">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
+              <form onSubmit={form.handleSubmit(handleFormSubmit)}>
+                {form?.formState?.errors?.formError && (
+                  <div className="mb-4 text-sm text-red-600">
+                    {form.formState.errors.formError.message}
+                  </div>
+                )}
                 <div className="grid gap-y-6">
                   <FormField
                     control={form.control}

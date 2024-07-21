@@ -63,17 +63,20 @@ const MFAVerification = ({ role }) => {
       plain_text: values?.plainText,
       cipher_text: values?.cipherText,
     };
-    fetch('/api/auth/login/mfa/caesar-cipher', {
+    return fetch('/api/auth/login/mfa/caesar-cipher', {
       method: 'POST',
       body: JSON.stringify(payload),
     })
       .then(async (res) => {
-        if (res.ok) {
-          await refreshSession();
-          return setTimeout(() => {
-            router.push(`${role === 'user' ? '/rooms' : '/agent/dashboard'}`);
-          }, 1);
-        }
+        return {
+          res,
+          callback: async () => {
+            await refreshSession();
+            return setTimeout(() => {
+              router.push(`${role === 'user' ? '/rooms' : '/agent/dashboard'}`);
+            }, 1);
+          },
+        };
       })
       .finally(() => {
         setDisableForm(false);

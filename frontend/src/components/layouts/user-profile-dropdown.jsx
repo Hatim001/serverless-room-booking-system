@@ -34,11 +34,6 @@ const UserProfileDropdown = ({ user }) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href={'/logout'}>Log out</Link>
         </DropdownMenuItem>
