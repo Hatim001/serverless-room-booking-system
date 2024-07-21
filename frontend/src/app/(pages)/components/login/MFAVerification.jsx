@@ -71,7 +71,7 @@ const MFAVerification = ({ role }) => {
         if (res.ok) {
           await refreshSession();
           return setTimeout(() => {
-            router.push(`${role === 'user' ? '/rooms' : '/agent/rooms'}`);
+            router.push(`${role === 'user' ? '/rooms' : '/agent/dashboard'}`);
           }, 1);
         }
       })

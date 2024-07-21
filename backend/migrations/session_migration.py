@@ -23,24 +23,23 @@ def lambda_handler(event, context):
 
     # Prepare SQL insert/update statement for RDS
     upsert_query = f"""
-    INSERT INTO {rds_table_name} (id, user_id, login_time)
-    VALUES (%s, %s, %s)
+    INSERT INTO {rds_table_name} (id, user_id, login_time, is_active)
+    VALUES (%s, %s, %s, %s)
     ON DUPLICATE KEY UPDATE
         user_id = VALUES(user_id),
-        login_time = VALUES(login_time)
+        login_time = VALUES(login_time),
+        is_active = VALUES(is_active)
     """
-
-    # Prepare SQL delete statement for RDS
-    delete_query = f"DELETE FROM {rds_table_name} WHERE id = %s"
 
     with rds.cursor() as cursor:
         for record in event["Records"]:
+            new_image = record["dynamodb"]["NewImage"]
+            id = new_image["id"]["S"]
             if record["eventName"] in ["INSERT", "MODIFY"]:
-                new_image = record["dynamodb"]["NewImage"]
-                id = new_image["id"]["S"]
                 user_id = new_image["user"]["M"]["id"]["S"]
                 login_time_str = new_image["expiry_date"]["S"]
                 login_time = datetime.strptime(login_time_str, "%Y-%m-%d %H:%M:%S")
+                is_active = 1
 
                 mfa_1_configured = new_image["mfa_1"]["M"]["configured"]["BOOL"]
                 mfa_1_verified = new_image["mfa_1"]["M"]["verified"]["BOOL"]
@@ -57,8 +56,13 @@ def lambda_handler(event, context):
                     # Execute SQL upsert statement
                     cursor.execute(
                         upsert_query,
-                        (id, user_id, login_time),
+                        (id, user_id, login_time, is_active),
                     )
+
+            elif record["eventName"] == "REMOVE":
+                cursor.execute(
+                    f"UPDATE {rds_table_name} SET is_active = %s WHERE id = %s", (0, id)
+                )
 
         rds.commit()
 

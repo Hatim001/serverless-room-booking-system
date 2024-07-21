@@ -19,6 +19,18 @@ def validate_filters(filters):
         raise Exception("RoomId is missing in filters!!")
 
 
+def get_feedbacks(room_id):
+    """Gets the feedbacks for the room."""
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.Table("dvh-feedback")
+    response = table.scan(
+        FilterExpression="room_id = :room_id",
+        ExpressionAttributeValues={":room_id": room_id},
+    )
+    feedbacks = response.get("Items", [])
+    return feedbacks or []
+
+
 def get_room_details(room_id):
     """Gets the room details."""
     dynamodb = boto3.resource("dynamodb")
@@ -28,6 +40,8 @@ def get_room_details(room_id):
     if not room:
         raise Exception("Room not found!!")
 
+    feedbacks = get_feedbacks(room_id)
+    room["feedbacks"] = feedbacks
     return room
 
 

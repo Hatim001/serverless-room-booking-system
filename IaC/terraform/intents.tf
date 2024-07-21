@@ -9,6 +9,42 @@ resource "google_dialogflow_cx_intent" "middleware" {
       text = "Hi"
     }
   }
+  training_phrases {
+      repeat_count = 1
+      parts {
+        text = "Okay"
+      }
+    }
+  training_phrases {
+        repeat_count = 1
+        parts {
+          text = "okay"
+        }
+      }
+  training_phrases {
+        repeat_count = 1
+        parts {
+          text = "Ok"
+        }
+      }
+  training_phrases {
+        repeat_count = 1
+        parts {
+          text = "ok"
+        }
+      }
+  training_phrases {
+        repeat_count = 1
+        parts {
+          text = "OK"
+        }
+      }
+  training_phrases {
+      repeat_count = 1
+      parts {
+        text = "I need help"
+      }
+    }
   }
 resource "google_dialogflow_cx_intent" "signup" {
   parent       = google_dialogflow_cx_agent.agent.id
