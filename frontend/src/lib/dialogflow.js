@@ -11,11 +11,11 @@ const sessionId = uuidv4();
 
 const sessionClient = new dialogflow.SessionsClient({
   credentials: {
-    client_email: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_EMAIL?.replace(
+    client_email: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_EMAIL,
+    private_key: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_PRIVATE_KEY.replace(
       /\\n/g,
       '\n',
     ),
-    private_key: process.env.NEXT_PUBLIC_GOOGLE_SERVICE_PRIVATE_KEY,
   },
 });
 
