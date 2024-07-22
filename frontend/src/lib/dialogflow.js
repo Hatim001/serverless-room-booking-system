@@ -1,7 +1,6 @@
 'use server';
+
 import dialogflow from '@google-cloud/dialogflow-cx';
-import { promises as fs } from 'fs';
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 const projectId = process.env.NEXT_PUBLIC_GCP_PROJECT_ID;
@@ -61,7 +60,6 @@ export async function sendMessageToDialogflow(message, session) {
 
     return messages;
   } catch (error) {
-    console.log('Error communicating with Dialogflow:', error);
     return 'An error occurred. Please try again.';
   }
 }

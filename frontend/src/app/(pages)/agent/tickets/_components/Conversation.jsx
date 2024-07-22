@@ -72,7 +72,6 @@ const Conversation = ({ selectedTicket, setSelectedTicket }) => {
     const [message, setMessage] = useState('');
 
     const inputChangeHandler = (event) => {
-      // console.log("message data:",event.target.value)
       setMessage(event.target.value);
     };
 

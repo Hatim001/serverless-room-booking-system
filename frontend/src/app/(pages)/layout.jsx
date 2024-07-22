@@ -11,49 +11,6 @@ const PublicLayout = ({ children, params }) => {
   const [routes, setRoutes] = useState(GUEST_ROUTES);
   const { session, prepareSession } = useAuth();
 
-  console.log(
-    'NEXT_PUBLIC_GCP_PROJECT_ID',
-    process.env.NEXT_PUBLIC_GCP_PROJECT_ID,
-  );
-  console.log(
-    'NEXT_PUBLIC_GOOGLE_DIALOGFLOW_AGENT_ID',
-    process.env.NEXT_PUBLIC_GOOGLE_DIALOGFLOW_AGENT_ID,
-  );
-  console.log(
-    'NEXT_PUBLIC_GOOGLE_SERVICE_EMAIL',
-    process.env.NEXT_PUBLIC_GOOGLE_SERVICE_EMAIL,
-  );
-  console.log(
-    'NEXT_PUBLIC_GOOGLE_SERVICE_PRIVATE_KEY',
-    process.env.NEXT_PUBLIC_GOOGLE_SERVICE_PRIVATE_KEY,
-  );
-  console.log(
-    'NEXT_PUBLIC_FIREBASE_API_KEY',
-    process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  );
-  console.log(
-    'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN',
-    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  );
-  console.log(
-    'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
-    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  );
-  console.log(
-    'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET',
-    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  );
-  console.log(
-    'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDERID',
-    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDERID,
-  );
-  console.log(
-    'NEXT_PUBLIC_FIREBASE_APP_ID',
-    process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  );
-  console.log('JWT_SECRET_KEY', process.env.JWT_SECRET_KEY);
-  console.log('NEXT_PUBLIC_BACKEND_URL', process.env.NEXT_PUBLIC_BACKEND_URL);
-
   useEffect(() => {
     prepareSession();
   }, []);

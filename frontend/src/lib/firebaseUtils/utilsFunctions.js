@@ -8,7 +8,6 @@ const pushMessage = async (
   currentUserEmail,
 ) => {
   if (!inputMessage || !seletectedTicket) return;
-  console.log(seletectedTicket, inputMessage, currentUserEmail);
   await updateDoc(doc(db, 'chats', seletectedTicket.ticketId), {
     messages: arrayUnion({
       id: uuid(),
@@ -41,7 +40,6 @@ const pushMessage = async (
 
 const markTicketAsResolved = async (seletectedTicket, currentUserEmail) => {
   if (!seletectedTicket) return;
-  console.log('Insided markedAsResolved:', seletectedTicket);
   pushMessage(
     seletectedTicket,
     'Agent as marked this ticket as resolved',
