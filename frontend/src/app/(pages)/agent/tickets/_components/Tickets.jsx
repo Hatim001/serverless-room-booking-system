@@ -8,6 +8,7 @@ import { ChevronRightIcon, ChevronsUpDown } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@/hooks/use-auth';
 import useTicketsConnections from '@/lib/firebaseUtils/useTicketsConnections';
+import EllipsisTooltip from '@/components/ui/ellipsis-tooltip';
 
 const Tickets = ({ selectedTicket, setSelectedTicket }) => {
   const { isAuthenticatedUser, session } = useAuth();
@@ -53,12 +54,20 @@ const Tickets = ({ selectedTicket, setSelectedTicket }) => {
                 onClick={() => handleTicketClick(ticket)}
               >
                 <div>
-                  <h4 className="text-sm truncate text-ellipsis font-medium">
-                    Ticket: #{ticket?.ticketId}
-                  </h4>
-                  <p className="text-xs text-muted-foreground">
-                    Booking ID: #{ticket?.bookingId}
-                  </p>
+                  <div className="flex items-center text-sm font-medium space-x-1">
+                    <span className="w-14">Ticket:</span>
+                    <EllipsisTooltip
+                      text={`#${ticket?.ticketId}`}
+                      className={'w-40 cursor-pointer'}
+                    />
+                  </div>
+                  <div className="flex items-center text-xs text-muted-foreground">
+                    <span className="w-20">Booking ID:</span>
+                    <EllipsisTooltip
+                      text={ticket?.bookingId}
+                      className={'w-40 cursor-pointer'}
+                    />
+                  </div>
                 </div>
                 <ChevronRightIcon className="h-5 w-5 text-muted-foreground" />
               </div>
