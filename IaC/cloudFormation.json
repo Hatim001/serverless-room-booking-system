@@ -360,6 +360,21 @@
         "Timeout": 120
       }
     },
+    "UserSentimentAnalyzerLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "sentiment_analyzer",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "sentiment_analyzer.lambda_handler",
+        "Code": {
+          "S3Bucket": "serverless-user",
+          "S3Key": "sentiment_analyzer.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+
     "UserValidatorLambda": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -440,6 +455,34 @@
         "Code": {
           "S3Bucket": "agent-serverless",
           "S3Key": "validator.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AgentAssignmentLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "assign_agent",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "assign_agent.lambda_handler",
+        "Code": {
+          "S3Bucket": "agent-serverless",
+          "S3Key": "assign_agent.py.zip"
+        },
+        "Timeout": 120
+      }
+    },
+    "AgentGetRoomDetailsLambda": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "agent_get_room_details",
+        "Runtime": "python3.11",
+        "Role": "arn:aws:iam::386955125831:role/LabRole",
+        "Handler": "get_room_details.lambda_handler",
+        "Code": {
+          "S3Bucket": "agent-serverless",
+          "S3Key": "get_room_details.py.zip"
         },
         "Timeout": 120
       }
@@ -645,7 +688,7 @@
         "PathPart": "user"
       }
     },
-    "UserBookingApiResource": {
+    "UserBookingApiResource":{
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
         "RestApiId": {
@@ -657,6 +700,8 @@
         "PathPart": "bookings"
       }
     },
+
+
     "UserRoomsApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -693,6 +738,8 @@
         "PathPart": "book"
       }
     },
+
+
     "AgentApiResource": {
       "Type": "AWS::ApiGateway::Resource",
       "Properties": {
@@ -732,6 +779,46 @@
         "PathPart": "{roomId}"
       }
     },
+    "TicketApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Fn::GetAtt": [
+            "ApiStack",
+            "RootResourceId"
+          ]
+        },
+        "PathPart": "ticket"
+      }
+    },
+    "AssignTicketApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "TicketApiResource"
+        },
+        "PathPart": "assign-ticket"
+      }
+    },
+    "TicketRoomDetailsApiResource": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ParentId": {
+          "Ref": "TicketApiResource"
+        },
+        "PathPart": "room-details"
+      }
+    },
+
 
 
     "SessionApiGETMethod": {
@@ -1838,6 +1925,8 @@
         ]
       }
     },
+
+
     "UserRoomsApiGETMethod": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
@@ -2415,6 +2504,200 @@
       }
     },
 
+    "TicketAssignAgentPOSTMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "AssignTicketApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentAssignmentLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "TicketAssignAgentOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "AssignTicketApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentAssignmentLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "TicketRoomDetailsPOSTMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "POST",
+        "ResourceId": {
+          "Ref": "TicketRoomDetailsApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentGetRoomDetailsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+    "TicketRoomDetailsOPTIONSMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "ResourceId": {
+          "Ref": "TicketRoomDetailsApiResource"
+        },
+        "RestApiId": {
+          "Ref": "ApiStack"
+        },
+        "ApiKeyRequired": false,
+        "Integration": {
+          "PassthroughBehavior": "WHEN_NO_TEMPLATES",
+          "IntegrationHttpMethod": "POST",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseTemplates": {
+                "application/json": ""
+              },
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          ],
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AgentGetRoomDetailsLambda.Arn}/invocations"
+          }
+        },
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+              "method.response.header.Access-Control-Allow-Methods": false,
+              "method.response.header.Access-Control-Allow-Origin": false
+            }
+          }
+        ]
+      }
+    },
+
+
 
     "ApiDeployment": {
       "Type": "AWS::ApiGateway::Deployment",
@@ -2453,7 +2736,11 @@
         "AgentRoomsApiOPTIONSMethod",
         "AgentRoomsEditRoomIdApiPUTMethod",
         "AgentRoomsDeleteRoomIdApiDELETEMethod",
-        "AgentRoomsGetRoomIdApiOPTIONSMethod"
+        "AgentRoomsGetRoomIdApiOPTIONSMethod",
+        "TicketAssignAgentPOSTMethod",
+        "TicketAssignAgentOPTIONSMethod",
+        "TicketRoomDetailsPOSTMethod",
+        "TicketRoomDetailsOPTIONSMethod"
       ],
       "Properties": {
         "RestApiId": {
@@ -2842,6 +3129,8 @@
         }
       }
     },
+
+
     "AgentGetRoomsLambdaGETPermission": {
       "Type": "AWS::Lambda::Permission",
       "Properties": {
@@ -2917,6 +3206,59 @@
         "Principal": "apigateway.amazonaws.com",
         "SourceArn": {
           "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/agent/rooms/{roomId}"
+        }
+      }
+    },
+
+    "AgentAssignmentLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentAssignmentLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/ticket/assign-agent"
+        }
+      }
+    },
+    "AgentAssignmentLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentAssignmentLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/ticket/assign-agent"
+        }
+      }
+    },
+    "AgentGetRoomDetailsLambdaPOSTPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentGetRoomDetailsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/POST/ticket/room-details"
+        }
+      }
+    },
+    "AgentGetRoomDetailsLambdaOPTIONSPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AgentGetRoomDetailsLambda"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiStack}/*/OPTIONS/ticket/room-details"
         }
       }
     }
